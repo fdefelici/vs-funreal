@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{07E04CBF-EC95-4D65-9004-E0FF1E6231D5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FUnreal</RootNamespace>
+    <AssemblyName>FUnreal</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Sources\UI\Features\PluginModuleMenuController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceFileCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\SourceFileMenu.cs" />
+    <Compile Include="Sources\UI\Features\Sources\SourceFileMenuController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\FolderMenuController.cs" />
+    <Compile Include="Sources\Core\FUnrealEngine.cs" />
+    <Compile Include="Sources\Core\FUnrealNotifier.cs" />
+    <Compile Include="Sources\Core\FUnrealPlugin.cs" />
+    <Compile Include="Sources\Core\FUnrealPluginModule.cs" />
+    <Compile Include="Sources\Core\FUnrealPluginModules.cs" />
+    <Compile Include="Sources\Core\FUnrealUPluginFile.cs" />
+    <Compile Include="Sources\Core\FUnrealUProjectFile.cs" />
+    <Compile Include="Sources\UI\Features\Sources\FolderMenu.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
+      <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceFolderCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\Utils\XVersion.cs" />
+    <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
+      <DependentUpon>FProgressPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Common\XDialogLib.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleController.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml.cs">
+      <DependentUpon>AddModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
+    <Compile Include="Sources\Core\FUnrealVS.cs" />
+    <Compile Include="Sources\UI\Features\PluginModuleMenu.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleController.cs" />
+    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
+      <DependentUpon>RenameModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginCmd.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginController.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml.cs">
+      <DependentUpon>RenamePluginDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginCmd.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginController.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml.cs">
+      <DependentUpon>AddPluginDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Core\FUnrealBuildTool.cs" />
+    <Compile Include="Sources\Core\FUnrealService.cs" />
+    <Compile Include="Sources\UI\Common\IXActionController.cs" />
+    <Compile Include="Sources\UI\Common\Controls\ConfirmDialog.xaml.cs">
+      <DependentUpon>ConfirmDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Common\ImageSourceFromIconExt.cs" />
+    <Compile Include="Sources\Utils\PlaceHolderReplaceVisitor.cs" />
+    <Compile Include="Sources\UI\Features\PluginMenu.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
+    <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginCmd.cs" />
+    <Compile Include="Sources\Utils\XJson.cs" />
+    <Compile Include="Sources\Utils\XProcess.cs" />
+    <Compile Include="Sources\Utils\XFilesystem.cs" />
+    <Compile Include="Sources\UI\Common\XActionCmd.cs" />
+    <Compile Include="Sources\UI\Common\XMenuCmd.cs" />
+    <Compile Include="VSCTSymbols.cs" />
+    <Compile Include="Sources\UI\Features\ProjectMenu.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FUnrealPackage.cs" />
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\%40{TPL_MOD_NAME}.Build.cs">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Resources\Icon128.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Sources\Actor.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Sources\Actor.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Sources\ActorComponent.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Sources\ActorComponent.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Content\.gitkeep">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.475</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.3.2094" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="FUnrealPackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Sources\UI\Common\Controls\FProgressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\UI\Common\Controls\ConfirmDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\descriptor.xml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Resources\Icon128.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\Private\%40{TPL_MOD_NAME}.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\Public\%40{TPL_MOD_NAME}.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

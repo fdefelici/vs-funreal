@@ -1,0 +1,184 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\@{TPL_MOD_NAME}.Build.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Private\MyActor.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Private\MyActor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjEmpty\UPrjEmpty.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Module01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Module01.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\UPrjOnePlugMod.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_expected" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_renamed_expected" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\descriptor.xml" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Resources\Icon128.png" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Private\@{TPL_MOD_NAME}.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Public\@{TPL_MOD_NAME}.h" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Resources\Icon128.png" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\Content\.gitkeep" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_Private\MyActor.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_Private\MyActor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Module01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Module01.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\UPrjOnePlugMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Content\.gitkeep">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjEmpty\UPrjEmpty.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_renamed_expected">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_expected">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\descriptor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Resources\Icon128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\@{TPL_MOD_NAME}.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Private\@{TPL_MOD_NAME}.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Public\@{TPL_MOD_NAME}.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\Resources\Icon128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FUnreal\FUnreal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
