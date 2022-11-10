@@ -136,6 +136,7 @@ namespace FUnreal
         
         private string _prjPath;
         private string _pluginsPath;
+        private string _sourcePath;
         private FUnrealTemplates _templates;
        
 
@@ -151,6 +152,7 @@ namespace FUnreal
         
             _prjPath = XFilesystem.PathParent(uprjAbsPath);
             _pluginsPath = XFilesystem.PathCombine(_prjPath, "Plugins");
+            _sourcePath = XFilesystem.PathCombine(_prjPath, "Source");
         }
 
         public string ProjectName { get;  }
@@ -262,7 +264,7 @@ namespace FUnreal
 
             bool isPublicPath = false;
             bool isPrivatePath = false;
-            bool isFreePath = false;
+            //bool isFreePath = false;
 
             //string pluginNameOrNull = PluginNameFromSourceCodePath(currentPath);
             //string moduleName = ModuleNameFromSourceCodePath(currentPath);
@@ -281,7 +283,7 @@ namespace FUnreal
             } else
             {
                 sourceRelPath = afterModulePath;
-                isFreePath = true;
+                //isFreePath = true;
             }
             
             string headerBasePath;
@@ -373,9 +375,20 @@ namespace FUnreal
             string plugPath = AbsPluginPath(plugName);
             return XFilesystem.PathCombine(plugPath, "Source", modName);
         }
+
+        public string AbsGameModulePath(string modName)
+        {
+            return XFilesystem.PathCombine(AbsProjectPath(), "Source", modName);
+        }
+
         public string AbsProjectPath()
         {
             return _prjPath;
+        }
+
+        public string AbsProjectSourceFolderPath()
+        {
+            return _sourcePath;
         }
 
         public string RelPluginPath(string pluginName)
@@ -390,6 +403,14 @@ namespace FUnreal
         {
             string prjPath = AbsProjectPath();
             string absPath = AbsPluginModulePath(plugName, modName);
+            string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
+            return relPath;
+        }
+
+        public string RelGameModulePath(string moduleName)
+        {
+            string prjPath = AbsProjectPath();
+            string absPath = AbsGameModulePath(moduleName);
             string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
             return relPath;
         }
@@ -421,6 +442,14 @@ namespace FUnreal
             return Directory.Exists(modulePath);
         }
 
+        public bool ExistsGameModule(string modName)
+        {
+            string modulePath = AbsGameModulePath(modName);
+            return Directory.Exists(modulePath);
+        }
+
+       
+       
         public string ModuleNameFromSourceCodePath(string path)
         {
             string moduleGroupRegex = @"PRJ_PATH\\(?:Plugins\\[^\\]+?\\){0,1}Source\\([^\\]+)";
@@ -487,6 +516,63 @@ namespace FUnreal
             if (fullPath.EndsWith(moduleName)) return true;
             if (fullPath.EndsWith($"{moduleName}.Build.cs")) return true;
             return false;
+        }
+
+        public bool IsPluginFolder(string fullPath)
+        {
+            string pluginName = PluginNameFromSourceCodePath(fullPath);
+            if (pluginName == null) return false;
+
+            string expectedPath = AbsPluginPath(pluginName);
+            return expectedPath == fullPath;
+        }
+
+        public bool IsPluginDescriptorFile(string fullPath)
+        {
+            return fullPath.EndsWith(".uplugin");
+        }
+
+        public bool IsModuleTargetFile(string fullPath)
+        {
+            return fullPath.EndsWith(".Build.cs");
+        }
+
+        public bool IsProjectDescriptorFile(string fullPath)
+        {
+            return _uprjFileAbsPath == fullPath;
+        }
+
+        public bool IsPluginModulePath(string fullPath)
+        {
+            //Basterebbe il match con la regex che calcola il module name
+
+            string pluginName = PluginNameFromSourceCodePath(fullPath);
+            string moduleName = ModuleNameFromSourceCodePath(fullPath);
+            
+            bool isTrue = pluginName != null && moduleName != null;
+            return isTrue;
+        }
+
+        public bool IsGameModulePath(string fullPath)
+        {
+            //Basterebbe il match con la regex che calcola il module name
+
+            string pluginName = PluginNameFromSourceCodePath(fullPath);
+            string moduleName = ModuleNameFromSourceCodePath(fullPath);
+
+            bool isTrue = pluginName == null && moduleName != null;
+            return isTrue;
+        }
+
+        public bool IsPrimaryGameModulePath(string fullPath)
+        {
+            string moduleName = ModuleNameFromSourceCodePath(fullPath);
+            if (moduleName == null) return false;
+
+            var project = GetUProject();
+            var module = project.GameModules[moduleName];
+            if (module == null) return false;
+            return module.IsPrimaryGame;
         }
 
         public async Task<bool> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
@@ -652,7 +738,7 @@ namespace FUnreal
             return true;
         }
 
-        public async Task<bool> AddModuleAsync(string templeName, string pluginName, string moduleName, FUnrealNotifier notifier)
+        public async Task<bool> AddPluginModuleAsync(string templeName, string pluginName, string moduleName, FUnrealNotifier notifier)
         {
             string context = "modules";
             string engine = _engineMajorVer;
@@ -750,9 +836,9 @@ namespace FUnreal
             string modulePath = module.FullPath;
 
             //1. Rename .Build.cs file and replace "class ModuleName" and constructor (only if is the same as moduleName)
-            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleTargetFile, module.TargetFilePath);
+            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleTargetFile, module.BuildFilePath);
             {
-                string moduleFilePath = module.TargetFilePath;
+                string moduleFilePath = module.BuildFilePath;
                 string csText = XFilesystem.ReadFile(moduleFilePath);
 
                 string classRegex = @"(?<=class\s+?)SEARCH(?=[\s\S]*?\{)";
@@ -795,10 +881,10 @@ namespace FUnreal
 
                 if (updateCppFiles) {
                     notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingCppFiles, cppPath);
-                    //#include "<ModuleName>.h"
-                    string inclName = $"\"{moduleName}.h\"";
+                    //#include "<ModuleName>.h" or "<ModuleName>Module.h"
+                    string inclRegex = $@"""{moduleName}.h""|""{moduleName}Module.h""";
                     string newIncName = $"\"{newModuleName}Module.h\"";
-                    cppText = cppText.Replace(inclName, newIncName);
+                    cppText = Regex.Replace(cppText, inclRegex, newIncName);
 
                     //F<ModuleName>Module
                     string className = $"F{moduleName}Module";
@@ -834,11 +920,52 @@ namespace FUnreal
                 }
             }
 
-            //4. Rename Module Folder
+            //4. Update MODULENAME_API macro in all .h files under Public/**
+            { 
+                string modulePublicPath = module.PublicPath;
+
+                var publicHeaderFiles = XFilesystem.FindFiles(modulePublicPath, true, "*.h");
+                string moduleApi = module.ApiMacro;
+                string newModuleApi = $"{newModuleName.ToUpper()}_API";
+                
+                foreach(var file in publicHeaderFiles)
+                {
+                    string text = XFilesystem.ReadFile(file);
+                    if (text.Contains(moduleApi))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingApiMacroInFile, file);
+                        text = text.Replace(moduleApi, newModuleApi);
+                        XFilesystem.WriteFile(file, text);
+                    }
+                }
+            }
+
+
+            //5 Rename Module Folder
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFolder, modulePath, newModuleName);
             XFilesystem.RenameDir(modulePath, newModuleName);
 
-            //5. Rename module in .uplugin
+            //6. Update module dependency in other module .Build.cs
+            {
+                foreach (var other in plugin.Modules)
+                {
+                    if (other == module) continue;
+
+                    string csFile = other.BuildFilePath;
+                    string buildText = XFilesystem.ReadFile(csFile);
+                    string dependency = $"\"{moduleName}\"";
+                    string newDependency = $"\"{newModuleName}\"";
+                    if (buildText.Contains(dependency))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
+                        buildText = buildText.Replace(dependency, newDependency);
+                        XFilesystem.WriteFile(csFile, buildText);
+                    }
+                }
+            }
+
+
+            //7. Rename module in .uplugin
             {
                 string upluginFilePath = plugin.DescriptorFilePath;
                 notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, upluginFilePath);
@@ -851,26 +978,7 @@ namespace FUnreal
                     upluginFile.Save();
                 }
             }            
-
-            //6. Update module dependency in other module .Build.cs
-            {
-                foreach (var other in plugin.Modules)
-                {
-                    if (other == module) continue;
-
-                    string csFile = other.TargetFilePath;
-                    string buildText = XFilesystem.ReadFile(csFile);
-                    string dependency = $"\"{moduleName}\"";
-                    string newDependency = $"\"{newModuleName}\"";
-                    if (buildText.Contains(dependency))
-                    {
-                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.TargetFilePath);
-                        buildText = buildText.Replace(dependency, newDependency);
-                        XFilesystem.WriteFile(csFile, buildText);
-                    }
-                }
-            }
-
+            
             notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
             XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
             if (ubtResult.IsError)
@@ -900,18 +1008,19 @@ namespace FUnreal
             //1. Remove dependency from other modules .Build.cs
             //notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency);
             string moduleDepend = $"\"{moduleName}\"";
-            string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
+            //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
+            string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
             regexDepend = regexDepend.Replace("SEARCH", moduleName);
             foreach(var other in plugin.Modules)
             {
                 if (other.Name == module.Name) continue;
 
-                string buildText = XFilesystem.ReadFile(other.TargetFilePath);
+                string buildText = XFilesystem.ReadFile(other.BuildFilePath);
                 if (buildText.Contains(moduleDepend))
                 {
-                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.TargetFilePath);
+                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
                     buildText = Regex.Replace(buildText, regexDepend, "");
-                    XFilesystem.WriteFile(other.TargetFilePath, buildText);
+                    XFilesystem.WriteFile(other.BuildFilePath, buildText);
                 }
             }
 
@@ -940,7 +1049,6 @@ namespace FUnreal
             return true;
         }
 
-        //public async Task<bool> AddSourceAsync(string templeName, string absBasePath, string className, int classType, FUnrealNotifier notifier)
         public async Task<bool> AddSourceAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
         {
             string context = "sources";
@@ -1030,7 +1138,7 @@ namespace FUnreal
                 }
                 else
                 {
-                    notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_SourcePathNotFound, sourcePath);
+                    notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_SourcePathNotFound, sourcePath);
                     return false;
                 }
             }
@@ -1070,6 +1178,471 @@ namespace FUnreal
             }
             return true;
         }
+
+        public async Task<bool> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
+        {
+            string context = "game_modules";
+            string engine = _engineMajorVer;
+            string name = templeName;
+
+            
+            if (ExistsGameModule(moduleName))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleAlreadyExists, moduleName);
+                return false;
+            }
+
+            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            if (tpl == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
+                return false;
+            }
+
+            string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
+            if (moduleNamePH == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
+                return false;
+            }
+
+            string metaType = tpl.GetMeta("type");
+            string metaPhase = tpl.GetMeta("phase");
+            string metaTarget = tpl.GetMeta("target");
+            if (metaType == null || metaPhase == null || metaTarget == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
+                return false;
+            }
+
+            string sourcePath = AbsProjectSourceFolderPath();
+
+            notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, sourcePath);
+            PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
+            strategy.AddFileExtension(".cpp", ".h", ".cs");
+            strategy.AddPlaceholder(moduleNamePH, moduleName);
+
+            await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
+
+            //Update Project [TARGET].Target.cs file
+            string targetName;
+            if (metaTarget == "Game")
+            {
+                targetName = "";
+            } 
+            else
+            {
+                targetName = metaTarget;
+            }
+            
+            string targetFileName = $"{ProjectName}{targetName}.Target.cs";
+            string targetFilePath = XFilesystem.PathCombine(AbsProjectSourceFolderPath(), targetFileName);
+
+            if (XFilesystem.FileExists(targetFilePath)) { 
+                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+                {
+                    string csText = XFilesystem.ReadFile(targetFilePath);
+
+                    //Capture Group1 for all module names sucs as: "Mod1", "Mod2" and replacing with "Mod1", "Mod2", "ModuleName"
+                    string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
+                    var match = Regex.Match(csText, regex); 
+                    if (match.Success && match.Groups.Count == 2)
+                    {
+                        string moduleList = match.Groups[1].Value;
+                        csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
+                        XFilesystem.WriteFile(targetFilePath, csText);
+                    }
+                }
+            } else
+            {
+                notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+            }
+
+            //Update .uproject
+            notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, _uprjFileAbsPath);
+            FUnrealUProjectFile uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
+            uprojectJson.Modules.Add(new FUnrealUProjectModuleJson()
+            {
+                 Name = moduleName,
+                 Type = metaType,
+                 LoadingPhase = metaPhase
+            });
+            uprojectJson.Save();
+           
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
+            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
+            if (ubtResult.IsError)
+            {
+                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> RenameGameModuleAsync(string moduleName, string newModuleName, bool updateCppFiles, FUnrealNotifier notifier)
+        {
+            if (!ExistsGameModule(moduleName))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
+                return false;
+            }
+            if (ExistsGameModule(newModuleName))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleAlreadyExists, moduleName);
+                return false;
+            }
+
+            var project = GetUProject();
+            var module = project.GameModules[moduleName];
+            bool IsPrimaryGameModule = module.IsPrimaryGame;
+
+
+            //string modulePath = AbsGameModulePath(moduleName);
+            //string moduleFilePath = XFilesystem.PathCombine(modulePath, $"{moduleName}.Build.cs");
+            string modulePath = module.FullPath;
+            string moduleFilePath = module.BuildFilePath;
+
+            //1. Rename .Build.cs file and replace "class ModuleName" and constructor (only if is the same as moduleName)
+            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleTargetFile, modulePath);
+            {
+                string csText = XFilesystem.ReadFile(moduleFilePath);
+
+                string classRegex = @"(?<=class\s+?)SEARCH(?=[\s\S]*?\{)";
+                classRegex = classRegex.Replace("SEARCH", moduleName);
+                csText = Regex.Replace(csText, classRegex, newModuleName);
+
+                string ctorRegex = @"(?<=public\s*?)SEARCH(?=\s*?\()";
+                ctorRegex = ctorRegex.Replace("SEARCH", moduleName);
+                csText = Regex.Replace(csText, ctorRegex, newModuleName);
+
+                XFilesystem.WriteFile(moduleFilePath, csText);
+                XFilesystem.RenameFileName(moduleFilePath, $"{newModuleName}.Build");
+            }
+
+
+            if (IsPrimaryGameModule)
+            {
+                bool moduleCppFound = true;
+
+                string cppPath = XFilesystem.FindFile(modulePath, true, $"{moduleName}.cpp");
+                if (cppPath == null)
+                {
+                    cppPath = XFilesystem.FindFile(modulePath, true, $"{moduleName}Module.cpp");
+                    if (cppPath == null)
+                    {
+                        moduleCppFound = false;
+                        notifier.Warn(XDialogLib.Ctx_UpdatingModule, XDialogLib.Warn_ModuleCppFileNotFound, $"**/{moduleName}.cpp", $"**/{moduleName}Module.cpp");
+                    }
+                }
+
+                if (moduleCppFound)
+                {
+                    string cppText = XFilesystem.ReadFile(cppPath);
+
+                    //IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, ModuleName, "ModuleName" );
+                    notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleNameInCpp, cppPath);
+                    string regexFirst = $@"(?<=IMPLEMENT_PRIMARY_GAME_MODULE\s*\([\s\S]+?,\s*){moduleName}(?=\s*?,[\s\S]+?\))";
+                    string regexSecon = $@"(?<=IMPLEMENT_PRIMARY_GAME_MODULE\s*\([\s\S]+?,[\s\S]+?,\s*""){moduleName}(?=""\s*?\))";
+
+                    cppText = Regex.Replace(cppText, regexFirst, newModuleName);
+                    cppText = Regex.Replace(cppText, regexSecon, newModuleName);
+
+                    if (updateCppFiles)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingCppFiles, cppPath);
+                        //#include "<ModuleName>.h" or "<ModuleName>Module.h"
+                        string inclRegex = $@"""{moduleName}.h""|""{moduleName}Module.h""";
+                        string newIncName = $"\"{newModuleName}Module.h\"";
+                        cppText = Regex.Replace(cppText, inclRegex, newIncName);
+
+                        // No class for Primary Game Module (when using the default one)
+                    }
+
+                    XFilesystem.WriteFile(cppPath, cppText);
+
+                    if (updateCppFiles) XFilesystem.RenameFileName(cppPath, $"{newModuleName}Module");
+                    //TODO: Add control if file exists before renaming?!
+                }
+
+                if (moduleCppFound && updateCppFiles)
+                {
+                    string cppFileName = XFilesystem.GetFilenameNoExt(cppPath);
+                    string hppPath = XFilesystem.FindFile(modulePath, true, $"{cppFileName}.h");
+                    if (hppPath != null)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingCppFiles, hppPath);
+                        // No class for Primary Game Module (when using the default one)
+                        XFilesystem.RenameFileName(hppPath, $"{newModuleName}Module");
+                        //TODO: Add control if file exists before renaming?!
+                    }
+                }
+
+                // Update MODULENAME_API macro in all .h files under Public/** or /
+                {
+                    string modulePublicPath = module.PublicPath;
+                    bool recurse = true;
+                    if (!XFilesystem.DirectoryExists(modulePublicPath))
+                    {
+                        modulePublicPath = module.FullPath;
+                        recurse = false;
+                    }
+
+                    var publicHeaderFiles = XFilesystem.FindFiles(modulePublicPath, recurse, "*.h");
+                    string moduleApi = module.ApiMacro;
+                    string newModuleApi = $"{newModuleName.ToUpper()}_API";
+
+                    foreach (var file in publicHeaderFiles)
+                    {
+                        string text = XFilesystem.ReadFile(file);
+                        if (text.Contains(moduleApi))
+                        {
+                            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingApiMacroInFile, file);
+                            text = text.Replace(moduleApi, newModuleApi);
+                            XFilesystem.WriteFile(file, text);
+                        }
+                    }
+                }
+            } 
+            else //GAME_MODULE 
+            {  
+
+
+                //2. Rename .cpp and class (if still have same moduleName is configured there)
+                //Cerco filename ModuleNameModule.cpp o ModuleName.cpp
+                //NOTA: il file .cpp potrebbe essere stato spostato dentro altra cartella...per ora lo cerco solo sotto Private/
+            
+                bool moduleCppFound = true;
+                string cppPath = XFilesystem.PathCombine(modulePath, $"Private/{moduleName}.cpp");
+                if (!XFilesystem.FileExists(cppPath))
+                {
+                    cppPath = XFilesystem.PathCombine(modulePath, $"Private/{moduleName}Module.cpp");
+                    if (!XFilesystem.FileExists(cppPath))
+                    {
+                        moduleCppFound = false;
+                        notifier.Warn(XDialogLib.Ctx_UpdatingModule, XDialogLib.Warn_ModuleCppFileNotFound, $"Private/{moduleName}.cpp", $"Private/{moduleName}Module.cpp");
+                    }
+                }
+
+                if (moduleCppFound)
+                {
+                    string cppText = XFilesystem.ReadFile(cppPath);
+
+                    //IMPLEMENT_MODULE(F<ModuleName>Module, <ModuleName>)  or IMPLEMENT_GAME_MODULE
+                    notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleNameInCpp, cppPath);
+                    //string implModRegex = @"(?<=IMPLEMENT_MODULE\s*\([\s\S]+?,\s*)SEARCH(?=\s*?\))";
+                    string implModRegex = @"(?<=(?:IMPLEMENT_MODULE|IMPLEMENT_GAME_MODULE)\s*\([\s\S]+?,\s*)SEARCH(?=\s*?\))";
+                    implModRegex = implModRegex.Replace("SEARCH", moduleName);
+                    cppText = Regex.Replace(cppText, implModRegex, newModuleName);
+
+                    if (updateCppFiles)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingCppFiles, cppPath);
+                        //#include "<ModuleName>.h" or "<ModuleName>Module.h"
+                        string inclRegex = $@"""{moduleName}.h""|""{moduleName}Module.h""";
+                        string newIncName = $"\"{newModuleName}Module.h\"";
+                        cppText = Regex.Replace(cppText, inclRegex, newIncName);
+
+                        //F<ModuleName>Module
+                        string className = $"F{moduleName}Module";
+                        string newClassName = $"F{newModuleName}Module";
+                        cppText = cppText.Replace(className, newClassName);
+                    }
+
+                    XFilesystem.WriteFile(cppPath, cppText);
+
+                    if (updateCppFiles) XFilesystem.RenameFileName(cppPath, $"{newModuleName}Module");
+                    //TODO: Add control if file exists before renaming?!
+                }
+
+                //3. Rename .h and class (if still have same moduleName is configured there)
+                if (moduleCppFound && updateCppFiles)
+                {
+                    string cppFileName = XFilesystem.GetFilenameNoExt(cppPath);
+                    string hppPath = XFilesystem.PathCombine(modulePath, $"Public/{cppFileName}.h");
+                    if (XFilesystem.FileExists(hppPath))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingCppFiles, hppPath);
+                        string hppText = XFilesystem.ReadFile(hppPath);
+
+                        //F<ModuleName>Module
+                        string className = $"F{moduleName}Module";
+                        string newClassName = $"F{newModuleName}Module";
+                        hppText = hppText.Replace(className, newClassName);
+
+                        XFilesystem.WriteFile(hppPath, hppText);
+                        XFilesystem.RenameFileName(hppPath, $"{newModuleName}Module");
+                        //TODO: Add control if file exists before renaming?!
+                    }
+                }
+
+                //4. Update MODULENAME_API macro in all .h files under Public/**
+                {
+                    string modulePublicPath = module.PublicPath;
+
+                    var publicHeaderFiles = XFilesystem.FindFiles(modulePublicPath, true, "*.h");
+                    string moduleApi = module.ApiMacro;
+                    string newModuleApi = $"{newModuleName.ToUpper()}_API";
+
+                    foreach (var file in publicHeaderFiles)
+                    {
+                        string text = XFilesystem.ReadFile(file);
+                        if (text.Contains(moduleApi))
+                        {
+                            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingApiMacroInFile, file);
+                            text = text.Replace(moduleApi, newModuleApi);
+                            XFilesystem.WriteFile(file, text);
+                        }
+                    }
+                }
+            }
+
+            //4. Rename Module Folder
+            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFolder, modulePath, newModuleName);
+            XFilesystem.RenameDir(modulePath, newModuleName);
+
+
+            //NOTA: Far diventare il 6 => 5 cosi da allineare gli step con il RenamePluginModule
+            //5. Update module dependency in other module .Build.cs
+            {
+                foreach (var other in project.GameModules)
+                {
+                    if (other == module) continue;
+
+                    string csFile = other.BuildFilePath;
+                    string buildText = XFilesystem.ReadFile(csFile);
+                    string dependency = $"\"{moduleName}\"";
+                    string newDependency = $"\"{newModuleName}\"";
+                    if (buildText.Contains(dependency))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
+                        buildText = buildText.Replace(dependency, newDependency);
+                        XFilesystem.WriteFile(csFile, buildText);
+                    }
+                }
+            }
+
+            //6. Rename module in all project [TARGET].Target.cs 
+            {
+                foreach (var csFile in project.TargetFiles)
+                {
+                    string buildText = XFilesystem.ReadFile(csFile);
+                    string dependency = $"\"{moduleName}\"";
+                    string newDependency = $"\"{newModuleName}\"";
+                    if (buildText.Contains(dependency))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
+                        buildText = buildText.Replace(dependency, newDependency);
+                        XFilesystem.WriteFile(csFile, buildText);
+                    }
+                }
+            }
+
+            //7. Rename module in .uproject
+            {
+                string descrFilePath = project.DescriptorFilePath;
+                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, descrFilePath);
+
+                var prjFile = new FUnrealUProjectFile(descrFilePath);
+                var moduleJson = prjFile.Modules[moduleName];
+                if (moduleJson)
+                {
+                    moduleJson.Name = newModuleName;
+                    prjFile.Save();
+                }
+            }
+
+            //8. Regen VS Project
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
+            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
+            if (ubtResult.IsError)
+            {
+                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> DeleteGameModuleAsync(string moduleName, FUnrealNotifier notifier)
+        {
+            var project = GetUProject();
+            var module = project.GameModules[moduleName];
+            if (module == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
+                return false;
+            }
+            //TODO: Should stop in case moduleName is Primary Module.
+
+
+            //1. Remove dependency from other modules .Build.cs
+            { 
+                string moduleDepend = $"\"{moduleName}\"";
+                //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
+                string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
+                regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
+                foreach (var other in project.GameModules)
+                {
+                    if (other.Name == module.Name) continue;
+
+                    string buildText = XFilesystem.ReadFile(other.BuildFilePath);
+                    if (buildText.Contains(moduleDepend))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
+                        buildText = Regex.Replace(buildText, regexDepend, "");
+                        XFilesystem.WriteFile(other.BuildFilePath, buildText);
+                    }
+                }
+            }
+
+            //2. Delete module path
+            { 
+                notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
+                XFilesystem.DeleteDir(module.FullPath);
+            }
+
+            //3. Update .uproject removing the module
+            { 
+                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, project.DescriptorFilePath);
+                var descrFile = new FUnrealUProjectFile(project.DescriptorFilePath);
+                var moduleJson = descrFile.Modules[moduleName];
+                if (moduleJson)
+                {
+                    moduleJson.Remove();
+                    descrFile.Save();
+                }
+            }
+
+            //4. Delete module in all project [TARGET].Target.cs 
+            {
+                string moduleDepend = $"\"{moduleName}\"";
+                string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH"""; //NOTE: Regex repeated in different parts
+                regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
+                foreach (var csFile in project.TargetFiles)
+                {
+                    string buildText = XFilesystem.ReadFile(csFile);
+                    if (buildText.Contains(moduleDepend))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
+                        buildText = Regex.Replace(buildText, regexDepend, "");
+                        XFilesystem.WriteFile(csFile, buildText);
+                    }
+                }
+            }
+
+            //5. Regen VS Project
+            { 
+                notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
+                XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
+                if (ubtResult.IsError)
+                {
+                    notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
     }
 
     public class FUnrealTemplates

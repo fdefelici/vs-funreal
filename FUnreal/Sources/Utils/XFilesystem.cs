@@ -269,6 +269,30 @@ namespace FUnreal
             return result;
         }
 
+        public static string FindFile(string path, bool recursive, string searchPattern)
+        {
+            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
+            if (filePaths.Any()) return filePaths.ElementAt(0);
+            return null;
+        }
+
+        public static string FindFile(string path, bool recursive, string searchPattern, Func<string, bool> filter)
+        {
+            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
+
+            foreach (string each in filePaths)
+            {
+                if (filter(each))
+                {
+                    return each;
+                }
+            }
+            return null;
+        }
+
+
         public static List<string> FindDirectories(string fullPath, bool recursive = false)
         {
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;

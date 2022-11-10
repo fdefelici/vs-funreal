@@ -8,24 +8,16 @@ namespace FUnreal
     public class AddSourceClassController : IXActionController
     {
         private AddSourceClassDialog _dialog;
-        private FUnrealService _unrealService;
         private List<FUnrealTemplate> _templates;
         private FUnrealNotifier _notifier;
-        private FUnrealVS _unrealVs;
         private string _absPathSelected;
         private FUnrealSourceType _absPathSelectedType;
 
-        public AddSourceClassController(FUnrealService unrealService, FUnrealVS unrealVS)
+        public AddSourceClassController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
             _templates = _unrealService.SourceTemplates();
             _notifier = new FUnrealNotifier();
-            _unrealVs = unrealVS;
-        }
-
-        public override bool ShouldBeVisible()
-        {
-            return _unrealVs.IsSingleSelectionAsync().GetAwaiter().GetResult();
         }
 
         public override async Task DoActionAsync()
@@ -43,7 +35,7 @@ namespace FUnreal
                 return;
             }
 
-            var item = await _unrealVs.GetSelectedItemAsync();
+            var item = await _unrealVS.GetSelectedItemAsync();
             _absPathSelected = item.FullPath;
             _absPathSelectedType = _unrealService.TypeForSourcePath(_absPathSelected);
             if (_absPathSelectedType == FUnrealSourceType.INVALID)

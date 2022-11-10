@@ -7,17 +7,14 @@ namespace FUnreal
 {
     public class AddModuleController : IXActionController
     {
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVs;
         private List<FUnrealTemplate> _templates;
         private FUnrealNotifier _notifier;
         private string _currentPluginName;
         private AddModuleDialog _dialog;
 
-        public AddModuleController(FUnrealService unrealService, FUnrealVS unrealVS)
+        public AddModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
-            _unrealVs = unrealVS;
             _templates = _unrealService.ModuleTemplates();
             _notifier = new FUnrealNotifier();
         }
@@ -36,12 +33,11 @@ namespace FUnreal
                 return;
             }
 
-            var pluginVs = await _unrealVs.GetSelectedPluginAsync();
-            _currentPluginName = pluginVs.PluginName;
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
+            _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
             _dialog.pluginNameTbl.Text = _currentPluginName;
             _dialog.pluginPathTbl.Text = _unrealService.RelPluginPath(_currentPluginName);
-
 
             //NOTE: doing this as last operation because it will fire templatechange event
             _dialog.pluginTemplCbx.ItemsSource = _templates;
@@ -59,7 +55,7 @@ namespace FUnreal
             string moduleName = _dialog.moduleNameTbx.Text;
             string templeName = _templates[_dialog.pluginTemplCbx.SelectedIndex].Name;
 
-            bool success = await _unrealService.AddModuleAsync(templeName, pluginName, moduleName, _notifier);
+            bool success = await _unrealService.AddPluginModuleAsync(templeName, pluginName, moduleName, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
@@ -98,7 +94,7 @@ namespace FUnreal
             else if (_unrealService.ExistsPluginModule(plugName, modName))
             {
                 _dialog.addButton.IsEnabled = false;
-                _dialog.ShowError(AddPluginDialog.ErrorMsg_PluginAlreadyExists);
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleNotExists);
             }
             else
             {

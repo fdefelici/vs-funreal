@@ -7,6 +7,7 @@ using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace FUnreal
 {
@@ -33,29 +34,29 @@ namespace FUnreal
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            //System.Collections.Generic.IEnumerable<object> cmds = await this.RegisterCommandsAsync();
-            //Debug.Print(">>>>>>>>> FUNREAL cmds: {0}", cmds.Count());
+           //ystem.Collections.Generic.IEnumerable<object> cmds = await this.RegisterCommandsAsync();
+           // Debug.Print(">>>>>>>>> FUNREAL cmds: {0}", cmds.Count());
             await this.RegisterCommandsAsync();
 
             FUnrealService unrealService = FUnrealService.SetUp_OnUIThread();
             FUnrealVS unrealVS = new FUnrealVS();
+            ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
 
-            AddPluginCmd.Instance.Controller    = new AddPluginController(unrealService, unrealVS);
-            DeletePluginCmd.Instance.Controller = new DeletePluginController(unrealService, unrealVS);
-            RenamePluginCmd.Instance.Controller = new RenamePluginController(unrealService, unrealVS);
-            AddModuleCmd.Instance.Controller    = new AddModuleController(unrealService, unrealVS);
-            RenameModuleCmd.Instance.Controller = new RenameModuleController(unrealService, unrealVS);
-            DeleteModuleCmd.Instance.Controller = new DeleteModuleController(unrealService, unrealVS);
+            ToolboxMenu.Instance.Controller = new ToolboxMenuController(unrealService, unrealVS, ctxMenuMgr);
 
-            FolderMenu.Instance.Controller      = new FolderMenuController(unrealService, unrealVS);
-            AddSourceClassCmd.Instance.Controller      = new AddSourceClassController(unrealService, unrealVS);
-            DeleteSourceFolderCmd.Instance.Controller = new DeleteSourceController(unrealService, unrealVS);
+            AddPluginCmd.Instance.Controller    = new AddPluginController(unrealService, unrealVS, ctxMenuMgr);
+            DeleteSourceCmd.Instance.Controller = new DeleteSourceController(unrealService, unrealVS, ctxMenuMgr);
+            AddModuleCmd.Instance.Controller    = new AddModuleController(unrealService, unrealVS, ctxMenuMgr);
+            DeletePluginCmd.Instance.Controller = new DeletePluginController(unrealService, unrealVS, ctxMenuMgr);
+            RenamePluginCmd.Instance.Controller = new RenamePluginController(unrealService, unrealVS, ctxMenuMgr);
+            RenameModuleCmd.Instance.Controller = new RenameModuleController(unrealService, unrealVS, ctxMenuMgr);
+            DeleteModuleCmd.Instance.Controller = new DeleteModuleController(unrealService, unrealVS, ctxMenuMgr);
+            AddSourceClassCmd.Instance.Controller  = new AddSourceClassController(unrealService, unrealVS, ctxMenuMgr);
+            
+            AddGameModuleCmd.Instance.Controller = new AddGameModuleController(unrealService, unrealVS, ctxMenuMgr);
+            RenameGameModuleCmd.Instance.Controller = new RenameGameModuleController(unrealService, unrealVS, ctxMenuMgr);
+            DeleteGameModuleCmd.Instance.Controller = new DeleteGameModuleController(unrealService, unrealVS, ctxMenuMgr);
 
-            SourceFileMenu.Instance.Controller  = new SourceFileMenuController(unrealService, unrealVS);
-            DeleteSourceFileCmd.Instance.Controller = new DeleteSourceController(unrealService, unrealVS);
-
-
-            PluginModuleMenu.Instance.Controller = new PluginModuleMenuController(unrealService, unrealVS);
 
             Debug.Print(">>>>>>>>> FUNREAL LOADED!");
         }

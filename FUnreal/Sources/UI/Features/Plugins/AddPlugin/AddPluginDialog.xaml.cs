@@ -8,10 +8,6 @@ namespace FUnreal
 {
     public partial class AddPluginDialog : DialogWindow
     {
-        public const string ErrorMsg_PluginAlreadyExists = "A plugin already exists with thie name!";
-        public const string ErrorMsg_SomthingWentWrong = "Ops! Something went wrong...";
-        public const string ErrorMsg_ModuleAlreadtExists = "A module already exists with thie name!";
-
         public Func<Task> OnConfirmAsync { get; set; }
         public Func<Task> OnTemplateChangeAsync { get; set; }
         public Func<Task> OnPluginNameChangeAsync { get; set; }

@@ -10,10 +10,6 @@ namespace FUnreal
     [Command(VSCTSymbols.RenamePluginCmd)]
     public class RenamePluginCmd : XActionCmd<RenamePluginCmd>
     {
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            Debug.Print(">>>> Rename Plugin Called");
-            await Controller.DoActionAsync();
-        }
+
     }
 }

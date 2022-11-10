@@ -7,33 +7,19 @@ namespace FUnreal
     public class RenameModuleController : IXActionController
     {
         private RenameModuleDialog _dialog;
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVs;
         private FUnrealNotifier _notifier;
         private string _moduleOriginalName;
         private string _pluginName;
 
-        public RenameModuleController(FUnrealService unrealService, FUnrealVS unrealVS)
+        public RenameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
-            _unrealVs = unrealVS;
             _notifier = new FUnrealNotifier();
-        }
-
-        public override bool ShouldBeVisible()
-        {
-            return _unrealVs.IsSingleSelectionAsync().GetAwaiter().GetResult();
         }
 
         public override async Task DoActionAsync()
         {
-            /*
-            var moduleVs = await _unrealVs.GetSelectedPluginModuleAsync();
-
-            _pluginName = moduleVs.PluginName;
-            _moduleOriginalName = moduleVs.ModuleName;
-            */
-            var itemVs = await _unrealVs.GetSelectedItemAsync();
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
             _pluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
             _moduleOriginalName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
 
@@ -74,7 +60,7 @@ namespace FUnreal
             if (AlreadExists)
             {
                 _dialog.confirmBtn.IsEnabled = false;
-                _dialog.ShowError(AddPluginDialog.ErrorMsg_PluginAlreadyExists);
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists);
             }
             else if (!IsValid)
             {
@@ -96,7 +82,7 @@ namespace FUnreal
             string moduleNewName = _dialog.moduleNewNameTbx.Text;
             bool updateCppFiles = (bool)_dialog.renameFilesCbx.IsChecked;
 
-            bool success = await _unrealService.RenamePluginModuleAsync(_pluginName, _moduleOriginalName, moduleNewName, updateCppFiles, _notifier); //.ConfigureAwait(false);
+            bool success = await _unrealService.RenameGameModuleAsync(_moduleOriginalName, moduleNewName, updateCppFiles, _notifier); //.ConfigureAwait(false);
             if (!success)
             {
                 _dialog.ShowActionInError();

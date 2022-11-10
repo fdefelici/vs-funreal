@@ -9,6 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGameOneMod.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGameOneModEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGame.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\MyModRenamed.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGameOneMod.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGameOneModEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\MyMod.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGameEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamed.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Module01Ren.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\MyMod.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneMod.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneModEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGameEditor.Target.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
@@ -22,8 +46,42 @@
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\UPrjGameOneMod.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamedModule.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamedModule.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\UPrjGame.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\Private\MyModRenamedModule.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\Public\MyModRenamedModule.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyMod.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyMod.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\UPrjGame.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\UPrjGameOneMod.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Private\Actor01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Private\Module01RenModule.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Public\Actor01.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Public\Module01RenModule.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\UPrjOnePlugMod.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjEmpty\UPrjEmpty.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Private\MyMod.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Public\MyMod.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\UPrjGameOneMod.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\UPrjGame.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Actor01.h" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Module01.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Module01.h" />
@@ -64,6 +122,180 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGameOneMod.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGameOneModEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\UPrjGameOneMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGame.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamed.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamedModule.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\Source\UPrjGameRenamed\UPrjGameRenamedModule.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenamePrimaryModule\UPrjGame.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\MyModRenamed.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\Private\MyModRenamedModule.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\Public\MyModRenamedModule.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGameOneMod.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGameOneModEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\UPrjGameOneMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\MyMod.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyMod.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyMod.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGameEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\UPrjGame.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Module01Ren.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Private\Actor01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Private\Module01RenModule.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Public\Actor01.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Public\Module01RenModule.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\UPrjOnePlugMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\MyMod.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Private\MyMod.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Public\MyMod.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneMod.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneModEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGame\UPrjGame.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\UPrjGameOneMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGameEditor.Target.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\UPrjGame.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Actor01.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs">

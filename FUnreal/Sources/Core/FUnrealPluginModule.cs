@@ -9,14 +9,19 @@
             this.plugin = plugin;
             Name = moduleName;
             FullPath = XFilesystem.PathCombine(plugin.SourcePath, moduleName);
-            TargetFilePath = XFilesystem.PathCombine(FullPath, $"{moduleName}.Build.cs");
+            BuildFilePath = XFilesystem.PathCombine(FullPath, $"{moduleName}.Build.cs");
+            PublicPath = XFilesystem.PathCombine(FullPath, "Public");
+            ApiMacro = $"{moduleName.ToUpper()}_API";
         }
 
         public string Name { get; }
         public string FullPath { get; }
-        public string TargetFilePath { get; }
+        public string BuildFilePath { get; }
 
-        public bool Exists { get { return XFilesystem.FileExists(TargetFilePath); } }
+        public bool Exists { get { return XFilesystem.FileExists(BuildFilePath); } }
+
+        public string PublicPath { get; internal set; }
+        public string ApiMacro { get; internal set; }
 
         public override bool Equals(object obj)
         {

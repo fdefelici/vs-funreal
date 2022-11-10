@@ -11,6 +11,8 @@ namespace FUnreal
     {
         public FUnrealVS()
         {
+
+            /*
             VS.Events.ProjectItemsEvents.AfterAddProjectItems += (args) =>
             {
                 foreach(var item in args)
@@ -40,9 +42,10 @@ namespace FUnreal
                     Debug.WriteLine(item.RemovedItemName);
                 }
             };
-
+            */
         }
 
+       
         public async Task<FUnrealVSItem> GetSelectedItemAsync()
         {
             SolutionItem moduleItem = await VS.Solutions.GetActiveItemAsync();
@@ -55,33 +58,6 @@ namespace FUnreal
             return items.Count() == 1;
         }
 
-        /*
-        public async Task<FUnrealVSPluginModule> GetSelectedPluginModuleAsync()
-        {
-            SolutionItem moduleItem = await VS.Solutions.GetActiveItemAsync();
-            string moduleFilePath = moduleItem.FullPath; // module/path/ModuleName.Build.cs
-            string modulePath = XFilesystem.PathParent(moduleFilePath);
-            string moduleName = XFilesystem.GetFilenameNoExt(moduleFilePath, true);
-
-            string pluginPath = XFilesystem.PathParent(modulePath, 2);
-            string pluginName = XFilesystem.GetLastPathToken(pluginPath);
-
-            FUnrealVSPluginModule result = new FUnrealVSPluginModule();
-            result.PluginName = pluginName;
-            result.ModuleName = moduleName;
-            return result;
-        }
-        */
-
-        public async Task<FUnrealVSPlugin> GetSelectedPluginAsync()
-        {
-            SolutionItem solutionItem = await VS.Solutions.GetActiveItemAsync();
-            string pluginName = XFilesystem.GetFilenameNoExt(solutionItem.Text);
-
-            FUnrealVSPlugin result = new FUnrealVSPlugin();
-            result.PluginName = pluginName;
-            return result;
-        }
 
         public async Task<List<FUnrealVSItem>> GetSelectedItemsAsync()
         {
@@ -93,6 +69,64 @@ namespace FUnreal
                 result.Add(new FUnrealVSItem(item));
             }
             return result;
+        }
+
+        private async Task<bool> AreAllSelectedItemsOfSameTypeAsync(SolutionItemType type)
+        {
+            var items = await VS.Solutions.GetActiveItemsAsync();
+
+            foreach (var item in items)
+            {
+                if (item.Type != type) return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> IsSelectCtxProjectNodeAsync()
+        {
+            return await AreAllSelectedItemsOfSameTypeAsync(SolutionItemType.Project);
+        }
+
+        public async Task<bool> IsSelectCtxItemNodeAsync()
+        {
+            return await AreAllSelectedItemsOfSameTypeAsync(SolutionItemType.PhysicalFile);
+        }
+
+        public async Task<bool> IsSelectCtxFolderNodeAsync()
+        {
+            return await AreAllSelectedItemsOfSameTypeAsync(SolutionItemType.VirtualFolder);
+        }
+
+        public async Task<bool> IsSelectCtxMiscNodeAsync()
+        {
+            var items = await VS.Solutions.GetActiveItemsAsync();
+            if (items.Count() < 1) return false;
+
+            bool atLeastOneFolder = false;
+            bool atLeastOneFile = false;
+            bool otherItemType = false;
+            foreach (var item in items)
+            {
+                if (item.Type == SolutionItemType.PhysicalFile)
+                {
+                    atLeastOneFile = true;
+                } 
+                else if (item.Type == SolutionItemType.VirtualFolder)
+                {
+                    atLeastOneFolder = true;
+                }
+                else
+                {
+                    otherItemType = true;
+                }
+            }
+            return atLeastOneFile && atLeastOneFolder && !otherItemType;
+        }
+
+        public async Task<bool> IsMultiSelectionAsync()
+        {
+            var items = await VS.Solutions.GetActiveItemsAsync();
+            return items.Count() > 1;
         }
     }
 
@@ -126,17 +160,6 @@ namespace FUnreal
         - Text              = "DajeMod"
         - Type              = VirtualFolder
      */
-
-    public struct FUnrealVSPlugin
-    {
-        public string PluginName { get; internal set; }
-    }
-
-    public struct FUnrealVSPluginModule
-    {
-        public string PluginName { get; set; }
-        public string ModuleName { get; set; }
-    }
 
     public struct FUnrealVSItem
     {
@@ -176,3 +199,59 @@ namespace FUnreal
         }
     }
 }
+
+/*
+     protected override void BeforeQueryStatus(EventArgs e)
+     {
+         ThreadHelper.ThrowIfNotOnUIThread();
+
+         this.Command.Visible = false;
+
+         DTE2 dTE2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
+         Debug.Print("Selected Count: {0}", dTE2.SelectedItems.Count);
+         if (dTE2.SelectedItems.Count != 1) return;
+
+         SelectedItem item = dTE2.SelectedItems.Item(1);
+         if (item.Project != null) return;
+
+         string fileName = item.Name;
+         Debug.Print("Selected: {0}", fileName);
+
+         if (!XFilesystem.HasExtension(fileName, ".Build.cs")) return;
+
+         this.Command.Visible = true;
+     }
+     */
+
+
+/*
+       protected override void BeforeQueryStatus(EventArgs e)
+       {
+           ThreadHelper.ThrowIfNotOnUIThread();
+
+
+           var guidSet  = VsMenus.guidCciSet;
+
+           var guidProj = VsMenus.IDM_VS_CTXT_PROJNODE;
+
+
+           Debug.WriteLine(e);
+
+           this.Command.Visible = false;
+
+           DTE2 dTE2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
+
+           var attrs = dTE2.ContextAttributes;
+
+
+           Debug.Print("Selected Count: {0}", dTE2.SelectedItems.Count);
+           if (dTE2.SelectedItems.Count != 1) return;
+
+           SelectedItem item = dTE2.SelectedItems.Item(1);
+
+           Debug.Print("Selected: {0}", item.Name);
+
+           this.Command.Visible = true;
+
+       }
+       */

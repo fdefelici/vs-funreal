@@ -6,34 +6,17 @@ namespace FUnreal
 {
     public class DeleteModuleController : IXActionController
     {
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVS;
         private FUnrealNotifier _notifier;
         private ConfirmDialog _dialog;
-        public DeleteModuleController(FUnrealService unrealService, FUnrealVS unrealVS)
-        {
-            _unrealService = unrealService;
-            _unrealVS = unrealVS;
-            _notifier = new FUnrealNotifier();
-            _notifier.OnSendMessage = (type, shortMsg, detailedMsg) =>
-            {
-                _dialog.SetProgressMessage(type, shortMsg, detailedMsg);
-            };
-        }
 
-        public override bool ShouldBeVisible()
+        public DeleteModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            return _unrealVS.IsSingleSelectionAsync().GetAwaiter().GetResult();
+            _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
-            /*
-            FUnrealVSPluginModule fmodule = await _unrealVS.GetSelectedPluginModuleAsync();
-            string pluginName = fmodule.PluginName;
-            string moduleName = fmodule.ModuleName;
-            */
-
             var itemVs = await _unrealVS.GetSelectedItemAsync();
             string pluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
             string moduleName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
@@ -46,6 +29,7 @@ namespace FUnreal
             }
 
             _dialog = new ConfirmDialog("Selected module will be deleted permanently:", $"{pluginName}::{moduleName}");
+            _notifier.OnSendMessage = _dialog.SetProgressMessage;
             _dialog.OnConfirm = async () =>
             {
                 _dialog.ShowActionInProgress();

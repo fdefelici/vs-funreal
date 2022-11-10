@@ -10,11 +10,6 @@ namespace FUnreal
     [Command(VSCTSymbols.DeleteModuleCmd)]
     public class DeleteModuleCmd : XActionCmd<DeleteModuleCmd>
     {
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            Debug.Print(">>>> Delete Module Called");
 
-            await Controller.DoActionAsync();
-        }
     }
 }

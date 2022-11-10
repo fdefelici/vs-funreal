@@ -10,12 +10,6 @@ namespace FUnreal
     [Command(VSCTSymbols.DeletePluginCmd)]
     public class DeletePluginCmd : XActionCmd<DeletePluginCmd>
     {
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            //await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            Debug.Print(">>>> Remove Plugin Called");
 
-            await Controller.DoActionAsync();
-        }
     }
 }

@@ -46,11 +46,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Sources\UI\Features\PluginModuleMenuController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceFileCmd.cs" />
-    <Compile Include="Sources\UI\Features\Sources\SourceFileMenu.cs" />
-    <Compile Include="Sources\UI\Features\Sources\SourceFileMenuController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\FolderMenuController.cs" />
+    <Compile Include="Sources\UI\Common\IXCommand.cs" />
+    <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleController.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml.cs">
+      <DependentUpon>AddGameModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\GameModules\DeleteModule\DeleteGameModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\DeleteModule\DeleteGameModuleController.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleCmd.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleController.cs" />
+    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
+      <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\UI\Features\ToolboxMenuController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceCmd.cs" />
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
     <Compile Include="Sources\Core\FUnrealNotifier.cs" />
     <Compile Include="Sources\Core\FUnrealPlugin.cs" />
@@ -58,13 +69,11 @@
     <Compile Include="Sources\Core\FUnrealPluginModules.cs" />
     <Compile Include="Sources\Core\FUnrealUPluginFile.cs" />
     <Compile Include="Sources\Core\FUnrealUProjectFile.cs" />
-    <Compile Include="Sources\UI\Features\Sources\FolderMenu.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassCmd.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceFolderCmd.cs" />
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
     <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
@@ -79,7 +88,6 @@
     <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleCmd.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
     <Compile Include="Sources\Core\FUnrealVS.cs" />
-    <Compile Include="Sources\UI\Features\PluginModuleMenu.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleCmd.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleController.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
@@ -103,18 +111,17 @@
     </Compile>
     <Compile Include="Sources\UI\Common\ImageSourceFromIconExt.cs" />
     <Compile Include="Sources\Utils\PlaceHolderReplaceVisitor.cs" />
-    <Compile Include="Sources\UI\Features\PluginMenu.cs" />
     <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
     <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginCmd.cs" />
     <Compile Include="Sources\Utils\XJson.cs" />
     <Compile Include="Sources\Utils\XProcess.cs" />
     <Compile Include="Sources\Utils\XFilesystem.cs" />
     <Compile Include="Sources\UI\Common\XActionCmd.cs" />
-    <Compile Include="Sources\UI\Common\XMenuCmd.cs" />
     <Compile Include="VSCTSymbols.cs" />
-    <Compile Include="Sources\UI\Features\ProjectMenu.cs" />
+    <Compile Include="Sources\UI\Features\ToolboxMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
+    <None Include="FUnrealPackage.vsct_OLD" />
     <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\%40{TPL_MOD_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -177,6 +184,14 @@
     <Page Include="Sources\UI\Common\Controls\FProgressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

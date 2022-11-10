@@ -8,10 +8,6 @@ namespace FUnreal
     [Command(VSCTSymbols.AddModuleCmd)]
     public class AddModuleCmd : XActionCmd<AddModuleCmd>
     {
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            Debug.Print(">>>> Add Module Called");
-            await Controller.DoActionAsync();
-        }
+
     }
 }

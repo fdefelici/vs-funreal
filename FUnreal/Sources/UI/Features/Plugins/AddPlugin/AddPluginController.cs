@@ -1,4 +1,5 @@
 ﻿using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.CommandBars;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,17 +9,23 @@ namespace FUnreal
     public class AddPluginController : IXActionController
     {
         private AddPluginDialog _dialog;
-        private FUnrealService _unrealService;
         private string _lastPlugName;
         private List<FUnrealTemplate> _templates;
         private FUnrealNotifier _notifier;
         private bool _templateHasModuleName;
 
-        public AddPluginController(FUnrealService unrealService, FUnrealVS unrealVS)
+        public AddPluginController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
             _templates = _unrealService.PluginTemplates();
             _notifier = new FUnrealNotifier();
+        }
+
+        public override async Task<bool> ShouldBeVisibleAsync()
+        {
+            bool active = await _ctxMenuMgr.IsActiveAsync(VSCTSymbols.AddPluginCmd);
+
+            return active;
         }
 
         public override async Task DoActionAsync()
@@ -86,7 +93,7 @@ namespace FUnreal
                 if (_unrealService.ExistsPlugin(plugName))
                 {
                     _dialog.addButton.IsEnabled = false;
-                    _dialog.ShowError(AddPluginDialog.ErrorMsg_PluginAlreadyExists);
+                    _dialog.ShowError(XDialogLib.ErrorMsg_PluginAlreadyExists);
                 }
                 else
                 {

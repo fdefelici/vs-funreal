@@ -10,11 +10,6 @@ namespace FUnreal
     [Command(VSCTSymbols.AddSourceClassCmd)]
     public class AddSourceClassCmd : XActionCmd<AddSourceClassCmd>
     {
-        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        {
-            Debug.Print(">>>> Add Item Called");
 
-            await Controller.DoActionAsync();
-        }
     }
 }

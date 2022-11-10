@@ -7,21 +7,19 @@ namespace FUnreal
     public class RenamePluginController : IXActionController
     {
         private RenamePluginDialog _dialog;
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVs;
         private FUnrealNotifier _notifier;
         private string _pluginOriginalName;
-        public RenamePluginController(FUnrealService unrealService, FUnrealVS unrealVS)
+
+        public RenamePluginController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
-            _unrealVs = unrealVS;
             _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
-            var plugin = await _unrealVs.GetSelectedPluginAsync();
-            _pluginOriginalName = plugin.PluginName;
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
+            _pluginOriginalName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
             if (!_unrealService.ExistsPlugin(_pluginOriginalName))
             {
@@ -57,7 +55,7 @@ namespace FUnreal
             if (AlreadExists)
             {
                 _dialog.confirmBtn.IsEnabled = false;
-                _dialog.ShowError(AddPluginDialog.ErrorMsg_PluginAlreadyExists);
+                _dialog.ShowError(XDialogLib.ErrorMsg_PluginAlreadyExists);
             }
             else if (!IsValid)
             {

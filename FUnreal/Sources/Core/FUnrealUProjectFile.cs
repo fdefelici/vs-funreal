@@ -8,28 +8,30 @@ namespace FUnreal.Sources.Core
 {
     public class FUnrealUProjectFile : XJsonFile
     {
-        public FUnrealUProjectPlugins Plugins { get; }
+        public FUnrealUProjectPluginsJson Plugins { get; }
+        public FUnrealUProjectModulesJson Modules { get; }
         public string EngineAssociation { get; internal set; }
 
         public FUnrealUProjectFile(string filePath) : base(filePath)
         {
             EngineAssociation = (string)_json["EngineAssociation"];
-            Plugins = new FUnrealUProjectPlugins(_json["Plugins"]);
+            Plugins = new FUnrealUProjectPluginsJson(_json["Plugins"]);
+            Modules = new FUnrealUProjectModulesJson(_json["Modules"]);
         }
     }
 
-    public class FUnrealUProjectPlugins : XJsonArray<FUnrealUProjectPlugin>
+    public class FUnrealUProjectPluginsJson : XJsonArray<FUnrealUProjectPluginJson>
     {
-        public FUnrealUProjectPlugins(JToken jsonArray) 
+        public FUnrealUProjectPluginsJson(JToken jsonArray) 
             : base(jsonArray, "Name")
         { }
     }
 
-    public class FUnrealUProjectPlugin : XJson
+    public class FUnrealUProjectPluginJson : XJson
     {
-        public FUnrealUProjectPlugin() { }
+        public FUnrealUProjectPluginJson() { }
 
-        public FUnrealUProjectPlugin(JToken json) : base(json) { 
+        public FUnrealUProjectPluginJson(JToken json) : base(json) { 
         }
         public string Name { 
             get
@@ -39,6 +41,36 @@ namespace FUnreal.Sources.Core
             set {
                 base["Name"] = value;
             } 
+        }
+    }
+
+    public class FUnrealUProjectModulesJson : XJsonArray<FUnrealUProjectModuleJson>
+    {
+        public FUnrealUProjectModulesJson(JToken jsonArray)
+            : base(jsonArray, "Name")
+        { }
+    }
+
+    public class FUnrealUProjectModuleJson : XJson
+    {
+        public FUnrealUProjectModuleJson() : base(new JObject()) { }
+        public FUnrealUProjectModuleJson(JToken json) : base(json) { }
+
+
+        public string Name
+        {
+            get { return (string)base["Name"]; }
+            set { base["Name"] = value; }
+        }
+        public string Type
+        {
+            get { return (string)base["Type"]; }
+            set { base["Type"] = value; }
+        }
+        public string LoadingPhase
+        {
+            get { return (string)base["LoadingPhase"]; }
+            set { base["LoadingPhase"] = value; }
         }
     }
 }

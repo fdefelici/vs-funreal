@@ -6,25 +6,20 @@ namespace FUnreal
 {
     public class DeletePluginController : IXActionController
     {
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVs;
+
         private FUnrealNotifier _notifier;
         private ConfirmDialog _dialog;
-        public DeletePluginController(FUnrealService unrealService, FUnrealVS unrealVs)
+
+        public DeletePluginController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
-            _unrealVs = unrealVs;
             _notifier = new FUnrealNotifier();
-            _notifier.OnSendMessage = (type, shortMsg, longMsg) =>
-            {
-                _dialog.SetProgressMessage(type, shortMsg, longMsg);
-            };
         }
 
         public override async Task DoActionAsync()
         {
-            var pluginVs = await _unrealVs.GetSelectedPluginAsync();
-            string pluginName = pluginVs.PluginName;
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
+            string pluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
             bool pluginExists = _unrealService.ExistsPlugin(pluginName);
             if (!pluginExists)
@@ -34,6 +29,7 @@ namespace FUnreal
             }
 
             _dialog = new ConfirmDialog(XDialogLib.InfoMsg_PluginDelete, pluginName);
+            _notifier.OnSendMessage = _dialog.SetProgressMessage;
             _dialog.OnConfirm = async () =>
             {
                 _dialog.ShowActionInProgress();

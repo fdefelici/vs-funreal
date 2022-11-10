@@ -2,66 +2,42 @@
 using System.Windows;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Text.Adornments;
 
 namespace FUnreal
 {
     public class DeleteSourceController : IXActionController
     {
-        private FUnrealService _unrealService;
-        private FUnrealVS _unrealVs;
         private FUnrealNotifier _notifier;
         private ConfirmDialog _dialog;
-        public DeleteSourceController(FUnrealService unrealService, FUnrealVS unrealVs)
+
+        public DeleteSourceController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+            : base(unrealService, unrealVS, ctxMenuMgr)
         {
-            _unrealService = unrealService;
-            _unrealVs = unrealVs;
             _notifier = new FUnrealNotifier();
-            _notifier.OnSendMessage = (type, shortMsg, longMsg) =>
-            {
-                _dialog.SetProgressMessage(type, shortMsg, longMsg);
-            };
-        }
-
-        //Visible only if it is source code path folder and it is not a Module folder
-        public override bool ShouldBeVisible()
-        {
-            /*
-            var itemVs = _unrealVs.GetSelectedItemAsync().GetAwaiter().GetResult();
-
-            if (!_unrealService.IsSourceCodePath(itemVs.FullPath, true))
-            {
-                return false;
-            }
-            return true;
-
-            var itemsVs = _unrealVs.GetSelectedItemsAsync().GetAwaiter().GetResult();
-
-            foreach(var item in itemsVs)
-            {
-                if (!_unrealService.IsSourceCodePath(item.FullPath, true))
-                {
-                    return false;
-                }
-            }
-
-            */
-            return true;
         }
 
         public override async Task DoActionAsync()
         {
-            var itemsVs = await _unrealVs.GetSelectedItemsAsync(); //cache when check in shouldbevisible
+            var itemsVs = await _unrealVS.GetSelectedItemsAsync();
 
             List<string> sourcePaths = new List<string>();
             foreach (var item in itemsVs)
             {
                 string itemPath = item.FullPath;
-                if (!_unrealService.ExistsSourceDirectory(item.FullPath))
+
+                bool isValidFile = item.IsFile && _unrealService.ExistsSourceFile(item.FullPath);
+                bool isValidFolder = item.IsVirtualFolder && _unrealService.ExistsSourceDirectory(item.FullPath);
+
+                if (isValidFile || isValidFolder)
+                {
+                    sourcePaths.Add(itemPath);
+                }
+                else
                 {
                     await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_SourcePathNotFound, itemPath);
                     return;
                 }
-                sourcePaths.Add(itemPath);
             }
 
             string detailMsg;
@@ -75,6 +51,7 @@ namespace FUnreal
             }
 
             _dialog = new ConfirmDialog(XDialogLib.InfoMsg_SourcePathDelete, detailMsg);
+            _notifier.OnSendMessage = _dialog.SetProgressMessage;
             _dialog.OnConfirm = async () =>
             {
                 _dialog.ShowActionInProgress();

@@ -179,7 +179,7 @@ namespace FUnrealTest
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.AddModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -225,43 +225,50 @@ namespace FUnrealTest
             string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
             string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
             string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjOnePlugMod_RenameModule01");
+            
             FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.RenamePluginModuleAsync("Plugin01", "Module01", "NewModule01", true, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.RenamePluginModuleAsync("Plugin01", "Module01", "Module01Ren", true, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
-            Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Plugins/Plugin01/Source/NewModule01"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/Private/NewModule01Module.cpp"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/Public/NewModule01Module.h"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/NewModule01.Build.cs"));
+            Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Plugins/Plugin01/Source/Module01Ren"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Private/Module01RenModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Public/Module01RenModule.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Module01Ren.Build.cs"));
 
-            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/Public/NewModule01Module.h");
-            Assert.IsTrue(fileHea.Contains("class FNewModule01Module"));
 
-            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/Private/NewModule01Module.cpp");
-            Assert.IsTrue(fileCpp.Contains("#include \"NewModule01Module.h\""));
-            Assert.IsTrue(fileCpp.Contains("#define LOCTEXT_NAMESPACE \"FNewModule01Module\""));
-            Assert.IsTrue(fileCpp.Contains("void FNewModule01Module::StartupModule()"));
-            Assert.IsTrue(fileCpp.Contains("void FNewModule01Module::ShutdownModule()"));
-            Assert.IsTrue(fileCpp.Contains("IMPLEMENT_MODULE(FNewModule01Module, NewModule01)"));
+            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01Ren/Public/Module01RenModule.h");
+            string fileHeaAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Public/Module01RenModule.h");
+            FAssert.AreEqualNN(fileHeaExp, fileHeaAct);
 
-            string fileCs = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule01/NewModule01.Build.cs");
-            Assert.IsTrue(fileCs.Contains("public class NewModule01"));
-            Assert.IsTrue(fileCs.Contains("public NewModule01(ReadOnlyTargetRules Target)"));
+            string fileCppExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01Ren/Private/Module01RenModule.cpp");
+            string fileCppAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Private/Module01RenModule.cpp");
+            FAssert.AreEqualNN(fileCppExp, fileCppAct);
 
-            string filePlu = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin");
-            Assert.IsTrue(filePlu.Contains("\"Name\": \"NewModule01\""));
-            Assert.IsTrue(filePlu.Contains("\"Type\": \"Editor\""));
-            Assert.IsTrue(filePlu.Contains("\"LoadingPhase\": \"Default\""));
+            string fileCsExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01Ren/Module01Ren.Build.cs");
+            string fileCsAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Module01Ren.Build.cs");
+            FAssert.AreEqualNN(fileCsExp, fileCsAct);
+
+            string filePlugExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Plugin01.uplugin");
+            string filePlugAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin");
+            FAssert.AreEqualNN(filePlugExp, filePlugAct);
+
+            //Check MODULENAME_API macro is updated
+            string fileApiExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01Ren/Public/Actor01.h");
+            string fileApiAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01Ren/Public/Actor01.h");
+            FAssert.AreEqualNN(fileApiExp, fileApiAct);
 
             //Check Module02 dependency to Module01 (now became NewModule01)
-            string module02Cs = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
-            Assert.IsTrue(module02Cs.Contains("\"NewModule01\""));
+            string module02CsExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
+            string module02CsAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
+            FAssert.AreEqualNN(module02CsExp, module02CsAct);
 
             TestUtils.DeleteDir(tmpPath);
         }
@@ -605,5 +612,226 @@ namespace FUnrealTest
           
             TestUtils.DeleteDir(tmpPath);
         }
+
+        [TestMethod]
+        public void AddGameModuleBlank()
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+
+            string uprojectName = "UPrjGame";
+            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame");
+
+
+            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            bool taskResult = service.AddGameModuleAsync("tpl_module_blank", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Source/MyMod"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Private/MyMod.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Public/MyMod.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/MyMod.Build.cs"));
+
+            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Public/MyMod.h");
+            string fileHea    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Public/MyMod.h");
+            Assert.AreEqual(fileHeaExp, fileHea);
+
+            string fileCppExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Private/MyMod.cpp");
+            string fileCpp    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Private/MyMod.cpp");
+            Assert.AreEqual(fileCppExp, fileCpp);
+
+            string fileCsExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/MyMod.Build.cs");
+            string fileCs    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/MyMod.Build.cs");
+            Assert.AreEqual(fileCsExp, fileCs);
+
+            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs");
+            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs");
+            Assert.AreEqual(fileTargetExp, fileTarget);
+
+            string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGame.uproject");
+            string filePrj    = TestUtils.ReadFile(uprojectPath, "UPrjGame.uproject");
+            Assert.AreEqual(filePrjExp, filePrj);
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
+
+        [TestMethod]
+        public void RenameGameModuleWithCppFiles()
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+
+            string uprojectName = "UPrjGameOneMod";
+            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_RenameModule");
+
+
+            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            bool taskResult = service.RenameGameModuleAsync("MyMod", "MyModRenamed", true, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Source/MyModRenamed"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyModRenamed/Private/MyModRenamedModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyModRenamed/Public/MyModRenamedModule.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyModRenamed/MyModRenamed.Build.cs"));
+
+            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Source/MyModRenamed/Public/MyModRenamedModule.h");
+            string fileHea = TestUtils.ReadFile(uprojectPath, "Source/MyModRenamed/Public/MyModRenamedModule.h");
+            FAssert.AreEqualNN(fileHeaExp, fileHea);
+
+            string fileCppExp = TestUtils.ReadFile(expectedPath, "Source/MyModRenamed/Private/MyModRenamedModule.cpp");
+            string fileCpp = TestUtils.ReadFile(uprojectPath, "Source/MyModRenamed/Private/MyModRenamedModule.cpp");
+            FAssert.AreEqualNN(fileCppExp, fileCpp);
+
+            string fileCsExp = TestUtils.ReadFile(expectedPath, "Source/MyModRenamed/MyModRenamed.Build.cs");
+            string fileCs = TestUtils.ReadFile(uprojectPath, "Source/MyModRenamed/MyModRenamed.Build.cs");
+            FAssert.AreEqualNN(fileCsExp, fileCs);
+
+            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameOneMod.Target.cs");
+            string fileTarget = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameOneMod.Target.cs");
+            FAssert.AreEqualNN(fileTargetExp, fileTarget);
+
+            string fileEdTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameOneModEditor.Target.cs");
+            string fileEdTarget = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameOneModEditor.Target.cs");
+            FAssert.AreEqualNN(fileEdTargetExp, fileEdTarget);
+
+
+            string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGameOneMod.uproject");
+            string filePrj = TestUtils.ReadFile(uprojectPath, "UPrjGameOneMod.uproject");
+            FAssert.AreEqualNN(filePrjExp, filePrj);
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
+        [TestMethod]
+        public void RenamePrimaryGameModule()
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+
+            string uprojectName = "UPrjGame";
+            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_RenamePrimaryModule");
+
+
+            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            bool taskResult = service.RenameGameModuleAsync("UPrjGame", "UPrjGameRenamed", true, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Source/UPrjGameRenamed"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/UPrjGameRenamed/UPrjGameRenamedModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/UPrjGameRenamed/UPrjGameRenamedModule.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/UPrjGameRenamed/UPrjGameRenamed.Build.cs"));
+
+            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameRenamed/UPrjGameRenamedModule.h");
+            string fileHea = TestUtils.ReadFile(uprojectPath,    "Source/UPrjGameRenamed/UPrjGameRenamedModule.h");
+            FAssert.AreEqualNN(fileHeaExp, fileHea);
+
+            string fileCppExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameRenamed/UPrjGameRenamedModule.cpp");
+            string fileCpp = TestUtils.ReadFile(uprojectPath,    "Source/UPrjGameRenamed/UPrjGameRenamedModule.cpp");
+            FAssert.AreEqualNN(fileCppExp, fileCpp);
+
+            string fileCsExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameRenamed/UPrjGameRenamed.Build.cs");
+            string fileCs = TestUtils.ReadFile(uprojectPath,    "Source/UPrjGameRenamed/UPrjGameRenamed.Build.cs");
+            FAssert.AreEqualNN(fileCsExp, fileCs);
+
+            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs");
+            string fileTarget = TestUtils.ReadFile(uprojectPath,    "Source/UPrjGame.Target.cs");
+            FAssert.AreEqualNN(fileTargetExp, fileTarget);
+
+            string fileEdTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameEditor.Target.cs");
+            string fileEdTarget = TestUtils.ReadFile(uprojectPath,    "Source/UPrjGameEditor.Target.cs");
+            FAssert.AreEqualNN(fileEdTargetExp, fileEdTarget);
+
+
+            string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGame.uproject");
+            string filePrj = TestUtils.ReadFile(uprojectPath, "UPrjGame.uproject");
+            FAssert.AreEqualNN(filePrjExp, filePrj);
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
+        [TestMethod]
+        public void DeleteGameModuleWithCppFiles()
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+
+            string uprojectName = "UPrjGameOneMod";
+            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_DeleteModule");
+
+
+            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            bool taskResult = service.DeleteGameModuleAsync("MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsFalse(TestUtils.ExistsDir(uprojectPath,  "Source/MyMod"));
+
+            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameOneMod.Target.cs");
+            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameOneMod.Target.cs");
+            FAssert.AreEqualNN(fileTargetExp, fileTarget);
+
+            string fileEdTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameOneModEditor.Target.cs");
+            string fileEdTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameOneModEditor.Target.cs");
+            FAssert.AreEqualNN(fileEdTargetExp, fileEdTarget);
+
+            string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGameOneMod.uproject");
+            string filePrj    = TestUtils.ReadFile(uprojectPath, "UPrjGameOneMod.uproject");
+            FAssert.AreEqualNN(filePrjExp, filePrj);
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
     }
 }

@@ -10,10 +10,11 @@ namespace FUnreal
         public const string ErrorMsg_PluginNotExists = "It seems that selected plugin doesn't exists. Maybe filesystem and VS Solution are misaligned!";
         internal static string ErrorMsg_TemplatesNotFound = "Templates not found for FUnreal!";
         internal static string ErrorMsg_ModuleNotExists = "It seems that selected module doesn't exists. Maybe filesystem and VS Solution are misaligned!";
+        internal static string ErrorMsg_ModuleAlreadyExists = "Module already exists!";
         public static string InfoMsg_PluginDelete = "This plugin will be deleted permanently!";
         internal static string ErrorMsg_ClassAlreadyExists = "A file already exists with this name!";
         public static string ErrorMsg_InvalidPath = "Invalid Path {0}";
-        internal static string ErrorMsg_SourcePathNotFound = "Path not found {0}";
+        internal static string ErrorMsg_SourcePathNotFound = "Path not found!";
         public static string InfoMsg_SourcePathDelete = "This path will be deleted permanently!";
 
 
@@ -29,17 +30,22 @@ namespace FUnreal
         internal static string Info_UpdatingDependencyFromFile = "Updating dependency in {0} ...";
         internal static string Info_UpdatingPluginDescriptorFile = "Updating plugin descriptor: {0} ...";
         internal static string Info_RenamingPluginDescriptorFile = "Renaming plugin descriptor: {0} to {1}";
+
         public static string Ctx_CheckTemplate = "Checking template ...";
 
         public static string Error_PluginNotFound = "Plugin not found: {0}";
         public static string Error_PluginModuleNotFound = "Module not found: {0}::{1}";
         public static string Error_PluginModuleAlreadyExists = "Module already exists: {0}::{1}";
+        public static string Error_GameModuleAlreadyExists = "Module already exists: {0}";
+        public static string Error_GameModuleNotFound = "Module not found: {0}";
         internal static string Ctx_RegenSolutionFiles = "Regenerating VS Soluton files ...";
         internal static string Error_TemplateNotFound = "Template not found for ({0}, {1}, {2})";
         internal static string Error_TemplateWrongConfig = "Template configuration error for ({0}, {1}, {2})";
         internal static string Ctx_ConfiguringTemplate = "Configuring template ...";
         internal static string Info_TemplateCopyingFiles = "Copying template files to {0} ...";
         internal static string Info_UpdatingModuleTargetFile = "Updating module target file {0} ...";
+        internal static string Warn_ProjectTargetFileNotFound = "Project target file not found: {0}";
+        internal static string Info_UpdatingProjectTargetFile = "Updating project target file {0} ...";
         internal static string Warn_ModuleCppFileNotFound = "Module cpp file not detected as: {0} or {1}";
         internal static string Info_UpdatingModuleNameInCpp = "Updating name in module file {0} ...";
         internal static string Info_RenamingCppFiles = "Renaming C++ file: {0}";
@@ -50,10 +56,13 @@ namespace FUnreal
         internal static string Error_SourceDirectoryNotFound = "Directory not found: {0}";
         internal static string Ctx_DeletingFiles = "Deleting files ...";
         internal static string Ctx_DeletingDirectories = "Deleting directories ...";
+        internal static string Info_UpdatingApiMacroInFile = "Updating API macro in {0} ...";
 
         public static string Info_DeletingFile = "Deleting file {0} ...";
         public static string Info_DeletingFolder = "Deleting folder {0} ...";
         internal static string Error_Delete = "Delete failed!";
+        internal static string Error_SourcePathNotFound = "Path not found {0}";
+        internal static string ErrorMsg_PluginAlreadyExists = "Plugin already exists!";
 
         public static void TextBoxInputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
