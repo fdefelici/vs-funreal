@@ -60,6 +60,11 @@
     <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
       <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
+      <DependentUpon>AddSourceFileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\UI\Features\ToolboxMenuController.cs" />
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceCmd.cs" />
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
@@ -161,6 +166,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -210,6 +216,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sources\UI\Common\Controls\ConfirmDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

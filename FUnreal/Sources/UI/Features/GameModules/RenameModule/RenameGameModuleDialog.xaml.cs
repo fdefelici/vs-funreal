@@ -41,7 +41,7 @@ namespace FUnreal
         }
 
         private void moduleNewNameTbx_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e)
-            => XDialogLib.TextBoxInputValidation(sender, e);
+            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
 
         private void renameFilesCbx_Changed(object sender, RoutedEventArgs e)
         {

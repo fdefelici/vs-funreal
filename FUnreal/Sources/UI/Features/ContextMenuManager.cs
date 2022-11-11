@@ -10,7 +10,9 @@ namespace FUnreal
     {
         private FUnrealService _unrealService;
         private FUnrealVS _unrealVS;
-        private Dictionary<Func<Task<bool>>, List<int>> menuScenarios;
+
+
+        private Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, List<int>>> menuContexts;
 
         public ContextMenuManager(FUnrealService unrealService, FUnrealVS unrealVS)
         {
@@ -20,31 +22,66 @@ namespace FUnreal
             PrepareMenus();
         }
 
+        //optimization: prefiltro sceneario menu in base al CTX_ITEMNODE, FOLDERNODE, PROJNODE etc...
+        //Idea ulteriore ottimizzazione:  numero ridotto di bottoni configurati su VSCT e poi quando test IsActive gli attacco: label e controller.
         public async Task<bool> IsActiveAsync(int symbolId)
         {
-            foreach(var pair in menuScenarios)
+            //Choose Context
+            foreach (var ctxPair in menuContexts)
             {
-                if (await pair.Key.Invoke()) 
-                { 
-                    return pair.Value.Contains(symbolId);
+                if (await ctxPair.Key.Invoke())
+                {   
+                    //Find Menu config
+                    foreach (var pair in ctxPair.Value)
+                    {
+                        if (await pair.Key.Invoke())
+                        {
+                            return pair.Value.Contains(symbolId);
+                        }
+                    }
+                    return false;
                 }
             }
+
             return false;
         }
 
         private void PrepareMenus()
         {
-            //NOTA: Ricerca migliorabile se prefiltro gli sceneario in base al CTX_ITEMNODE, FOLDERNODE, PROJNODE etc...
+            
+            Func<Task<bool>> ProjectNodeContext = async () =>
+            {
+                return await _unrealVS.IsSelectCtxProjectNodeAsync();
+            };
+
+            Func<Task<bool>> ItemNodeContext = async () =>
+            {
+                return await _unrealVS.IsSelectCtxItemNodeAsync();
+            };
+
+            Func<Task<bool>> FolderNodeContext = async () =>
+            {
+                return await _unrealVS.IsSelectCtxFolderNodeAsync();
+            };
+
+            Func<Task<bool>> MiscNodeContext = async () =>
+            {
+                return await _unrealVS.IsSelectCtxMiscNodeAsync();
+            };
+
+            
+
+
 
             //Project
             Func<Task<bool>> SingleProjectScenario = async () => 
             {
-                if (!await _unrealVS.IsSelectCtxProjectNodeAsync()) return false;
                 return await _unrealVS.IsSingleSelectionAsync();
             };
+
+
             Func<Task<bool>> DotProjectScenario = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
@@ -54,14 +91,12 @@ namespace FUnreal
             //Plugin 
             Func<Task<bool>> DotPluginScenario = async () =>
             {    
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
-
                 var item = await _unrealVS.GetSelectedItemAsync();
                 return await _unrealVS.IsSingleSelectionAsync() && _unrealService.IsPluginDescriptorFile(item.FullPath);
             };
+
             Func<Task<bool>> SinglePluginFolder = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxFolderNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
@@ -71,7 +106,6 @@ namespace FUnreal
             //Plugin Module
             Func<Task<bool>> DotBuildCsPlugModScenario = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
                 
                 var item = await _unrealVS.GetSelectedItemAsync();
@@ -80,7 +114,6 @@ namespace FUnreal
             };
             Func<Task<bool>> SinglePluginModuleFolder = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxFolderNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
@@ -90,16 +123,16 @@ namespace FUnreal
             //Game Module
             Func<Task<bool>> DotBuildCsGameModScenario = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
                 bool isBuildFile = _unrealService.IsGameModulePath(item.FullPath) && _unrealService.IsModuleTargetFile(item.FullPath);
                 return isBuildFile;
             };
+
+
             Func<Task<bool>> SingleGameModuleFolder = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxFolderNodeAsync()) return false;
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
@@ -110,14 +143,12 @@ namespace FUnreal
             //Sources  (Common)
             Func<Task<bool>> SingleFileScenario = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
                 var item = await _unrealVS.GetSelectedItemAsync();
                 return await _unrealVS.IsSingleSelectionAsync() && _unrealService.IsSourceCodePath(item.FullPath);
             };
 
             Func<Task<bool>> MultiFileScenario = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxItemNodeAsync()) return false;
                 if (!await _unrealVS.IsMultiSelectionAsync()) return false;
 
                 var items = await _unrealVS.GetSelectedItemsAsync();
@@ -130,16 +161,12 @@ namespace FUnreal
 
             Func<Task<bool>> SingleSourceFolder = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxFolderNodeAsync()) return false;
-                
                 var item = await _unrealVS.GetSelectedItemAsync();
                 return await _unrealVS.IsSingleSelectionAsync() && _unrealService.IsSourceCodePath(item.FullPath, true);
             };
 
             Func<Task<bool>> MultiSourceFolder = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxFolderNodeAsync()) return false;
-
                 if (!await _unrealVS.IsMultiSelectionAsync()) return false;
 
                 var items = await _unrealVS.GetSelectedItemsAsync();
@@ -152,8 +179,6 @@ namespace FUnreal
 
             Func<Task<bool>> MultiMiscItem = async () =>
             {
-                if (!await _unrealVS.IsSelectCtxMiscNodeAsync()) return false;
-
                 var items = await _unrealVS.GetSelectedItemsAsync();
                 foreach (var eachItem in items)
                 {
@@ -162,33 +187,36 @@ namespace FUnreal
                 return true;
             };
 
-            menuScenarios = new Dictionary<Func<Task<bool>>, List<int>>();
+            menuContexts = new Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, List<int>>>();
 
+                var projectMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+                projectMenu[SingleProjectScenario] = new List<int>() { S.ToolboxMenu, S.AddPluginCmd, S.AddGameModuleCmd }; ;
             //CTX ProjectNode
-            menuScenarios[SingleProjectScenario] = new List<int>() { S.ToolboxMenu, S.AddPluginCmd }; ;
-            
+            menuContexts[ProjectNodeContext] = projectMenu;
+
+                var itemMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+                itemMenu[DotPluginScenario]     = new List<int>() { S.ToolboxMenu, S.AddModuleCmd, S.RenamePluginCmd, S.DeletePluginCmd };
+                itemMenu[DotProjectScenario]    = new List<int>() { S.ToolboxMenu, S.AddGameModuleCmd };
+                itemMenu[DotBuildCsPlugModScenario]    = new List<int>() { S.ToolboxMenu, S.RenameModuleCmd, S.DeleteModuleCmd };
+                itemMenu[DotBuildCsGameModScenario] = new List<int>() { S.ToolboxMenu, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
+                itemMenu[SingleFileScenario]    = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
+                itemMenu[MultiFileScenario]     = itemMenu[SingleFileScenario];
             //CTX ItemNode
-            menuScenarios[DotPluginScenario]     = new List<int>() { S.ToolboxMenu, S.AddModuleCmd, S.RenamePluginCmd, S.DeletePluginCmd };
-            menuScenarios[DotBuildCsGameModScenario] = new List<int>() { S.ToolboxMenu, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
-            menuScenarios[DotProjectScenario]    = new List<int>() { S.ToolboxMenu, S.AddGameModuleCmd };
-            menuScenarios[SingleFileScenario]    = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
-            
-            menuScenarios[DotBuildCsPlugModScenario]    = new List<int>() { S.ToolboxMenu, S.RenameModuleCmd, S.DeleteModuleCmd };
-            
-            menuScenarios[MultiFileScenario]     = menuScenarios[SingleFileScenario];            
-            
+            menuContexts[ItemNodeContext] = itemMenu;
+
+                var folderMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+                folderMenu[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.DeleteSourceCmd };
+                folderMenu[MultiSourceFolder] = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
+                folderMenu[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
+                folderMenu[SinglePluginFolder] = itemMenu[DotPluginScenario];
+                folderMenu[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
             //CTX FolderNode
-            menuScenarios[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.DeleteSourceCmd };
-            menuScenarios[MultiSourceFolder] = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
-            menuScenarios[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
-            menuScenarios[SinglePluginFolder] = menuScenarios[DotPluginScenario];
+            menuContexts[FolderNodeContext] = folderMenu;
 
-            menuScenarios[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
-            
-
-
+                var miscMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+                miscMenu[MultiMiscItem] = itemMenu[SingleFileScenario];
             //CTX MULTINODE   [VirtualFolder(s) + File(s)]
-            menuScenarios[MultiMiscItem]      = menuScenarios[MultiFileScenario];
+            menuContexts[MiscNodeContext] = miscMenu;
         }
     }
 }

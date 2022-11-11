@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,32 @@ namespace FUnreal
 {
     public class XFilesystem
     {
+
+        public static bool DeepCopy(string sourcePath, string targetPath)
+        {
+            if (!Directory.Exists(sourcePath)) return false;
+            
+            try
+            {
+                foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                {
+                    string targetDir = dirPath.Replace(sourcePath, targetPath);
+                    Directory.CreateDirectory(targetDir);
+                }
+
+                foreach (string filePath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                {
+                    string targetFile = filePath.Replace(sourcePath, targetPath);
+                    File.Copy(filePath, targetFile, true);
+                }
+            }
+            catch (Exception) 
+            {
+                return false;       
+            }
+            return true;
+        }
+
 
         public static void DeepCopy(string sourcePath, string targetPath, PlaceHolderReplaceStrategy strategy)
         {
@@ -218,7 +245,34 @@ namespace FUnreal
         {
             string basePath = Path.GetDirectoryName(sourcePath);
             string destPath = PathCombine(basePath, dirName);
-            Directory.Move(sourcePath, destPath);
+
+            //NOTE: If a file was opened with Notepad++ and trying to move the folder 
+            //      seems to generate "Access Denied exception"
+            //      Maybe a bug of internal move api https://stackoverflow.com/questions/43325099/c-sharp-directory-move-access-denied-error
+            // As a workaround, converting Move operation in Copy/Delete.
+            /*
+            try
+            {
+                Directory.Move(sourcePath, destPath);
+            }
+            catch (Exception e)
+            {
+                Debug.Print(e.Message);
+                return null;
+            }
+            return destPath;
+            */
+
+            bool succeded = DeepCopy(sourcePath, destPath);
+            if (!succeded)
+            {
+                DeleteDir(destPath); //Cleanup partial copy
+                return null;
+            }
+            
+            succeded = DeleteDir(sourcePath);
+            if (!succeded) return null;
+
             return destPath;
         }
 
@@ -352,6 +406,16 @@ namespace FUnreal
             }
 
             return true;
+        }
+
+        public static void CreateFile(string filePath)
+        {
+            XFilesystem.WriteFile(filePath, "");
+        }
+
+        public static string FileChangeExtension(string filePath, string newExtention)
+        {
+            return Path.ChangeExtension(filePath, newExtention);
         }
     }
 }

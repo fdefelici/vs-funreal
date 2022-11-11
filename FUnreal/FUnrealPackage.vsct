@@ -123,6 +123,14 @@
         </Strings>
       </Button>
 
+      <Button guid="guidFUnrealPackage" id="AddSourceFileCmd" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>New File...</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
   </Commands>
 
@@ -186,6 +194,10 @@
     <CommandPlacement guid="guidFUnrealPackage" id="AddSourceClassCmd" priority="0x0001">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
     </CommandPlacement>
+
+    <CommandPlacement guid="guidFUnrealPackage" id="AddSourceFileCmd" priority="0x0002">
+      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
+    </CommandPlacement>
   
 
     <CommandPlacement guid="guidFUnrealPackage" id="AddGameModuleCmd" priority="0x0001">
@@ -223,6 +235,7 @@
       <IDSymbol name="AddGameModuleCmd"             value="0x0013" />
       <IDSymbol name="RenameGameModuleCmd"          value="0x0014" />
       <IDSymbol name="DeleteGameModuleCmd"          value="0x0015" />
+      <IDSymbol name="AddSourceFileCmd"             value="0x0016" />
 
     </GuidSymbol>
   </Symbols>

@@ -82,7 +82,7 @@ namespace FUnreal
             string moduleNewName = _dialog.moduleNewNameTbx.Text;
             bool updateCppFiles = (bool)_dialog.renameFilesCbx.IsChecked;
 
-            bool success = await _unrealService.RenameGameModuleAsync(_moduleOriginalName, moduleNewName, updateCppFiles, _notifier); //.ConfigureAwait(false);
+            bool success = await _unrealService.RenamePluginModuleAsync(_pluginName, _moduleOriginalName, moduleNewName, updateCppFiles, _notifier); //.ConfigureAwait(false);
             if (!success)
             {
                 _dialog.ShowActionInError();

@@ -434,7 +434,7 @@ namespace FUnrealTest
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.AddSourceAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -476,7 +476,7 @@ namespace FUnrealTest
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.AddSourceAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -518,7 +518,7 @@ namespace FUnrealTest
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.AddSourceAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -560,7 +560,7 @@ namespace FUnrealTest
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
             FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.AddSourceAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -579,6 +579,38 @@ namespace FUnrealTest
 
             TestUtils.DeleteDir(tmpPath);
         }
+
+        [TestMethod]
+        public void AddSourceFile()
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+
+            string uprojectName = "UPrjOnePlugMod";
+            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+
+            string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01");
+
+            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            bool taskResult = service.AddSourceFileAsync(selectedSourcePath, "MyFile.txt", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsTrue(TestUtils.ExistsFile(selectedSourcePath, "MyFile.txt"));
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
 
         [TestMethod]
         public void DeleteSources_OneFolder()

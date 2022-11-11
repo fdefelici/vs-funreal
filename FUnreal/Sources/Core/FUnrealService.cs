@@ -19,8 +19,6 @@ namespace FUnreal
 
     public class FUnrealService
     {
-       
-
         public static FUnrealService SetUp_OnUIThread()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -943,7 +941,12 @@ namespace FUnreal
 
             //5 Rename Module Folder
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFolder, modulePath, newModuleName);
-            XFilesystem.RenameDir(modulePath, newModuleName);
+            string newModulePath = XFilesystem.RenameDir(modulePath, newModuleName);
+            if (newModulePath == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_UpdatingModule, XDialogLib.Error_FailureRenamingFolder);
+                return false;
+            }
 
             //6. Update module dependency in other module .Build.cs
             {
@@ -1049,7 +1052,7 @@ namespace FUnreal
             return true;
         }
 
-        public async Task<bool> AddSourceAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
+        public async Task<bool> AddSourceClassAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
         {
             string context = "sources";
             string engine = _engineMajorVer;
@@ -1066,7 +1069,7 @@ namespace FUnreal
 
             if (XFilesystem.FileExists(headerPath) || XFilesystem.FileExists(sourcePath))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_ClassAlreadyExists);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_FileAlreadyExists);
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, headerPath);
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, sourcePath);
                 return false;
@@ -1642,6 +1645,32 @@ namespace FUnreal
             return true;
         }
 
+
+        public async Task<bool> AddSourceFileAsync(string absBasePath, string fileName, FUnrealNotifier notifier)
+        {
+            string modulePath = ModulePathFromSourceCodePath(absBasePath);
+            string moduleName = XFilesystem.GetLastPathToken(modulePath);
+
+            string filePath = XFilesystem.PathCombine(absBasePath, fileName);
+
+            if (XFilesystem.FileExists(filePath))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileAlreadyExists, filePath);
+                return false;
+            }
+
+            notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_CreatingFile, filePath);
+            XFilesystem.CreateFile(filePath);
+
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
+            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
+            if (ubtResult.IsError)
+            {
+                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                return false;
+            }
+            return true;
+        }
 
     }
 

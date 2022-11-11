@@ -12,13 +12,16 @@ namespace FUnreal
         internal static string ErrorMsg_ModuleNotExists = "It seems that selected module doesn't exists. Maybe filesystem and VS Solution are misaligned!";
         internal static string ErrorMsg_ModuleAlreadyExists = "Module already exists!";
         public static string InfoMsg_PluginDelete = "This plugin will be deleted permanently!";
-        internal static string ErrorMsg_ClassAlreadyExists = "A file already exists with this name!";
+        internal static string ErrorMsg_FileAlreadyExists = "A file already exists with this name!";
         public static string ErrorMsg_InvalidPath = "Invalid Path {0}";
         internal static string ErrorMsg_SourcePathNotFound = "Path not found!";
         public static string InfoMsg_SourcePathDelete = "This path will be deleted permanently!";
 
 
-        private const string Input_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";
+        public static string Error_FileAlreadyExists = "File already exists {0}";
+
+        private const string Input_FileName_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";
+        private const string Input_FileNameWithExt_ValidationRegex = @"^[a-zA-Z][a-zA-Z0-9_\.]*$";
 
         public static string Ctx_CheckProjectPlayout = "Checking project layout ...";
         public static string Ctx_UpdatingModuleDependency = "Updating module dependency ...";
@@ -43,6 +46,7 @@ namespace FUnreal
         internal static string Error_TemplateWrongConfig = "Template configuration error for ({0}, {1}, {2})";
         internal static string Ctx_ConfiguringTemplate = "Configuring template ...";
         internal static string Info_TemplateCopyingFiles = "Copying template files to {0} ...";
+        internal static string Info_CreatingFile = "Creating file {0} ...";
         internal static string Info_UpdatingModuleTargetFile = "Updating module target file {0} ...";
         internal static string Warn_ProjectTargetFileNotFound = "Project target file not found: {0}";
         internal static string Info_UpdatingProjectTargetFile = "Updating project target file {0} ...";
@@ -63,19 +67,32 @@ namespace FUnreal
         internal static string Error_Delete = "Delete failed!";
         internal static string Error_SourcePathNotFound = "Path not found {0}";
         internal static string ErrorMsg_PluginAlreadyExists = "Plugin already exists!";
+        internal static string Error_FailureRenamingFolder = "Renaming folder failed! Probably folders/files in the folder tree are locked by another process.";
 
-        public static void TextBoxInputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        public static void TextBox_FileName_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            TextBox_InputValidation(sender, e, Input_FileName_ValidationRegex);
+        }
+
+        public static void TextBox_FileNameWithExt_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            TextBox_InputValidation(sender, e, Input_FileNameWithExt_ValidationRegex);
+        }
+
+        private static void TextBox_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e, string regex)
         {
             if (!(sender is TextBox)) return;
-            
+
             string insertedText = e.Text;
             TextBox tbx = (TextBox)sender;
             string currentText = tbx.Text;
             string futureText = currentText.Remove(tbx.SelectionStart, tbx.SelectionLength);
             futureText = futureText.Insert(tbx.CaretIndex, insertedText);
 
-            bool isGoodFormat = Regex.IsMatch(futureText, Input_ValidationRegex);
+            bool isGoodFormat = Regex.IsMatch(futureText, regex);
             if (!isGoodFormat) e.Handled = true;
         }
+
+
     }
 }

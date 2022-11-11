@@ -49,7 +49,7 @@ namespace FUnreal
         }
 
         private void inputText_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e) 
-            => XDialogLib.TextBoxInputValidation(sender, e);
+            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
 
 
         private void publicRdb_Checked(object sender, RoutedEventArgs e)

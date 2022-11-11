@@ -110,7 +110,7 @@ namespace FUnreal
                 if (XFilesystem.FileExists(headerPath) || XFilesystem.FileExists(sourcePath))
                 {
                     _dialog.addButton.IsEnabled = false;
-                    _dialog.ShowError(XDialogLib.ErrorMsg_ClassAlreadyExists);
+                    _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace FUnreal
 
             FUnrealSourceType sourceType = (FUnrealSourceType)classType;
 
-            bool success = await _unrealService.AddSourceAsync(templeName, absBasePath, className, sourceType, _notifier);
+            bool success = await _unrealService.AddSourceClassAsync(templeName, absBasePath, className, sourceType, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();

@@ -8,6 +8,9 @@ namespace FUnreal
 {
     internal static class VSCTSymbols
     {
+        public const string PackageGuidString = "43b90373-5388-42b6-9074-100c2b543eec";
+
+
         public const int ToolboxMenu         = 0x0002;
         public const int AddPluginCmd        = 0x0005;
         public const int DeleteSourceCmd     = 0x0006;
@@ -20,5 +23,6 @@ namespace FUnreal
         public const int AddGameModuleCmd    = 0x0013;
         public const int RenameGameModuleCmd = 0x0014;
         public const int DeleteGameModuleCmd = 0x0015;
+        public const int AddSourceFileCmd    = 0x0016;
     }
 }

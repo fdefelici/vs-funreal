@@ -4,11 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal
 {
     public class FUnrealVS
     {
+        public static Action OnSolutionLoad {           
+            set
+            {
+                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += value;
+            }
+        }
+
         public FUnrealVS()
         {
 
@@ -41,6 +49,11 @@ namespace FUnreal
 
                     Debug.WriteLine(item.RemovedItemName);
                 }
+            };
+
+            VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += () =>
+            {
+                Debug.Print("-------------------------- NEW SOLUTION LOADED!!!!");
             };
             */
         }
@@ -127,6 +140,22 @@ namespace FUnreal
         {
             var items = await VS.Solutions.GetActiveItemsAsync();
             return items.Count() > 1;
+        }
+
+        public static bool IsUnrealSolution()
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                // Switch to main thread
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                // Do your work on the main thread here.
+
+                var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                string solutionPath = solution.FullPath;
+                string uprojectPath = XFilesystem.FileChangeExtension(solutionPath, "uproject");
+                return XFilesystem.FileExists(uprojectPath);
+            });
+
         }
     }
 

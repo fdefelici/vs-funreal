@@ -2,6 +2,7 @@
 using FUnreal.Sources.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace FUnrealTest
@@ -141,6 +142,87 @@ namespace FUnrealTest
             string path = @"c:\part1\part2\..\part3";
             string actual = System.IO.Path.GetFullPath(path);
             Assert.AreEqual(@"c:\part1\part3", actual);
+        }
+
+        //[TestMethod]
+        public void Perf()
+        {
+            string tmpPath = TestUtils.AbsPath("MiscTest");
+            string sourcePath = XFilesystem.PathCombine(tmpPath, "source");
+
+            // 10.000 files => 9 seconds
+            //100.000 files => 95 seconds
+
+            int fileCount = 100000;
+            for(int i = 0; i < fileCount; i++)
+            {
+                string filePath = XFilesystem.PathCombine(sourcePath, $"File{i}.txt");
+                XFilesystem.WriteFile(filePath, "key xey1 dey2 ");
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+            var strat = new PlaceHolderReplaceStrategy();
+            strat.AddFileExtension(".txt");
+            strat.AddPlaceholder("key", "value");
+            strat.AddPlaceholder("xey1", "value1");
+            strat.AddPlaceholder("dey2", "value2");
+            XFilesystem.DeepCopy(tmpPath, XFilesystem.PathCombine(sourcePath, "dest"), strat);
+
+            sw.Stop();
+
+            long seconds = sw.ElapsedMilliseconds / 1000;
+            Console.WriteLine($"Seconds: {seconds}");
+
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
+        //[TestMethod]
+        public void Perf2()
+        {
+            string tmpPath = TestUtils.AbsPath("MiscTest");
+            string sourcePath = XFilesystem.PathCombine(tmpPath, "source");
+
+            // 10.000 files => 9 seconds
+            //100.000 files => 95 seconds
+
+            int fileCount = 100000;
+            for (int i = 0; i < fileCount; i++)
+            {
+                string filePath = XFilesystem.PathCombine(sourcePath, $"File{i}.txt");
+                XFilesystem.WriteFile(filePath, "key xey1 dey2 ");
+            }
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+            var files = Directory.GetFiles(sourcePath, "*.txt");
+
+            /* 34 seconds
+            for (int i = 0; i < files.Length; i++)
+            {
+                var txt = XFilesystem.ReadFile(files[i]);
+                txt = txt.Replace("key", "newvalue");
+                XFilesystem.WriteFile(files[i], txt);
+            }
+            */
+
+            // 22 seconds
+            Parallel.For(0, files.Length, i =>
+            {
+                var txt = XFilesystem.ReadFile(files[i]);
+                txt = txt.Replace("key", "newvalue");
+                XFilesystem.WriteFile(files[i], txt);
+            });
+
+
+            sw.Stop();
+
+            long seconds = sw.ElapsedMilliseconds / 1000;
+            Console.WriteLine($"Seconds: {seconds}");
+
+
+            TestUtils.DeleteDir(tmpPath);
         }
     }
 }

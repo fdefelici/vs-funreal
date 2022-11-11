@@ -43,7 +43,7 @@ namespace FUnreal
         }
 
         private void pluginNewNameTbx_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e)
-            => XDialogLib.TextBoxInputValidation(sender, e);
+            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
 
         public void EditModeEnabled(bool enabled)
         {
