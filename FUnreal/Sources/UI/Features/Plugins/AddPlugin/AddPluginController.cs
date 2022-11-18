@@ -53,7 +53,7 @@ namespace FUnreal
             _dialog.pluginTemplTbl.Text = selected.Description;
 
 
-            _templateHasModuleName = selected.HasPlaceHolder("ModuleName");
+            _templateHasModuleName = selected.GetMeta("has_module") == "true";
             if (_templateHasModuleName)
             {
                 _dialog.ShowModuleNameControls(true);

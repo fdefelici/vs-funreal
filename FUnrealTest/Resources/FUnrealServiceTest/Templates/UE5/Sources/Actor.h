@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "@{TPL_CLS_NAME}.generated.h"
+#include "@{TPL_SOUR_CLASS}.generated.h"
 
 UCLASS()
-class @{TPL_MOD_API}A@{TPL_CLS_NAME} : public AActor
+class @{TPL_MODU_API}A@{TPL_SOUR_CLASS} : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	A@{TPL_CLS_NAME}();
+	A@{TPL_SOUR_CLASS}();
 
 protected:
 	// Called when the game starts or when spawned

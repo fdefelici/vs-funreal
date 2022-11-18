@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "@{TPL_PLG_NAME}",
+	"FriendlyName": "@{TPL_PLUG_NAME}",
 	"Description": "",
 	"Category": "Other",
 	"CreatedBy": "",
@@ -16,7 +16,7 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "@{TPL_MOD_NAME}",
+			"Name": "@{TPL_MODU_NAME}",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

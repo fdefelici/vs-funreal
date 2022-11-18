@@ -87,6 +87,7 @@
     <Compile Include="Sources\Utils\FUnrealFSWatcher.cs" />
     <Compile Include="Sources\Utils\FUnrealFSWatcherBIS.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
+    <Compile Include="Sources\Utils\XString.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
     <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
       <DependentUpon>FProgressPanel.xaml</DependentUpon>
@@ -134,10 +135,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
     <None Include="FUnrealPackage.vsct_OLD" />
-    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\%40{TPL_MOD_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\UE5\Sources\Actor.cpp">
@@ -157,13 +158,13 @@
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Content\.gitkeep">
+    <Content Include="Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Content\.gitkeep">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -239,13 +240,13 @@
     <Content Include="Templates\descriptor.xml">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\Private\%40{TPL_MOD_NAME}.cpp">
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLG_NAME}\Source\%40{TPL_MOD_NAME}\Public\%40{TPL_MOD_NAME}.h">
+    <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>

@@ -97,7 +97,7 @@ namespace FUnreal
 
         public void ShowError(string msg, params string[] args)
         {
-            errorMsgLbl.Content = string.Format(msg, args);
+            errorMsgLbl.Content = XString.Format(msg, args);
             errorMsgLbl.Visibility = System.Windows.Visibility.Visible;
         }
     }

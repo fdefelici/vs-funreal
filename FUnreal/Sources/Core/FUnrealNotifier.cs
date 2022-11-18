@@ -26,7 +26,7 @@ namespace FUnreal
 
         private void SendMessage(MessageType type, string context, string detailedFormat = null, params string[] args)
         {
-            string detailed = detailedFormat == null ? context : string.Format(detailedFormat, args);
+            string detailed = detailedFormat == null ? context : XString.Format(detailedFormat, args);
             OnSendMessage?.Invoke(type, context, detailed);
         }
     }

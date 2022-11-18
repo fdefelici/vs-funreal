@@ -1,7 +1,7 @@
-﻿#include "@{TPL_INC_PATH}@{TPL_CLS_NAME}.h"
+﻿#include "@{TPL_SOUR_INCL}@{TPL_SOUR_CLASS}.h"
 
 // Sets default values for this component's properties
-U@{TPL_CLS_NAME}::U@{TPL_CLS_NAME}()
+U@{TPL_SOUR_CLASS}::U@{TPL_SOUR_CLASS}()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -11,7 +11,7 @@ U@{TPL_CLS_NAME}::U@{TPL_CLS_NAME}()
 }
 
 // Called when the game starts
-void U@{TPL_CLS_NAME}::BeginPlay()
+void U@{TPL_SOUR_CLASS}::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -20,7 +20,7 @@ void U@{TPL_CLS_NAME}::BeginPlay()
 }
 
 // Called every frame
-void U@{TPL_CLS_NAME}::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void U@{TPL_SOUR_CLASS}::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 

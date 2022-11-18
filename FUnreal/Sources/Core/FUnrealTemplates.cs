@@ -41,6 +41,8 @@ namespace FUnreal
 
                 string absPath = XFilesystem.PathCombine(templatePath, relPath);
                 FUnrealTemplate tpl = new FUnrealTemplate(name, absPath, uiName, uiDesc);
+                
+                /*
                 XmlNodeList placeHolderNodes = tplNode.SelectNodes("placeholder");
                 foreach (XmlElement plhNode in placeHolderNodes)
                 {
@@ -50,6 +52,7 @@ namespace FUnreal
 
                     tpl.SetPlaceHolder(role, value);
                 }
+                */
 
                 XmlNode metaNode = tplNode.SelectSingleNode("meta");
                 if (metaNode != null)
@@ -113,8 +116,7 @@ namespace FUnreal
 
     public class FUnrealTemplate
     {
-        Dictionary<string, string> placeHolders;
-        Dictionary<string, string> metas;
+        private Dictionary<string, string> metas;
 
         public string Name { get; internal set; }
         public string BasePath { get; internal set; }
@@ -127,26 +129,7 @@ namespace FUnreal
             BasePath = templatePath;
             Label = label;
             Description = desc;
-            placeHolders = new Dictionary<string, string>();
             metas = new Dictionary<string, string>();
-        }
-
-        public int PlaceHolderCount { get { return placeHolders.Count; } }
-
-        public void SetPlaceHolder(string role, string name)
-        {
-            placeHolders[role] = name;
-        }
-
-        public string GetPlaceHolder(string role)
-        {
-            if (!placeHolders.TryGetValue(role, out string name)) return null;
-            return name;
-        }
-
-        public bool HasPlaceHolder(string role)
-        {
-            return placeHolders.ContainsKey(role);
         }
 
         public void SetMeta(string name, string value)

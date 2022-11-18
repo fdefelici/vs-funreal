@@ -46,7 +46,7 @@ namespace FUnreal
         public void WriteMessage(string type, string format, params string[] args) 
         { 
             string timestamp = DateTime.Now.ToString(@"yyyy-MM-dd hh:mm:ss");
-            string content = string.Format(format, args);   
+            string content = XString.Format(format, args);   
 
             string message = $"[{timestamp}][{type}] {content}";
             _pane.WriteLine(message);
@@ -250,7 +250,7 @@ namespace FUnreal
 
         public void ShowStatusBarMessage(string format, params string[] args)
         {
-            string message = string.Format(format, args);
+            string message = XString.Format(format, args);
             VS.StatusBar.ShowMessageAsync(message).FireAndForget();
         }
     }

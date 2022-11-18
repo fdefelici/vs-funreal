@@ -585,6 +585,7 @@ namespace FUnreal
                 return false;
             }
 
+            /*
             string pluginNamePH = tpl.GetPlaceHolder("PluginName"); //Mandatory
             if (pluginNamePH == null)
             {
@@ -593,14 +594,27 @@ namespace FUnreal
             }
 
             string moduleNamePH = tpl.GetPlaceHolder("ModuleName"); //Optional
+            */
+
+            string pluginNamePH = "@{TPL_PLUG_NAME}";
+            string moduleNamePH = "@{TPL_MODU_NAME}";
+            string moduleFilePH = "@{TPL_MODU_CLASS}";
+
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, _pluginsPath);
             PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
             strategy.AddPlaceholder(pluginNamePH, pluginName);
-            if (moduleNamePH != null) 
-            { 
+
+            if (moduleNameOrNull != null) 
+            {
+                string fileName = moduleNameOrNull;
+                if (!fileName.EndsWith("Module"))
+                {
+                    fileName = $"{fileName}Module";
+                }
                 strategy.AddPlaceholder(moduleNamePH, moduleNameOrNull);
+                strategy.AddPlaceholder(moduleFilePH, fileName);
             }
             await XFilesystem.DeepCopyAsync(tpl.BasePath, _pluginsPath, strategy);
 
@@ -742,13 +756,14 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
-
+            /*
             string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
             if (moduleNamePH == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
                 return false;
             }
+            */
 
             string metaType = tpl.GetMeta("type");
             string metaPhase = tpl.GetMeta("phase");
@@ -763,7 +778,17 @@ namespace FUnreal
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, plugin.SourcePath);
             PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
+
+            string fileName = moduleName;
+            if (!fileName.EndsWith("Module"))
+            {
+                fileName = $"{fileName}Module";
+            }
+
+            string moduleNamePH = "@{TPL_MODU_NAME}";
+            string moduleFilePH = "@{TPL_MODU_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
+            strategy.AddPlaceholder(moduleFilePH, fileName);
 
             string sourcePath = plugin.SourcePath;
             await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
@@ -1068,17 +1093,18 @@ namespace FUnreal
                 return false;
             }
 
-            string moduleApiPH = tpl.GetPlaceHolder("ModuleApi");
-            string incluPathPH = tpl.GetPlaceHolder("IncluPath");
-            string classNamePH = tpl.GetPlaceHolder("ClassName");
+            string moduleApiPH = "@{TPL_MODU_API}"; //tpl.GetPlaceHolder("ModuleApi");
+            string incluPathPH = "@{TPL_SOUR_INCL}"; //tpl.GetPlaceHolder("IncluPath");
+            string classNamePH = "@{TPL_SOUR_CLASS}"; //tpl.GetPlaceHolder("ClassName");
             string headerFileME = tpl.GetMeta("header");
             string sourceFileME = tpl.GetMeta("source");
-
+            /*
             if (moduleApiPH == null || incluPathPH == null || classNamePH == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
                 return false;
             }
+            */
 
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
@@ -1094,7 +1120,7 @@ namespace FUnreal
 
             PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
             strategy.AddFileExtension(".h", ".cpp");
-            strategy.AddPlaceholder(moduleApiPH, moduleApi); //Di fatto da mettere solo se la classe e' Public ?!?!
+            strategy.AddPlaceholder(moduleApiPH, moduleApi); 
             strategy.AddPlaceholder(incluPathPH, incluPath);
             strategy.AddPlaceholder(classNamePH, className);
             strategy.HandleFileContent(headerPath);
@@ -1188,12 +1214,14 @@ namespace FUnreal
                 return false;
             }
 
+            /*
             string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
             if (moduleNamePH == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
                 return false;
             }
+            */
 
             string metaType = tpl.GetMeta("type");
             string metaPhase = tpl.GetMeta("phase");
@@ -1209,7 +1237,17 @@ namespace FUnreal
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, sourcePath);
             PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
             strategy.AddFileExtension(".cpp", ".h", ".cs");
+
+            string fileName = moduleName;
+            if (!fileName.EndsWith("Module"))
+            {
+                fileName = $"{fileName}Module";
+            }
+
+            string moduleNamePH = "@{TPL_MODU_NAME}";
+            string moduleFilePH = "@{TPL_MODU_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
+            strategy.AddPlaceholder(moduleFilePH, fileName);
 
             await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
 

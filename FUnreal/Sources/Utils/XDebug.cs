@@ -31,7 +31,7 @@ namespace FUnreal
         private static void WriteMessage(string type, string format, params string[] args)
         {
             string timestamp = DateTime.Now.ToString(@"yyyy-MM-dd hh:mm:ss");
-            string content = string.Format(format, args);
+            string content = XString.Format(format, args);
 
             string message = $"[{timestamp}][{XDialogLib.Title_FUnrealToolbox}][{type}] {content}";
             Debug.Print(message);

@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
   <!-- PLUGIN TEMPLATES -->
+  <!-- Placeholders 
+    @{TPL_PLUG_NAME}  Plugin name
+    @{TPL_MODU_NAME}  Module name
+    @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
+  -->
   <template context="plugins" name="tpl_plugin_blank" ue="4,5" path="UE5/Plugins/Blank">
-    <placeholder role="PluginName" value="@{TPL_PLG_NAME}"/>
-    <placeholder role="ModuleName" value="@{TPL_MOD_NAME}"/>
+    <meta has_module="true"/>
     <ui label="Blank" desc="Create a blank plugin with a minimal amount of code."/>
   </template>
   <template context="plugins" name="tpl_plugin_contentonly" ue="4,5" path="UE5/Plugins/ContentOnly">
-    <placeholder role="PluginName" value="@{TPL_PLG_NAME}"/>
+    <meta has_module="false"/>
     <ui label="Content Only" desc="Create a blank plugin that can only contain content."/>
   </template>
 
   <!-- PLUGIN MODULE TEMPLATES -->
-  <template context="modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLG_NAME}/Source">
-    <placeholder role="ModuleName" value="@{TPL_MOD_NAME}"/>
+  <!-- Placeholders 
+    @{TPL_MODU_NAME}  Module name
+    @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
+  -->
+  <template context="modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
     <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
     <meta type="Runtime" phase="Default"/>
   </template>
 
   <!-- GAME MODULE TEMPLATES -->
-  <template context="game_modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLG_NAME}/Source">
-    <placeholder role="ModuleName" value="@{TPL_MOD_NAME}"/>
+  <!-- Placeholders 
+    @{TPL_MODU_NAME}  Module name
+    @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
+  -->
+  <template context="game_modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
     <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
     <meta type="Runtime" phase="Default" target="Game"/>
   </template>
 
   <!-- SOURCE TEMPLATES -->
+  <!-- Placeholders 
+    @{TPL_MODU_API}    Module api macro
+    @{TPL_SOUR_CLASS}  Source class name (.h, .cpp) and  file name 
+    @{TPL_SOUR_INCL}   Source include path
+  -->
   <template context="sources" name="tpl_class_actor" ue="4,5" path="UE5/Sources">
-    <placeholder role="ModuleApi" value="@{TPL_MOD_API}"/>
-    <placeholder role="ClassName" value="@{TPL_CLS_NAME}"/>
-    <placeholder role="IncluPath" value="@{TPL_INC_PATH}"/>
     <ui label="Actor" desc="An Actor is an object that can be placed or spawned in the world."/>
     <meta header="Actor.h" source="Actor.cpp"/>
   </template>
   <template context="sources" name="tpl_class_actorcomponent" ue="4,5" path="UE5/Sources">
-    <placeholder role="ModuleApi" value="@{TPL_MOD_API}"/>
-    <placeholder role="ClassName" value="@{TPL_CLS_NAME}"/>
-    <placeholder role="IncluPath" value="@{TPL_INC_PATH}"/>
     <meta header="ActorComponent.h" source="ActorComponent.cpp"/>
     <ui label="Actor Component" desc="An ActorComponent is a reusable component that can be added to any actor."/>
   </template>

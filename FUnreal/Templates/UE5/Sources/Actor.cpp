@@ -1,7 +1,7 @@
-﻿#include "@{TPL_INC_PATH}@{TPL_CLS_NAME}.h"
+﻿#include "@{TPL_SOUR_INCL}@{TPL_SOUR_CLASS}.h"
 
 // Sets default values
-A@{TPL_CLS_NAME}::A@{TPL_CLS_NAME}()
+A@{TPL_SOUR_CLASS}::A@{TPL_SOUR_CLASS}()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -9,14 +9,14 @@ A@{TPL_CLS_NAME}::A@{TPL_CLS_NAME}()
 }
 
 // Called when the game starts or when spawned
-void A@{TPL_CLS_NAME}::BeginPlay()
+void A@{TPL_SOUR_CLASS}::BeginPlay()
 {
 	Super::BeginPlay();
 
 }
 
 // Called every frame
-void A@{TPL_CLS_NAME}::Tick(float DeltaTime)
+void A@{TPL_SOUR_CLASS}::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

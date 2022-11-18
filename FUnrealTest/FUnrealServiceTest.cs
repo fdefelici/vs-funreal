@@ -59,16 +59,16 @@ namespace FUnrealTest
             Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Plugins/MyPlug"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Resources/Icon128.png"));
             Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Plugins/MyPlug/Source/MyMod"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Private/MyMod.cpp"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Public/MyMod.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Private/MyModModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Public/MyModModule.h"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/MyMod.Build.cs"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/MyPlug/MyPlug.uplugin"));
 
-            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Public/MyMod.h");
+            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Public/MyModModule.h");
             Assert.IsTrue(fileHea.Contains("class FMyModModule"));
             
-            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Private/MyMod.cpp");
-            Assert.IsTrue(fileCpp.Contains("#include \"MyMod.h\""));
+            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/Source/MyMod/Private/MyModModule.cpp");
+            Assert.IsTrue(fileCpp.Contains("#include \"MyModModule.h\""));
             Assert.IsTrue(fileCpp.Contains("#define LOCTEXT_NAMESPACE \"FMyModModule\""));
             Assert.IsTrue(fileCpp.Contains("void FMyModModule::StartupModule()"));
             Assert.IsTrue(fileCpp.Contains("void FMyModModule::ShutdownModule()"));
@@ -157,15 +157,15 @@ namespace FUnrealTest
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
             Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Plugins/Plugin01/Source/MyMod"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Private/MyMod.cpp"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Public/MyMod.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Private/MyModModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Public/MyModModule.h"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/MyMod.Build.cs"));
             
-            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Public/MyMod.h");
+            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Public/MyModModule.h");
             Assert.IsTrue(fileHea.Contains("class FMyModModule"));
 
-            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Private/MyMod.cpp");
-            Assert.IsTrue(fileCpp.Contains("#include \"MyMod.h\""));
+            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/MyMod/Private/MyModModule.cpp");
+            Assert.IsTrue(fileCpp.Contains("#include \"MyModModule.h\""));
             Assert.IsTrue(fileCpp.Contains("#define LOCTEXT_NAMESPACE \"FMyModModule\""));
             Assert.IsTrue(fileCpp.Contains("void FMyModModule::StartupModule()"));
             Assert.IsTrue(fileCpp.Contains("void FMyModModule::ShutdownModule()"));
@@ -472,16 +472,16 @@ namespace FUnrealTest
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
             Assert.IsTrue(TestUtils.ExistsDir(uprojectPath,  "Source/MyMod"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Private/MyMod.cpp"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Public/MyMod.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Private/MyModModule.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/Public/MyModModule.h"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Source/MyMod/MyMod.Build.cs"));
 
-            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Public/MyMod.h");
-            string fileHea    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Public/MyMod.h");
+            string fileHeaExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Public/MyModModule.h");
+            string fileHea    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Public/MyModModule.h");
             Assert.AreEqual(fileHeaExp, fileHea);
 
-            string fileCppExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Private/MyMod.cpp");
-            string fileCpp    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Private/MyMod.cpp");
+            string fileCppExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/Private/MyModModule.cpp");
+            string fileCpp    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/Private/MyModModule.cpp");
             Assert.AreEqual(fileCppExp, fileCpp);
 
             string fileCsExp = TestUtils.ReadFile(expectedPath, "Source/MyMod/MyMod.Build.cs");

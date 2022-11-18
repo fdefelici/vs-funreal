@@ -42,6 +42,7 @@
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\@{TPL_MOD_NAME}.Build.cs" />
   </ItemGroup>
 
@@ -52,6 +53,8 @@
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_PublicSubFolder\MyActor.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\Module01_Public\MyActor.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyModModule.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyModModule.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\Source\UPrjGame\UPrjGame.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_DeleteModule\UPrjGameOneMod.uproject" />
@@ -62,8 +65,6 @@
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\MyModRenamed\Public\MyModRenamedModule.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame_RenameModule\Source\UPrjGame\UPrjGame.h" />
-    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyMod.cpp" />
-    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyMod.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGame\UPrjGame.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjGame\UPrjGame.uproject" />
@@ -124,11 +125,11 @@
     <None Remove="Resources\FUnrealServiceTest\Templates\descriptor.xml" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Resources\Icon128.png" />
-    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Private\@{TPL_MOD_NAME}.cpp" />
-    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Public\@{TPL_MOD_NAME}.h" />
-    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\%40{TPL_PLG_NAME}.uplugin" />
-    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Resources\Icon128.png" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Private\@{TPL_FILE_NAME}.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Public\@{TPL_FILE_NAME}.h" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\Content\.gitkeep" />
+    <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLUG_NAME}\@{TPL_PLUG_NAME}.uplugin" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.h" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.cpp" />
@@ -220,10 +221,10 @@
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\MyMod.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyMod.cpp">
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Private\MyModModule.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyMod.h">
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\Public\MyModModule.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\UPrjGameEditor.Target.cs">
@@ -448,7 +449,10 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\UPrjOnePlugMod.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLG_NAME}\Content\.gitkeep">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLUG_NAME}\Source\@{TPL_MODU_NAME}\@{TPL_MODU_NAME}.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Content\.gitkeep">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -472,25 +476,22 @@
     <Content Include="Resources\FUnrealServiceTest\Templates\descriptor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Resources\Icon128.png">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\@{TPL_MOD_NAME}.Build.cs">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Private\@{TPL_MOD_NAME}.cpp">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Source\@{TPL_MOD_NAME}\Public\@{TPL_MOD_NAME}.h">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\@{TPL_PLG_NAME}\Resources\Icon128.png">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.h">

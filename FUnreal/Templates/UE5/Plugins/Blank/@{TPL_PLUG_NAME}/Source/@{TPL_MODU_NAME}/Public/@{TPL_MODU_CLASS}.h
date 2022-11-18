@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class F@{TPL_MOD_NAME}Module : public IModuleInterface
+class F@{TPL_MODU_CLASS} : public IModuleInterface
 {
 public:
 
