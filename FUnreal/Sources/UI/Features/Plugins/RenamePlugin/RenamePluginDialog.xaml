@@ -32,6 +32,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
 
             <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
@@ -52,6 +54,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Label     Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldNameClass}">Current Name:</Label>
@@ -65,14 +68,14 @@
                    />
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginNewPathTbl" Margin="0,5,0,10"> New\Plugin\Path</TextBlock>
 
-        <Label Grid.Row="4" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
-        <StackPanel Grid.Row="4" Grid.Column="2"
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        <StackPanel Grid.Row="5" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">
             <Button Name="confirmBtn" Click="confirmBtn_Clicked" IsDefault="True">Rename</Button>
             <Button Name="cancelBtn" IsCancel="True">Cancel</Button>
         </StackPanel>
 
-        <local:FProgressPanel Grid.Row="5" Grid.ColumnSpan="3" x:Name="taskProgressPanel"/>
+        <local:FProgressPanel Grid.Row="6" Grid.ColumnSpan="3" x:Name="taskProgressPanel"/>
     </Grid>
 </platform:DialogWindow>

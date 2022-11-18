@@ -32,6 +32,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
 
             <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
@@ -52,8 +54,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="40"     Name="moduleRow1" />
-            <RowDefinition Height="Auto"   Name="moduleRow2"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -70,9 +72,9 @@
 
         <Label      Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Class Type:</Label>
         <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
-            <RadioButton Margin="0,0,10,0" GroupName="ClassTypeGroup" Name="publicRdb" Checked="publicRdb_Checked">Public</RadioButton>
-            <RadioButton Margin="0,0,10,0" GroupName="ClassTypeGroup" Name="privateRdb"  Checked="privateRdb_Checked">Private</RadioButton>
-            <RadioButton Margin="0,0,10,0" GroupName="ClassTypeGroup" Name="freeRdb"  Checked="freeRdb_Checked">Free</RadioButton>
+            <RadioButton Margin="0,0,12,0" GroupName="ClassTypeGroup" Name="publicRdb" Checked="publicRdb_Checked">Public</RadioButton>
+            <RadioButton Margin="0,0,12,0" GroupName="ClassTypeGroup" Name="privateRdb"  Checked="privateRdb_Checked">Private</RadioButton>
+            <RadioButton Margin="0,0,12,0" GroupName="ClassTypeGroup" Name="freeRdb"  Checked="freeRdb_Checked">Custom</RadioButton>
         </StackPanel>
         
         <Label     Grid.Row="3" Grid.Column="0" Style="{StaticResource FieldNameClass}">Class Name:</Label>
@@ -81,7 +83,7 @@
         <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Name="headerPathTbl" Margin="0,5,0,5">Header File Path</TextBlock>
         <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="sourcePathTbl" Margin="0,5,0,5">Source File Path</TextBlock>
 
-        <Label Grid.Row="7" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         <StackPanel Grid.Row="7" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">

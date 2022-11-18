@@ -109,7 +109,7 @@ namespace FUnreal
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
                 
                 var item = await _unrealVS.GetSelectedItemAsync();
-                bool isBuildFile = _unrealService.IsPluginModulePath(item.FullPath) && _unrealService.IsModuleTargetFile(item.FullPath);   
+                bool isBuildFile = _unrealService.IsPluginModulePath(item.FullPath) && _unrealService.IsModuleBuildFile(item.FullPath);   
                 return isBuildFile;
             };
             Func<Task<bool>> SinglePluginModuleFolder = async () =>
@@ -126,7 +126,7 @@ namespace FUnreal
                 if (!await _unrealVS.IsSingleSelectionAsync()) return false;
 
                 var item = await _unrealVS.GetSelectedItemAsync();
-                bool isBuildFile = _unrealService.IsGameModulePath(item.FullPath) && _unrealService.IsModuleTargetFile(item.FullPath);
+                bool isBuildFile = _unrealService.IsGameModulePath(item.FullPath) && _unrealService.IsModuleBuildFile(item.FullPath);
                 return isBuildFile;
             };
 
@@ -188,35 +188,43 @@ namespace FUnreal
             };
 
             menuContexts = new Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, List<int>>>();
-
+            
+            //CTX ProjectNode
+            {
                 var projectMenu = new Dictionary<Func<Task<bool>>, List<int>>();
                 projectMenu[SingleProjectScenario] = new List<int>() { S.ToolboxMenu, S.AddPluginCmd, S.AddGameModuleCmd }; ;
-            //CTX ProjectNode
-            menuContexts[ProjectNodeContext] = projectMenu;
+                menuContexts[ProjectNodeContext] = projectMenu;
+            }
 
-                var itemMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+            //CTX ItemNode
+            var itemMenu = new Dictionary<Func<Task<bool>>, List<int>>();
+            { 
                 itemMenu[DotPluginScenario]     = new List<int>() { S.ToolboxMenu, S.AddModuleCmd, S.RenamePluginCmd, S.DeletePluginCmd };
                 itemMenu[DotProjectScenario]    = new List<int>() { S.ToolboxMenu, S.AddGameModuleCmd };
                 itemMenu[DotBuildCsPlugModScenario]    = new List<int>() { S.ToolboxMenu, S.RenameModuleCmd, S.DeleteModuleCmd };
                 itemMenu[DotBuildCsGameModScenario] = new List<int>() { S.ToolboxMenu, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
-                itemMenu[SingleFileScenario]    = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
+                itemMenu[SingleFileScenario]    = new List<int>() { S.ToolboxMenu, S.RenameSourceFileCmd, S.DeleteSourceCmd };
                 itemMenu[MultiFileScenario]     = itemMenu[SingleFileScenario];
-            //CTX ItemNode
-            menuContexts[ItemNodeContext] = itemMenu;
+                menuContexts[ItemNodeContext] = itemMenu;
+            }
 
+            //CTX FolderNode
+            { 
                 var folderMenu = new Dictionary<Func<Task<bool>>, List<int>>();
                 folderMenu[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.DeleteSourceCmd };
                 folderMenu[MultiSourceFolder] = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
                 folderMenu[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
                 folderMenu[SinglePluginFolder] = itemMenu[DotPluginScenario];
                 folderMenu[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
-            //CTX FolderNode
-            menuContexts[FolderNodeContext] = folderMenu;
+                menuContexts[FolderNodeContext] = folderMenu;
+            }
 
+            //CTX MULTINODE   [VirtualFolder(s) + File(s)]
+            { 
                 var miscMenu = new Dictionary<Func<Task<bool>>, List<int>>();
                 miscMenu[MultiMiscItem] = itemMenu[SingleFileScenario];
-            //CTX MULTINODE   [VirtualFolder(s) + File(s)]
-            menuContexts[MiscNodeContext] = miscMenu;
+                menuContexts[MiscNodeContext] = miscMenu;
+            }
         }
     }
 }

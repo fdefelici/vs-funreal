@@ -53,7 +53,6 @@ namespace FUnreal
             {
                 _dialog.ShowFreeCheckbox(true);
             }
-
            
             _dialog.classTemplCbx.ItemsSource = _templates;
             _dialog.classTemplCbx.SelectedIndex = 0;  //Fire Template Changed
@@ -67,18 +66,6 @@ namespace FUnreal
             int index = _dialog.classTemplCbx.SelectedIndex;
             FUnrealTemplate selected = _templates[index];
             _dialog.classTemplTbl.Text = selected.Description;
-
-            /*
-                _templateHasModuleName = selected.HasPlaceHolder("ModuleName");
-                if (_templateHasModuleName)
-                {
-                    _dialog.ShowModuleNameControls(true);
-                }
-                else //Example: Content Only Plugin has no ModuleName
-                {
-                    _dialog.ShowModuleNameControls(false);
-                }
-            */
 
             _dialog.SetClassTypeIndex((int)_absPathSelectedType); //Fire Event
 
@@ -98,8 +85,8 @@ namespace FUnreal
 
             _unrealService.ComputeSourceCodePaths(_absPathSelected, className, sourceType, out string headerPath, out string sourcePath, out _);
 
-            _dialog.headerPathTbl.Text = _unrealService.RelPathToModule(headerPath);
-            _dialog.sourcePathTbl.Text = _unrealService.RelPathToModule(sourcePath);
+            _dialog.headerPathTbl.Text = _unrealService.ModuleRelativePath(headerPath);
+            _dialog.sourcePathTbl.Text = _unrealService.ModuleRelativePath(sourcePath);
 
             if (string.IsNullOrEmpty(className))
             {
@@ -129,8 +116,20 @@ namespace FUnreal
 
             _unrealService.ComputeSourceCodePaths(_absPathSelected, className, sourceType, out string headerPath, out string sourcePath, out _);
 
-            _dialog.headerPathTbl.Text = _unrealService.RelPathToModule(headerPath);
-            _dialog.sourcePathTbl.Text = _unrealService.RelPathToModule(sourcePath);
+            _dialog.headerPathTbl.Text = _unrealService.ModuleRelativePath(headerPath);
+            _dialog.sourcePathTbl.Text = _unrealService.ModuleRelativePath(sourcePath);
+
+            if (XFilesystem.FileExists(headerPath) || XFilesystem.FileExists(sourcePath))
+            {
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
+            }
+            else
+            {
+                _dialog.addButton.IsEnabled = true;
+                _dialog.HideError();
+            }
+
             return Task.CompletedTask;
         }
 

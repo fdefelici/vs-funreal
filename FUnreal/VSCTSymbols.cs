@@ -24,5 +24,6 @@ namespace FUnreal
         public const int RenameGameModuleCmd = 0x0014;
         public const int DeleteGameModuleCmd = 0x0015;
         public const int AddSourceFileCmd    = 0x0016;
+        public const int RenameSourceFileCmd = 0x0017;
     }
 }

@@ -31,6 +31,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
 
             <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
@@ -51,6 +53,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" Name="moduleRow1" />
             <RowDefinition Height="Auto" Name="moduleRow2"/>
+            <RowDefinition Height="Auto" Name="ErrorRow"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -73,14 +76,14 @@
         <TextBox   Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNameTbx" TextChanged="moduleNameTbxChanged" PreviewTextInput="inputText_Validation" />
         <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="modulePathTbl" Margin="0,5,0,10">Module Path</TextBlock>
 
-        <Label Grid.Row="6" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
-        <StackPanel Grid.Row="6" Grid.Column="2"
+        <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        <StackPanel Grid.Row="7" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">
             <Button Name="addButton" Click="okButton_Click" IsDefault="True">Add</Button>
             <Button Name="cancelButton" IsCancel="True">Cancel</Button>
         </StackPanel>
 
-        <local:FProgressPanel Grid.Row="7" Grid.ColumnSpan="3" x:Name="taskProgressPanel"/>
+        <local:FProgressPanel Grid.Row="8" Grid.ColumnSpan="3" x:Name="taskProgressPanel"/>
     </Grid>
 </platform:DialogWindow>

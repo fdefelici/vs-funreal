@@ -26,6 +26,9 @@
     <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module01Ren\Module01Ren.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\MyMod.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneMod.Target.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\UPrjGameOneModEditor.Target.cs" />
@@ -33,6 +36,9 @@
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame.Target.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGameEditor.Target.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
+    <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module02\Module02.Build.cs" />
     <Compile Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs" />
@@ -70,6 +76,18 @@
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h" />
     <None Remove="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\UPrjOnePlugMod.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Module01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Actor01Ren.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Module01.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Actor02.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Module02.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Actor02.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Module02.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h" />
+    <None Remove="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\UPrjOnePlugMod.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjEmpty\UPrjEmpty.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Private\MyMod.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\Public\MyMod.h" />
@@ -79,6 +97,17 @@
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.h" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjGame\UPrjGame.uproject" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Plugin01.uplugin" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Module01.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Actor01.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Module01.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Actor02.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Module02.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Actor02.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Module02.h" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Plugin01.uplugin" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Public\Actor01.h" />
@@ -91,6 +120,7 @@
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_expected" />
     <None Remove="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\UPrjOnePlug.uproject_renamed_expected" />
+    <None Remove="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\UPrjRenameFile.uproject" />
     <None Remove="Resources\FUnrealServiceTest\Templates\descriptor.xml" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\@{TPL_PLG_NAME}.uplugin" />
     <None Remove="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\@{TPL_PLG_NAME}\Resources\Icon128.png" />
@@ -247,6 +277,51 @@
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjOnePlugMod_RenameModule01\UPrjOnePlugMod.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Module01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Actor01Ren.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Module01.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Actor02.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Module02.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Actor02.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Module02.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFile\UPrjOnePlugMod.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGameOneMod\Source\MyMod\MyMod.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -290,6 +365,51 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\UPrjGame.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Private\Module01.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Actor01.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module01\Public\Module01.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Actor02.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Private\Module02.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Actor02.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module02\Public\Module02.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Private\Module03NotAligned.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\UPrjRenameFile.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Private\Actor01.cpp">

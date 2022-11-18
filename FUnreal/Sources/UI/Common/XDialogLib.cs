@@ -10,7 +10,7 @@ namespace FUnreal
         public const string ErrorMsg_PluginNotExists = "It seems that selected plugin doesn't exists. Maybe filesystem and VS Solution are misaligned!";
         internal static string ErrorMsg_TemplatesNotFound = "Templates not found for FUnreal!";
         internal static string ErrorMsg_ModuleNotExists = "It seems that selected module doesn't exists. Maybe filesystem and VS Solution are misaligned!";
-        internal static string ErrorMsg_ModuleAlreadyExists = "Module already exists!";
+        internal static string ErrorMsg_ModuleAlreadyExists = "Module already exist at {0}";
         public static string InfoMsg_PluginDelete = "This plugin will be deleted permanently!";
         internal static string ErrorMsg_FileAlreadyExists = "A file already exists with this name!";
         public static string ErrorMsg_InvalidPath = "Invalid Path {0}";
@@ -27,6 +27,7 @@ namespace FUnreal
         public static string Ctx_UpdatingModuleDependency = "Updating module dependency ...";
         internal static string Ctx_DeletingModule = "Deleting module ...";
         internal static string Ctx_UpdatingModule = "Updating module ...";
+        internal static string Ctx_UpdatingFiles = "Updating files ...";
         internal static string Ctx_UpdatingPlugin = "Updating plugin ...";
         internal static string Info_DeletingModuleFolder = "Deleting module folder: {0} ...";
         internal static string Info_CleaningDependencyFromFile = "Cleaning dependency in {0} ...";
@@ -38,7 +39,7 @@ namespace FUnreal
 
         public static string Error_PluginNotFound = "Plugin not found: {0}";
         public static string Error_PluginModuleNotFound = "Module not found: {0}::{1}";
-        public static string Error_PluginModuleAlreadyExists = "Module already exists: {0}::{1}";
+        public static string Error_ModuleAlreadyExists = "Module already exists at: {0}";
         public static string Error_GameModuleAlreadyExists = "Module already exists: {0}";
         public static string Error_GameModuleNotFound = "Module not found: {0}";
         internal static string Ctx_RegenSolutionFiles = "Regenerating VS Soluton files ...";
@@ -59,15 +60,24 @@ namespace FUnreal
         internal static string Info_UpdatingProjectDescriptorFile = "Updating uproject file {0} ...";
         internal static string Error_SourceDirectoryNotFound = "Directory not found: {0}";
         internal static string Ctx_DeletingFiles = "Deleting files ...";
+        internal static string Ctx_RenamingFiles = "Renaming files ...";
         internal static string Ctx_DeletingDirectories = "Deleting directories ...";
         internal static string Info_UpdatingApiMacroInFile = "Updating API macro in {0} ...";
 
         public static string Info_DeletingFile = "Deleting file {0} ...";
         public static string Info_DeletingFolder = "Deleting folder {0} ...";
+        public static string Info_DeletingPluginsFolderBecauseEmpty = "Deleting Plugins folder because empty {0} ...";
         internal static string Error_Delete = "Delete failed!";
         internal static string Error_SourcePathNotFound = "Path not found {0}";
         internal static string ErrorMsg_PluginAlreadyExists = "Plugin already exists!";
         internal static string Error_FailureRenamingFolder = "Renaming folder failed! Probably folders/files in the folder tree are locked by another process.";
+        internal static string Error_FileNotFound = "File not found: {0}";
+        internal static string Error_FileRenameFailed = "File rename failed!";
+        internal static string Info_RenamingFileToNewName = "Renaming file {0} to {1}";
+        internal static string Info_CheckingModuleDependency = "Checking dependency to module {0} ...";
+        internal static string Info_DependentModule = "Dependent module {0}";
+        internal static string info_UpdatingFile = "Updating file {0} ...";
+        internal static string Title_FUnrealToolbox = "FUnreal Toolbox";
 
         public static void TextBox_FileName_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {

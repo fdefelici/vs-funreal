@@ -28,7 +28,7 @@
                            MouseUp="messageExpand_Clicked" Padding="0,0,0,0"
                            >Message</TextBlock>
         </StackPanel>
-        <ProgressBar Name="progressBar" Minimum="0" Maximum="100" IsIndeterminate="true" Margin="0,4,0,0"/>
+        <ProgressBar Name="progressBar" Minimum="0" Maximum="100" IsIndeterminate="True" Margin="0,4,0,0"/>
 
         <StackPanel
                     Name="logPanel"

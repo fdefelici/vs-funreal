@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -72,6 +74,24 @@ namespace FUnreal
                 logTbl.Inlines.Add(new Run(eachLine));
                 logTbl.Inlines.Add(new LineBreak());
             }
+        }
+
+        public void SetFailureMode()
+        {
+            if (progressBar.IsIndeterminate == false) return;
+
+            progressBar.IsIndeterminate = false;
+            progressBar.Minimum = 100;
+            progressBar.Foreground = System.Windows.Media.Brushes.Red;
+        }
+
+        public void SetProgressMode()
+        {
+            if (progressBar.IsIndeterminate == true) return;
+
+            progressBar.IsIndeterminate = true;
+            progressBar.Minimum = 0;
+            progressBar.Foreground = System.Windows.Media.Brushes.Green;
         }
 
         private void messageExpand_Clicked(object sender, System.Windows.Input.MouseButtonEventArgs e)

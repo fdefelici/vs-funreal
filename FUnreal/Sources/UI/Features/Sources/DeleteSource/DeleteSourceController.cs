@@ -43,7 +43,7 @@ namespace FUnreal
             string detailMsg;
             if (sourcePaths.Count == 1)
             {
-                detailMsg = _unrealService.RelPathToModule(sourcePaths[0]);
+                detailMsg = _unrealService.ModuleRelativePath(sourcePaths[0]);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace FUnreal
             _dialog.OnConfirm = async () =>
             {
                 _dialog.ShowActionInProgress();
-                bool success = await _unrealService.DeleteSourceDirectoryAsync(sourcePaths, _notifier);
+                bool success = await _unrealService.DeleteSourcesAsync(sourcePaths, _notifier);
                 if (!success)
                 {
                     _dialog.ShowActionInError();

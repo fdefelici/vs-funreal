@@ -79,14 +79,17 @@ namespace FUnreal
 
         public void SetProgressMessage(FUnrealNotifier.MessageType Type, string headMessage, string traceMessage)
         {
+            if (Type == FUnrealNotifier.MessageType.ERRO) taskProgressPanel.SetFailureMode();
+            else taskProgressPanel.SetProgressMode();
+
             string prefix = $"[{Type}]";
             string trace = $"{prefix} {traceMessage}";
             taskProgressPanel.AddMessage(headMessage, trace);
         }
 
-        public void ShowError(string msg)
+        public void ShowError(string msg, params string[] args)
         {
-            errorMsgLbl.Content = msg;
+            errorMsgLbl.Content = string.Format(msg, args);
             errorMsgLbl.Visibility = System.Windows.Visibility.Visible;
         }
 

@@ -31,24 +31,34 @@ namespace FUnreal
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            
+
             //Autoloading VSPackage if a file (.uproject) is present, seems doesn't exist....(very strage)
             //https://learn.microsoft.com/en-us/visualstudio/extensibility/how-to-use-rule-based-ui-context-for-visual-studio-extensions?view=vs-2022
             //As a workaround, stop loading the code if it is not a Unreal Project.
             //NOTE: This workaround works only if VS IDE is launched from scratch. 
             //      Don't work if from a VS IDE solution, it is opened another solution using Open -> Project/Solution (VSpackage is not reloaded)
-            
+
             if (FUnrealVS.IsUnrealSolution())
             {
-                //System.Collections.Generic.IEnumerable<object> cmds = await this.RegisterCommandsAsync();
-                // Debug.Print(">>>>>>>>> FUNREAL cmds: {0}", cmds.Count());
-                await this.RegisterCommandsAsync();
+                FUnrealVS unrealVS = await FUnrealVS.CreateAsync();
+                FUnrealService unrealService = FUnrealService.Create(unrealVS);
+                if (unrealService == null)
+                {
+                    unrealVS.Output.Erro($"{XDialogLib.Title_FUnrealToolbox} failed to load!");
+                    unrealVS.Output.ForceFocus();
+                    unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} fails. Please check {XDialogLib.Title_FUnrealToolbox} Output window!");
+                    return;
+                }
 
-
-                FUnrealService unrealService = FUnrealService.SetUp_OnUIThread();
-                FUnrealVS unrealVS = new FUnrealVS();
                 ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
 
+                var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS); //object instance kept alive by unrealVS
+                unrealVS.OnUProjectLoadedAsync = projectLoadHandler.ExecuteAsync;
+
+
+                await this.RegisterCommandsAsync();
+
+                /* Configure Menu Commands */
                 ToolboxMenu.Instance.Controller = new ToolboxMenuController(unrealService, unrealVS, ctxMenuMgr);
 
                 AddPluginCmd.Instance.Controller = new AddPluginController(unrealService, unrealVS, ctxMenuMgr);
@@ -60,17 +70,24 @@ namespace FUnreal
                 DeleteModuleCmd.Instance.Controller = new DeleteModuleController(unrealService, unrealVS, ctxMenuMgr);
                 AddSourceClassCmd.Instance.Controller = new AddSourceClassController(unrealService, unrealVS, ctxMenuMgr);
                 AddSourceFileCmd.Instance.Controller = new AddSourceFileController(unrealService, unrealVS, ctxMenuMgr);
-
+                RenameSourceFileCmd.Instance.Controller = new RenameSourceFileController(unrealService, unrealVS, ctxMenuMgr);
 
                 AddGameModuleCmd.Instance.Controller = new AddGameModuleController(unrealService, unrealVS, ctxMenuMgr);
                 RenameGameModuleCmd.Instance.Controller = new RenameGameModuleController(unrealService, unrealVS, ctxMenuMgr);
                 DeleteGameModuleCmd.Instance.Controller = new DeleteGameModuleController(unrealService, unrealVS, ctxMenuMgr);
 
-                Debug.Print(">>>>>>>>> FUNREAL LOADED!");
+
+                unrealVS.Output.Info($"{XDialogLib.Title_FUnrealToolbox} Loaded!");
+                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} Ready ;-)");
+
+                //Simulate Project Loaded event at startup
+                projectLoadHandler.ExecuteAsync().FireAndForget();
+
+                XDebug.Info("Loaded");
             }
             else
             {
-                Debug.Print(">>>>>>>>> FUNREAL NOT LOADED. No Uneal project detected!");
+                XDebug.Info("Not Loaded! No Unreal project detected!");
             }
         }
 

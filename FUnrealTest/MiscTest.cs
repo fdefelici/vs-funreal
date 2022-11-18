@@ -29,7 +29,7 @@ namespace FUnrealTest
 
             JToken array = json?["list"]!;
 
-            MyStruct myStruct;
+            //MyStruct myStruct;
 
 
             Console.WriteLine(array.Parent);
@@ -154,7 +154,7 @@ namespace FUnrealTest
             //100.000 files => 95 seconds
 
             int fileCount = 100000;
-            for(int i = 0; i < fileCount; i++)
+            for (int i = 0; i < fileCount; i++)
             {
                 string filePath = XFilesystem.PathCombine(sourcePath, $"File{i}.txt");
                 XFilesystem.WriteFile(filePath, "key xey1 dey2 ");
@@ -223,6 +223,18 @@ namespace FUnrealTest
 
 
             TestUtils.DeleteDir(tmpPath);
+        }
+
+        [TestMethod]
+        public void TaskDelay()
+        {
+            Console.WriteLine("BEFORE");
+
+            _ = Task.Delay(2000).ContinueWith((task) => { Console.WriteLine("DELAYED"); }, TaskScheduler.Default);
+
+            Console.WriteLine("AFTER");
+
+            //Thread.Sleep(3000);
         }
     }
 }

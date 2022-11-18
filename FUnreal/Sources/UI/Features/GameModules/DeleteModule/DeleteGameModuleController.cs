@@ -35,7 +35,7 @@ namespace FUnreal
             var itemVs = await _unrealVS.GetSelectedItemAsync();
             string moduleName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
 
-            if (!_unrealService.ExistsGameModule(moduleName))
+            if (!_unrealService.ExistsModule(moduleName))
             {
                 await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_ModuleNotExists);
                 return;

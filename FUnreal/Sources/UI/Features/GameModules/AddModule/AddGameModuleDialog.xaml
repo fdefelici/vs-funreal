@@ -31,6 +31,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
 
             <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
@@ -49,9 +51,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" Name="moduleRow1" />
             <RowDefinition Height="Auto" Name="moduleRow2"/>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" Name="Error"/>
+            <RowDefinition Height="Auto" Name="Buttons"/>
+            <RowDefinition Height="Auto" Name="Progress"/>
         </Grid.RowDefinitions>
 
         <Label     Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldNameClass}">Template:</Label>
@@ -68,7 +70,8 @@
         <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNameTbx" TextChanged="moduleNameTbxChanged" PreviewTextInput="inputText_Validation" />
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="modulePathTbl" Margin="0,5,0,10">Module Path</TextBlock>
 
-        <Label Grid.Row="5" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        
         <StackPanel Grid.Row="5" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">

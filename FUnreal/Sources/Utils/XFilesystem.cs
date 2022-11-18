@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,11 +12,11 @@ namespace FUnreal
 {
     public class XFilesystem
     {
-
+        //TODO: Make Async and Parallel
         public static bool DeepCopy(string sourcePath, string targetPath)
         {
             if (!Directory.Exists(sourcePath)) return false;
-            
+            Directory.CreateDirectory(targetPath); //Make sure target directory exists in case sourcePath contains only files
             try
             {
                 foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
@@ -178,9 +179,9 @@ namespace FUnreal
             return result;
         }
 
-        public static string GetFilenameNoExt(string path, bool considerMultipleDots = false)
+        public static string GetFilenameNoExt(string path, bool considerMultipleDotsExtension = false)
         {
-            if (!considerMultipleDots)
+            if (!considerMultipleDotsExtension)
             {
                 return Path.GetFileNameWithoutExtension(path);
             }
@@ -237,7 +238,30 @@ namespace FUnreal
             string fileExt = Path.GetExtension(filePath);
             string newPath = PathCombine(basePath, newFileNameNoExt + fileExt);
 
-            File.Move(filePath, newPath);
+            try
+            {
+                //NOTE: File.Move doesn't seem to suffer of the issue related to Directory.Move
+                //      So can use Move, instead of Copy + Delete
+                File.Move(filePath, newPath);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return newPath;
+        }
+
+        public static string RenameFileNameWithExt(string filePath, string newFileNameWithExt)
+        {
+            string basePath = Path.GetDirectoryName(filePath);
+            string newPath = PathCombine(basePath, newFileNameWithExt);
+
+            try { 
+                File.Move(filePath, newPath);
+            } catch (Exception)
+            {
+                return null;
+            }
             return newPath;
         }
 
@@ -307,6 +331,32 @@ namespace FUnreal
             return FindFiles(path, recursive, searchPattern, filePath => true);
         }
 
+        public static List<string> FindFilesStoppingDepth(string path, string searchPattern)
+        {
+            List<string> result = new List<string>();
+
+            Queue<string> dirToVisit = new Queue<string>();
+            dirToVisit.Enqueue(path);
+
+            while (dirToVisit.Any())
+            {
+                string currentDir = dirToVisit.Dequeue();
+
+                var listFound = FindFiles(currentDir, false, searchPattern);
+                if (listFound.Count > 0)
+                {
+                    result.AddRange(listFound);
+                }
+                else
+                {
+                    var subDirs = FindDirectories(currentDir);
+                    subDirs.ForEach(dirToVisit.Enqueue);
+                }
+            }
+            return result;
+        }
+
+
         public static List<string> FindFiles(string path, bool recursive, string searchPattern, Func<string, bool> filter)
         {
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;  
@@ -323,8 +373,25 @@ namespace FUnreal
             return result;
         }
 
+
+        public static List<string> FindFilesAtLevel(string path, int dirLevel, string searchPattern)
+        {
+            if (dirLevel == 0) return Directory.EnumerateFiles(path, searchPattern, SearchOption.TopDirectoryOnly).ToList();
+
+            var dirsCurrLevel = Directory.EnumerateDirectories(path);
+            List<string> files = new List<string>();
+            foreach(var dir in dirsCurrLevel)
+            {
+                var found = FindFilesAtLevel(dir, dirLevel - 1, searchPattern);
+                files.AddRange(found);
+            }
+            return files;
+        }
+
         public static string FindFile(string path, bool recursive, string searchPattern)
         {
+            if (!DirectoryExists(path)) return null;
+
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
             if (filePaths.Any()) return filePaths.ElementAt(0);
@@ -333,6 +400,8 @@ namespace FUnreal
 
         public static string FindFile(string path, bool recursive, string searchPattern, Func<string, bool> filter)
         {
+            if (!DirectoryExists(path)) return null;
+
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
 
@@ -416,6 +485,38 @@ namespace FUnreal
         public static string FileChangeExtension(string filePath, string newExtention)
         {
             return Path.ChangeExtension(filePath, newExtention);
+        }
+
+        public static string FileChangeNameWithExt(string filePath, string newFileNameWithExt)
+        {
+            string basePath = PathParent(filePath);
+            return PathCombine(basePath, newFileNameWithExt);
+        }
+
+        public static async Task<List<string>> DirectoryFilesAsync(string dirPath, string searchPattern, bool recurse)
+        {
+            return await Task.Run(() =>
+            {
+                var array = Directory.GetFiles(dirPath, searchPattern, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+                return array.ToList();
+            });
+
+            
+        }
+
+        public static string GetFileNameWithExt(string filePath)
+        {
+            return GetLastPathToken(filePath);
+        }
+
+        public static string[] PathSplit(string path)
+        {
+            return path.Split(Path.DirectorySeparatorChar);
+        }
+
+        public static int PathCount(string path)
+        {
+            return PathSplit(path).Count();
         }
     }
 }

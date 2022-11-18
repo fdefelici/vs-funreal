@@ -1,29 +1,55 @@
 using FUnreal;
 using System.Text.Json.Nodes;
+using System.Windows.Shell;
 
 namespace FUnrealTest
 {
     [TestClass]
     public class FUnrealServiceTest
     {
+        string tmpPath;
+
+        [TestInitialize]
+        public void SetUp() 
+        {
+            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
+            tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+
+            TestUtils.DeleteDir(tmpPath);
+            TestUtils.DeepCopy(resPath, tmpPath);
+        }
+
+        string uprojectName;
+        string uprojectPath;
+        string uprojectFile;
+        FUnrealBuildToolMock ubt;
+        FUnrealService service;
+        private void SetUpTestCaseForProject(string projectName)
+        {
+            uprojectName = projectName;
+            uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
+            uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
+            string templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.xml");
+            ubt = new FUnrealBuildToolMock();
+            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+            FUnrealTemplates tpls = FUnrealTemplates.Load(templatePath);
+
+            service = new FUnrealService(eng, uprojectFile, tpls);
+            service.UpdateProjectAsync(new FUnrealNotifier()).GetAwaiter().GetResult();
+        }
+
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            TestUtils.DeleteDir(tmpPath);
+        }
 
         [TestMethod]
         public void AddPluginBlankToAnEmptyProject()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjEmpty");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjEmpty";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddPluginAsync("tpl_plugin_blank", "MyPlug", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -55,27 +81,13 @@ namespace FUnrealTest
             string filePlu = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/MyPlug.uplugin");
             Assert.IsTrue(filePlu.Contains("\"FriendlyName\": \"MyPlug\""));
             Assert.IsTrue(filePlu.Contains("\"Name\": \"MyMod\""));
-            
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddPluginContentOnlyToAnEmptyProject()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjEmpty");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjEmpty";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddPluginAsync("tpl_plugin_contentonly", "MyPlug", null, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -89,28 +101,15 @@ namespace FUnrealTest
 
             string filePlu = TestUtils.ReadFile(uprojectPath, "Plugins/MyPlug/MyPlug.uplugin");
             Assert.IsTrue(filePlu.Contains("\"FriendlyName\": \"MyPlug\""));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RemovePluginToProjectWithOnePluginInUProjectFile()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjOnePlug");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlug";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
             string upluginName = "Plugin01";
-            FUnrealBuildToolMock ubt = new();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
 
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.DeletePluginAsync(upluginName, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -121,29 +120,15 @@ namespace FUnrealTest
             string jsonExpected = TestUtils.ReadFile(uprojectFileExpected);
             string jsonActual   = TestUtils.ReadFile(uprojectFile);
             Assert.AreEqual(jsonExpected, jsonActual);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RenanePluginToProjectWithOnePluginInUProjectFile()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlug";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+            SetUpTestCaseForProject("UPrjOnePlug");
             string upluginName = "Plugin01";
             string upluginNewName = "Plugin01Renamed";
-            FUnrealBuildToolMock ubt = new();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            
             bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -158,27 +143,13 @@ namespace FUnrealTest
             string jsonExpected = TestUtils.ReadFile(uprojectFileExpected);
             string jsonActual = TestUtils.ReadFile(uprojectFile);
             Assert.AreEqual(jsonExpected, jsonActual);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddModuleBlankToExistentPlugin()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjOnePlug");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlug";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddPluginModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -208,30 +179,14 @@ namespace FUnrealTest
             Assert.IsTrue(filePlu.Contains("\"Name\": \"MyMod\""));
             Assert.IsTrue(filePlu.Contains("\"Type\": \"Runtime\""));
             Assert.IsTrue(filePlu.Contains("\"LoadingPhase\": \"Default\""));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RenameExistentModuleWithCppFiles()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjOnePlugMod_RenameModule01");
             
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.RenamePluginModuleAsync("Plugin01", "Module01", "Module01Ren", true, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -269,27 +224,13 @@ namespace FUnrealTest
             string module02CsExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
             string module02CsAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
             FAssert.AreEqualNN(module02CsExp, module02CsAct);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RenameExistentModuleWithoutCppFiles()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            SetUpTestCaseForProject("UPrjOnePlugMod");
+            
             bool taskResult = service.RenamePluginModuleAsync("Plugin01", "Module01", "NewModule01", false, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -323,27 +264,13 @@ namespace FUnrealTest
             //Check Module02 dependency to Module01 (now became NewModule01)
             string module02Cs = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
             Assert.IsTrue(module02Cs.Contains("\"NewModule01\""));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RenameExistentModuleWithCppFilesNotAligned()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.RenamePluginModuleAsync("Plugin01", "Module03", "NewModule03", true, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -373,27 +300,13 @@ namespace FUnrealTest
             Assert.IsTrue(filePlu.Contains("\"Name\": \"NewModule03\""));
             Assert.IsTrue(filePlu.Contains("\"Type\": \"Editor\""));
             Assert.IsTrue(filePlu.Contains("\"LoadingPhase\": \"Default\""));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void DeleteExistentModuleWithDependency()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
 
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.DeletePluginModuleAsync("Plugin01", "Module01", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -408,32 +321,16 @@ namespace FUnrealTest
             //Check Module02 dependency to Module01 (now became NewModule01)
             string module02Cs = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Module02.Build.cs");
             Assert.IsFalse(module02Cs.Contains("\"Module01\""));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddSourceClassPublicPrivate()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/Module01_Public");
-
-
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            
             bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -450,32 +347,16 @@ namespace FUnrealTest
             string fileCppExp = TestUtils.ReadFile(expectedPath, "MyActor.cpp");
             string fileCpp = TestUtils.ReadFile(TestUtils.PathParent(selectedSourcePath), "Private/MyActor.cpp");
             Assert.AreEqual(fileCppExp, fileCpp);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddSourceClassPublicPrivateWithSubFolder()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/Module01_PublicSubFolder");
-
-
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private/SubFolder");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+            
             bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -492,32 +373,16 @@ namespace FUnrealTest
             string fileCppExp = TestUtils.ReadFile(expectedPath, "MyActor.cpp");
             string fileCpp = TestUtils.ReadFile(TestUtils.PathParent(selectedSourcePath, 2), "Private/SubFolder/MyActor.cpp");
             Assert.AreEqual(fileCppExp, fileCpp);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddSourceClassPrivateOnly()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/Module01_Private");
-
-
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PRIVATE;
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
+          
             bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -534,32 +399,16 @@ namespace FUnrealTest
             string fileCppExp = TestUtils.ReadFile(expectedPath, "MyActor.cpp");
             string fileCpp = TestUtils.ReadFile(TestUtils.PathParent(selectedSourcePath), "Private/MyActor.cpp");
             Assert.AreEqual(fileCppExp, fileCpp);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddSourceClassFreePath()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/Module01_Private");
-
-
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01");
-            FUnrealSourceType selectedType = FUnrealSourceType.FREE;
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+            FUnrealSourceType selectedType = FUnrealSourceType.CUSTOM;
 
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -576,30 +425,14 @@ namespace FUnrealTest
             string fileCppExp = TestUtils.ReadFile(expectedPath, "MyActor.cpp");
             string fileCpp = TestUtils.ReadFile(selectedSourcePath, "MyActor.cpp");
             Assert.AreEqual(fileCppExp, fileCpp);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddSourceFile()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01");
 
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddSourceFileAsync(selectedSourcePath, "MyFile.txt", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -607,65 +440,31 @@ namespace FUnrealTest
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
             Assert.IsTrue(TestUtils.ExistsFile(selectedSourcePath, "MyFile.txt"));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
 
         [TestMethod]
         public void DeleteSources_OneFolder()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjOnePlugMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjOnePlugMod");
             List<string> selectedPaths = new List<string>();
             selectedPaths.Add(TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Public"));
 
-
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
-            bool taskResult = service.DeleteSourceDirectoryAsync(selectedPaths, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.DeleteSourcesAsync(selectedPaths, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
             Assert.IsFalse(TestUtils.ExistsDir(selectedPaths[0]));
-          
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void AddGameModuleBlank()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjGame";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjGame");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame");
 
-
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.AddGameModuleAsync("tpl_module_blank", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -696,32 +495,15 @@ namespace FUnrealTest
             string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGame.uproject");
             string filePrj    = TestUtils.ReadFile(uprojectPath, "UPrjGame.uproject");
             Assert.AreEqual(filePrjExp, filePrj);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
 
         [TestMethod]
         public void RenameGameModuleWithCppFiles()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjGameOneMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjGameOneMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_RenameModule");
 
-
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.RenameGameModuleAsync("MyMod", "MyModRenamed", true, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -757,31 +539,14 @@ namespace FUnrealTest
             string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGameOneMod.uproject");
             string filePrj = TestUtils.ReadFile(uprojectPath, "UPrjGameOneMod.uproject");
             FAssert.AreEqualNN(filePrjExp, filePrj);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void RenamePrimaryGameModule()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjGame";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjGame");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_RenamePrimaryModule");
 
-
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.RenameGameModuleAsync("UPrjGame", "UPrjGameRenamed", true, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -817,31 +582,14 @@ namespace FUnrealTest
             string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGame.uproject");
             string filePrj = TestUtils.ReadFile(uprojectPath, "UPrjGame.uproject");
             FAssert.AreEqualNN(filePrjExp, filePrj);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
         public void DeleteGameModuleWithCppFiles()
         {
-            string resPath = TestUtils.AbsPath("Resources", "FUnrealServiceTest");
-            string tmpPath = TestUtils.AbsPath("FUnrealServiceTest");
-
-            TestUtils.DeleteDir(tmpPath);
-            TestUtils.DeepCopy(resPath, tmpPath);
-
-            string uprojectName = "UPrjGameOneMod";
-            string uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
-            string uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates");
-
+            SetUpTestCaseForProject("UPrjGameOneMod");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame_DeleteModule");
 
-
-            FUnrealBuildToolMock ubt = new FUnrealBuildToolMock();
-            FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
-
-            FUnrealService service = new FUnrealService(eng, uprojectFile, uprojectName, templatePath);
             bool taskResult = service.DeleteGameModuleAsync("MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
@@ -861,9 +609,47 @@ namespace FUnrealTest
             string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGameOneMod.uproject");
             string filePrj    = TestUtils.ReadFile(uprojectPath, "UPrjGameOneMod.uproject");
             FAssert.AreEqualNN(filePrjExp, filePrj);
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
+
+        [TestMethod]
+        public void RenameFile_HeaderWithDependency()
+        {
+            SetUpTestCaseForProject("UPrjRenameFile");
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjRenameFile");
+            string fileToRename = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Public/Actor01.h");
+
+            bool taskResult = service.RenameFileAsync(fileToRename, "Actor01Ren.h", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/Module01/Public/Actor01Ren.h"));
+
+            string localHeaExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01/Public/Actor01Ren.h");
+            string localHeaAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01/Public/Actor01Ren.h");
+            FAssert.AreEqualNN(localHeaExp, localHeaAct);
+
+            string localCppExp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module01/Private/Actor01.cpp");
+            string localCppAct = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module01/Private/Actor01.cpp");
+            FAssert.AreEqualNN(localCppExp, localCppAct);
+
+            string mod2Cpp1Exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Private/Actor02.cpp");
+            string mod2Cpp1Act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Private/Actor02.cpp");
+            FAssert.AreEqualNN(mod2Cpp1Exp, mod2Cpp1Act);
+
+            string mod2Cpp2Exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Private/Module02.cpp");
+            string mod2Cpp2Act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Private/Module02.cpp");
+            FAssert.AreEqualNN(mod2Cpp2Exp, mod2Cpp2Act);
+
+            string mod2Hea1Exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Public/Actor02.h");
+            string mod2Hea1Act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Public/Actor02.h");
+            FAssert.AreEqualNN(mod2Hea1Exp, mod2Hea1Act);
+
+            string mod2Hea2Exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01/Source/Module02/Public/Module02.h");
+            string mod2Hea2Act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/Module02/Public/Module02.h");
+            FAssert.AreEqualNN(mod2Hea2Exp, mod2Hea2Act);
+        }
     }
 }

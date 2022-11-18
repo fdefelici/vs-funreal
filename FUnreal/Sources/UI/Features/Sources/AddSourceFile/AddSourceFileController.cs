@@ -10,17 +10,11 @@ namespace FUnreal
         private AddSourceFileDialog _dialog;
         private FUnrealNotifier _notifier;
         private string _absPathSelected;
-        private FUnrealSourceType _absPathSelectedType;
 
         public AddSourceFileController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS, ctxMenuMgr)
         {
             _notifier = new FUnrealNotifier();
-        }
-
-        public override Task<bool> ShouldBeVisibleAsync()
-        {
-            return base.ShouldBeVisibleAsync();
         }
 
         public override async Task DoActionAsync()
@@ -32,12 +26,6 @@ namespace FUnreal
 
             var item = await _unrealVS.GetSelectedItemAsync();
             _absPathSelected = item.FullPath;
-            _absPathSelectedType = _unrealService.TypeForSourcePath(_absPathSelected);
-            if (_absPathSelectedType == FUnrealSourceType.INVALID)
-            {
-                await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_InvalidPath, _absPathSelected);
-                return;
-            }
 
             _dialog.fileNameTbx.Focus();
             _dialog.fileNameTbx.Text = "NewFile.ext";  //Fire Name Changed
@@ -53,7 +41,7 @@ namespace FUnreal
 
             string filePath = XFilesystem.PathCombine(_absPathSelected, fileNameWithExt);
            
-            _dialog.filePathTbl.Text = _unrealService.RelPathToModule(filePath);
+            _dialog.filePathTbl.Text = _unrealService.ModuleRelativePath(filePath);
 
             if (string.IsNullOrEmpty(fileNameWithExt))
             {

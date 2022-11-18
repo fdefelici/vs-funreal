@@ -78,16 +78,16 @@ namespace FUnreal
         {
             string modName = _dialog.moduleNameTbx.Text;
 
-            _dialog.modulePathTbl.Text = _unrealService.RelGameModulePath(modName); //Todo: Reuse in AddModuleController instead of RelPluginModulePath
+            _dialog.modulePathTbl.Text = _unrealService.ProjectRelativePathForGameModuleDefault(modName);
 
             if (string.IsNullOrEmpty(modName))
             {
                 _dialog.addButton.IsEnabled = false;
             } 
-            else if (_unrealService.ExistsGameModule(modName))
+            else if (_unrealService.ExistsModule(modName))
             {
                 _dialog.addButton.IsEnabled = false;
-                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists);
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists, _unrealService.ProjectRelativePathForModule(modName));
             }
             else
             {

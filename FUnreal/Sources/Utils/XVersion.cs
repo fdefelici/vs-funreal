@@ -4,15 +4,6 @@ namespace FUnreal
 {
     public class XVersion
     {
-        public XVersion(int major, int minor)
-        {
-            Major = major;
-            Minor = minor;
-        }
-
-        public int Major { get; }
-        public int Minor { get; }
-
         public static XVersion FromSemVer(string semVerStr)
         {
             string[] parts = semVerStr.Split('.');
@@ -28,6 +19,20 @@ namespace FUnreal
                 return null;
             }
             return new XVersion(major, minor);
+        }
+
+        public XVersion(int major, int minor)
+        {
+            Major = major;
+            Minor = minor;
+        }
+
+        public int Major { get; }
+        public int Minor { get; }
+
+        public string AsString()
+        {
+            return $"{Major}.{Minor}";
         }
     }
 }

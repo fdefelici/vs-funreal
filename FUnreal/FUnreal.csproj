@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ProjectReloadHandler.cs" />
+    <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
+    <Compile Include="Sources\Core\FUnrealTemplates.cs" />
     <Compile Include="Sources\UI\Common\IXCommand.cs" />
     <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />
     <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleCmd.cs" />
@@ -60,6 +63,8 @@
     <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
       <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileCmd.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
@@ -71,7 +76,6 @@
     <Compile Include="Sources\Core\FUnrealNotifier.cs" />
     <Compile Include="Sources\Core\FUnrealPlugin.cs" />
     <Compile Include="Sources\Core\FUnrealPluginModule.cs" />
-    <Compile Include="Sources\Core\FUnrealPluginModules.cs" />
     <Compile Include="Sources\Core\FUnrealUPluginFile.cs" />
     <Compile Include="Sources\Core\FUnrealUProjectFile.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassCmd.cs" />
@@ -80,6 +84,9 @@
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\Utils\FUnrealFSWatcher.cs" />
+    <Compile Include="Sources\Utils\FUnrealFSWatcherBIS.cs" />
+    <Compile Include="Sources\Utils\XDebug.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
     <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
       <DependentUpon>FProgressPanel.xaml</DependentUpon>

@@ -37,7 +37,7 @@ namespace FUnreal
             _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
             _dialog.pluginNameTbl.Text = _currentPluginName;
-            _dialog.pluginPathTbl.Text = _unrealService.RelPluginPath(_currentPluginName);
+            _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(_currentPluginName);
 
             //NOTE: doing this as last operation because it will fire templatechange event
             _dialog.pluginTemplCbx.ItemsSource = _templates;
@@ -85,16 +85,16 @@ namespace FUnreal
             string plugName = _currentPluginName;
             string modName = _dialog.moduleNameTbx.Text;
 
-            _dialog.modulePathTbl.Text = _unrealService.RelPluginModulePath(plugName, modName);
+            _dialog.modulePathTbl.Text = _unrealService.ProjectRelativePathForPluginModuleDefault(plugName, modName);
 
             if (string.IsNullOrEmpty(modName))
             {
                 _dialog.addButton.IsEnabled = false;
             } 
-            else if (_unrealService.ExistsPluginModule(plugName, modName))
+            else if (_unrealService.ExistsModule(modName))
             {
                 _dialog.addButton.IsEnabled = false;
-                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleNotExists);
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists, _unrealService.ProjectRelativePathForModule(modName));
             }
             else
             {

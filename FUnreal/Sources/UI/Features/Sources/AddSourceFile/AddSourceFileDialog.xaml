@@ -32,8 +32,10 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
-
+            
             <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
                 <Setter Property="Margin" Value="0,5,0,5" />
             </Style>
@@ -49,8 +51,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="40"     Name="moduleRow1" />
-            <RowDefinition Height="Auto"   Name="moduleRow2"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
@@ -58,8 +60,8 @@
         <TextBox   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="fileNameTbx" 
                    TextChanged="classNameTbxChanged" PreviewTextInput="inputText_Validation" />
         <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="filePathTbl" Margin="0,5,0,5">File Path</TextBlock>
-        
-        <Label Grid.Row="4" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         <StackPanel Grid.Row="4" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">

@@ -21,13 +21,6 @@ namespace FUnreal
             _notifier = new FUnrealNotifier();
         }
 
-        public override async Task<bool> ShouldBeVisibleAsync()
-        {
-            bool active = await _ctxMenuMgr.IsActiveAsync(VSCTSymbols.AddPluginCmd);
-
-            return active;
-        }
-
         public override async Task DoActionAsync()
         {
             _lastPlugName = string.Empty;
@@ -74,29 +67,33 @@ namespace FUnreal
             _dialog.pluginNameTbx.Text = "NewPlugin"; //Setting Text will fire TextChange event
             _dialog.pluginNameTbx.SelectionStart = 0;
             _dialog.pluginNameTbx.SelectionLength = _dialog.pluginNameTbx.Text.Length;
-            _lastPlugName = _dialog.pluginNameTbx.Text;
+            //_lastPlugName = _dialog.pluginNameTbx.Text;
 
             return Task.CompletedTask;
         }
-
+     
         public Task PluginNameChangedAsync()
         {
             string plugName = _dialog.pluginNameTbx.Text;
             if (string.IsNullOrEmpty(plugName))
             {
+                _dialog.moduleNameTbx.IsEnabled = false;
                 _dialog.addButton.IsEnabled = false;
             }
             else
             {
-                _dialog.pluginPathTbl.Text = _unrealService.RelPluginPath(plugName);
+                _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(plugName);
 
                 if (_unrealService.ExistsPlugin(plugName))
                 {
+                    _dialog.moduleNameTbx.IsEnabled = false;
                     _dialog.addButton.IsEnabled = false;
                     _dialog.ShowError(XDialogLib.ErrorMsg_PluginAlreadyExists);
+                    //TODO: Eventually improve checking Plugin Name on UE project...
                 }
                 else
                 {
+                    _dialog.moduleNameTbx.IsEnabled = true;
                     _dialog.addButton.IsEnabled = true;
                     _dialog.HideError();
                 }
@@ -120,14 +117,27 @@ namespace FUnreal
             string plugName = _dialog.pluginNameTbx.Text;
             string modName = _dialog.moduleNameTbx.Text;
 
-            _dialog.modulePathTbl.Text = _unrealService.RelPluginModulePath(plugName, modName);
+            _dialog.modulePathTbl.Text = _unrealService.ProjectRelativePathForPluginModuleDefault(plugName, modName); //teorical
+
+            if (!_dialog.moduleNameTbx.IsEnabled) return Task.CompletedTask;
+
 
             if (string.IsNullOrEmpty(modName))
             {
+                _dialog.pluginNameTbx.IsEnabled = false;
                 _dialog.addButton.IsEnabled = false;
-            } else
+            } 
+            else if (_unrealService.ExistsModule(modName))
             {
+                _dialog.pluginNameTbx.IsEnabled = false;
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists, _unrealService.ProjectRelativePathForModule(modName));
+            }
+            else
+            {
+                _dialog.pluginNameTbx.IsEnabled = true;
                 _dialog.addButton.IsEnabled = true;
+                _dialog.HideError();
             }
 
             return Task.CompletedTask;

@@ -8,7 +8,12 @@ namespace FUnrealTest
         {
             Called = false;
             UProjectFilePath = "";
+            BinPath = "";
         }
+
+        public string BinPath { get; }
+
+
         public async Task<XProcessResult> GenerateVSProjectFilesAsync(string uprojectFilePath)
         {
             await Task.Run(() => { 

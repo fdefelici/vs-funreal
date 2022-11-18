@@ -33,7 +33,7 @@ namespace FUnreal
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
             _dialog.pluginNameTbx.Text = _pluginOriginalName;
-            _dialog.pluginPathTbl.Text = _unrealService.RelPluginPath(_pluginOriginalName);
+            _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(_pluginOriginalName);
             _dialog.pluginNewNameTbx.Text = _pluginOriginalName; //Setting text fires TextChanged
             _dialog.pluginNewNameTbx.SelectionStart = 0;
             _dialog.pluginNewNameTbx.SelectionLength = _pluginOriginalName.Length;
@@ -45,7 +45,7 @@ namespace FUnreal
         {
             string pluginNewName = _dialog.pluginNewNameTbx.Text;
 
-            _dialog.pluginNewPathTbl.Text = _unrealService.RelPluginPath(pluginNewName);
+            _dialog.pluginNewPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(pluginNewName);
 
             bool IsValid = !string.IsNullOrEmpty(pluginNewName) 
                            && !_pluginOriginalName.Equals(pluginNewName);

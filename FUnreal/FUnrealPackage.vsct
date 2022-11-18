@@ -131,6 +131,14 @@
         </Strings>
       </Button>
 
+      <Button guid="guidFUnrealPackage" id="RenameSourceFileCmd" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Rename...</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
   </Commands>
 
@@ -186,7 +194,10 @@
     </CommandPlacement>
 
     <!-- source file -->
-    <CommandPlacement guid="guidFUnrealPackage" id="DeleteSourceCmd" priority="0x0001">
+    <CommandPlacement guid="guidFUnrealPackage" id="RenameSourceFileCmd" priority="0x0001">
+      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidFUnrealPackage" id="DeleteSourceCmd" priority="0x0002">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
 
@@ -212,6 +223,8 @@
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
 
+
+
   </CommandPlacements>
 
 
@@ -236,6 +249,7 @@
       <IDSymbol name="RenameGameModuleCmd"          value="0x0014" />
       <IDSymbol name="DeleteGameModuleCmd"          value="0x0015" />
       <IDSymbol name="AddSourceFileCmd"             value="0x0016" />
+      <IDSymbol name="RenameSourceFileCmd"          value="0x0017" />
 
     </GuidSymbol>
   </Symbols>

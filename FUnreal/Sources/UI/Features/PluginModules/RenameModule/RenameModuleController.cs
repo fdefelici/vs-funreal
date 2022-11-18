@@ -23,7 +23,7 @@ namespace FUnreal
             _pluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
             _moduleOriginalName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
 
-            if (!_unrealService.ExistsPluginModule(_pluginName, _moduleOriginalName))
+            if (!_unrealService.ExistsModule(_moduleOriginalName))
             {
                 await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_ModuleNotExists);
                 return;
@@ -35,7 +35,7 @@ namespace FUnreal
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
             _dialog.pluginNameTbx.Text = _pluginName;
-            _dialog.pluginPathTbl.Text = _unrealService.RelPluginPath(_pluginName);
+            _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(_pluginName);
             _dialog.renameFilesCbx.IsChecked = false;
 
             _dialog.moduleNewNameTbx.Text = _moduleOriginalName; //Setting text fires TextChanged
@@ -50,17 +50,20 @@ namespace FUnreal
         {
             string moduleNewName = _dialog.moduleNewNameTbx.Text;
 
-            _dialog.moduleNewPathTbl.Text = _unrealService.RelPluginModulePath(_pluginName, moduleNewName);
+            _dialog.moduleNewPathTbl.Text = _unrealService.ProjectRelativePathForPluginModuleDefault(_pluginName, moduleNewName);
 
             bool IsValid = !string.IsNullOrEmpty(moduleNewName) 
                            && !_moduleOriginalName.Equals(moduleNewName);
 
-            bool AlreadExists = IsValid && _unrealService.ExistsPluginModule(_pluginName, moduleNewName);
+            bool AlreadExists = IsValid && _unrealService.ExistsModule(moduleNewName);
 
             if (AlreadExists)
             {
                 _dialog.confirmBtn.IsEnabled = false;
-                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists);
+
+                string modulePath = _unrealService.AbsModulePath(moduleNewName);
+                string relPath = _unrealService.ProjectRelativePath(modulePath);
+                _dialog.ShowError(XDialogLib.ErrorMsg_ModuleAlreadyExists, relPath);
             }
             else if (!IsValid)
             {

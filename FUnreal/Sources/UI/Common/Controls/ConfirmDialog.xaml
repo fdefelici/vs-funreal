@@ -11,14 +11,14 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox"
+        Title="FUnreal Toolbox: Confirmation"
         MinHeight="0"
         MinWidth="300"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner" 
-        FocusManager.FocusedElement="{Binding ElementName=confirmBtn}" Height="155">
+        FocusManager.FocusedElement="{Binding ElementName=confirmBtn}" >
 
     <Grid Margin="10,10,10,10" Height="Auto" VerticalAlignment="Center">
         <Grid.Resources>
@@ -27,14 +27,15 @@
                 <Setter Property="Height" Value="28" />
                 <Setter Property="Margin" Value="5,0,0,0" />
             </Style>
-
+            
             <Style x:Key="ErrorMsg" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="BorderBrush" Value="Red" />
                 <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
-
 
         </Grid.Resources>
 
@@ -47,17 +48,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" x:Name="Error"/>
+            <RowDefinition Height="Auto" x:Name="Buttons"/>
+            <RowDefinition Height="Auto" x:Name="Progress"/>
         </Grid.RowDefinitions>
 
         <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Height="32" Width="32" Source="{local:ImageSourceFromIconExt {x:Static draw:SystemIcons.Warning}}" />
         <Label   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="msg1Lbl" >Message 1</Label>
         <Label   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="msg2Lbl">Message 2</Label>
+
+        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         
-        
-        <Label Grid.Row="3" Grid.Column="1" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         <StackPanel Grid.Row="3" Grid.Column="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"

@@ -21,7 +21,7 @@ namespace FUnreal
             var itemVs = await _unrealVS.GetSelectedItemAsync();
             _moduleOriginalName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
 
-            if (!_unrealService.ExistsGameModule(_moduleOriginalName))
+            if (!_unrealService.ExistsModule(_moduleOriginalName))
             {
                 await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_ModuleNotExists);
                 return;
@@ -46,12 +46,12 @@ namespace FUnreal
         {
             string moduleNewName = _dialog.moduleNewNameTbx.Text;
 
-            _dialog.moduleNewPathTbl.Text = _unrealService.RelGameModulePath(moduleNewName);
+            _dialog.moduleNewPathTbl.Text = _unrealService.ProjectRelativePathForGameModuleDefault(moduleNewName);
 
             bool IsValid = !string.IsNullOrEmpty(moduleNewName) 
                            && !_moduleOriginalName.Equals(moduleNewName);
 
-            bool AlreadExists = IsValid && _unrealService.ExistsGameModule(moduleNewName);
+            bool AlreadExists = IsValid && _unrealService.ExistsModule(moduleNewName);
 
             if (AlreadExists)
             {

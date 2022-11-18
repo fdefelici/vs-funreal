@@ -21,7 +21,7 @@ namespace FUnreal
             string pluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
             string moduleName = _unrealService.ModuleNameFromSourceCodePath(itemVs.FullPath);
 
-            bool moduleExists = _unrealService.ExistsPluginModule(pluginName, moduleName);
+            bool moduleExists = _unrealService.ExistsModule(moduleName);
             if (!moduleExists)
             {
                 await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_ModuleNotExists);

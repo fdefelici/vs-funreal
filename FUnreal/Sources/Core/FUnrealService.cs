@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using EnvDTE;
@@ -11,104 +10,43 @@ using System.Xml;
 using Newtonsoft.Json.Linq;
 using FUnreal.Sources.Core;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.Package;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Windows.Shapes;
 
 namespace FUnreal
 {
-    public enum FUnrealSourceType { INVALID = -1, PUBLIC, PRIVATE, FREE }
+    public enum FUnrealSourceType { INVALID = -1, PUBLIC, PRIVATE, CUSTOM }
 
     public class FUnrealService
     {
-        public static FUnrealService SetUp_OnUIThread()
+        public static FUnrealService Create(FUnrealVS unrealVS)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            DTE2 dTE2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
-
-            Solution sol = dTE2.Solution;
-            Debug.Print("SOLUTION NAME: {0}", sol.FullName);
-            Debug.Print("SOLUTION FILENAME: {0}", sol.FileName);
-            Debug.Print("Projects Count: {0}", sol.Projects.Count);
-
-            string solAbsPath = sol.FileName;
-            string uprjFilePath = Path.ChangeExtension(solAbsPath, "uproject");
-            bool found = XFilesystem.FileExists(uprjFilePath);
-
-            if (!found) return null;
-
-            Debug.Print("UProject Path: {0}", uprjFilePath);
-            Debug.Print("UProject found: {0}", found);
-
-            string enginePath = null;
-            string gameProjectName = null;
-            foreach (Project project in sol.Projects)
+            string uprjFilePath = unrealVS.GetUProjectFilePath();
+            if (!XFilesystem.FileExists(uprjFilePath))
             {
-                Debug.Print("Project Full: {0}", project.FullName);
-                Debug.Print("Project Name: {0}", project.Name);
-                Debug.Print("Project File: {0}", project.FileName);
-                Debug.Print("        Kind: {0}", project.Kind);
-                Debug.Print("       Items: {0}", project.ProjectItems.Count);
-
-                //if (project.Name != "Games") continue;
-                /*
-                 *  Skip:
-                 *  - "Engine" Folder project and related UEXX subproject
-                 *  - "Visualizer" Folder project 
-                 */
-
-                //Microsoft.VisualStudio.CommonIDE.Solutions
-                //DteMiscProject
-                if (project.Name.Equals("Visualizers", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (project.ProjectItems.Count == 1)
-                    {
-                        ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
-
-                        if (item.FileCount == 1)
-                        {
-                            string absFilePath = item.FileNames[1];
-                            Debug.Print(" Natvis file path: {0}", absFilePath);
-
-                            string visualStudioDebuggingPath = Path.GetDirectoryName(absFilePath);
-                            string extrasPath = Path.GetDirectoryName(visualStudioDebuggingPath);
-                            enginePath = Path.GetDirectoryName(extrasPath);
-
-                            Debug.Print(" Engine Path: {0}", enginePath);
-                        }
-                    }
-
-                }
-                else if (project.Name.Equals("Games", StringComparison.OrdinalIgnoreCase))
-                {
-                    //foreach (ProjectItem item in project.ProjectItems)
-                    if (project.ProjectItems.Count == 1)
-                    {
-                        ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
-
-                        Debug.Print("    Item: {0}", item.Name);
-                        Project SubPrj = item.SubProject;
-                        //if (SubPrj == null) continue; 
-                        Debug.Print("      Full: {0}", SubPrj.FullName);
-                        Debug.Print("      Name: {0}", SubPrj.Name);
-                        Debug.Print("      File: {0}", SubPrj.FileName);
-                        Debug.Print("      Kind: {0}", SubPrj.Kind);
-                        //games.Add(SubPrj);
-
-                        gameProjectName = item.Name;
-                    }
-                }
+                unrealVS.Output.Erro("UProject file not found at the expected path: {0}", uprjFilePath);
+                return null;
             }
 
-            string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string vsixBasePath = Path.GetDirectoryName(vsixDllPath);
-            string templatePath = Path.Combine(vsixBasePath, "Templates");
-            Debug.Print("VSIX Dll Path: {0}", vsixDllPath);
-            Debug.Print("VSIX Base Path: {0}", vsixBasePath);
+            unrealVS.Output.Info("UE Project descriptor found at {0}", uprjFilePath);
 
+            // Detect Engine Instance
+            string enginePath = unrealVS.GetUnrealEnginePath(); //Try detecting UE base path from solution configuration
+            if (enginePath == null || !XFilesystem.DirectoryExists(enginePath))
+            {
+                unrealVS.Output.Erro("Cannot detect a valid UE path: ", uprjFilePath);
+                return null;
+            }
 
             var uprojectFile = new FUnrealUProjectFile(uprjFilePath);
             string versionStr = uprojectFile.EngineAssociation;
             var version = XVersion.FromSemVer(versionStr);
+            if (version == null)
+            {
+                unrealVS.Output.Erro("Cannot detect UE version from .uproject file!");
+                return null;
+            }
 
             string ubtBin;
             if (version.Major == 4)
@@ -121,9 +59,37 @@ namespace FUnreal
                 ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
             }
 
+            if (!XFilesystem.FileExists(ubtBin))
+            {
+                unrealVS.Output.Erro("Cannot detect UBT at path {0}", ubtBin);
+                return null;
+            }
+
             FUnrealEngine engine = new FUnrealEngine(version, enginePath, new FUnrealBuildTool(ubtBin));
-            //FUnrealProject projec1t = new FUnrealProject();
-            return new FUnrealService(engine, uprjFilePath, gameProjectName, templatePath);
+
+            unrealVS.Output.Info("UE Version: {0}", engine.Version.AsString());
+            unrealVS.Output.Info("UE Path: {0}", engine.EnginePath);
+            unrealVS.Output.Info("UBT Path: {0}", engine.UnrealBuildTool.BinPath);
+
+
+            // Load Templates
+            string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
+            string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
+            string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.xml");
+            XDebug.Info("VSIX Dll Path: {0}", vsixDllPath);
+            XDebug.Info("VSIX Base Path: {0}", vsixBasePath);
+            XDebug.Info("Template Descriptor Path: {0}", templateDescPath);
+
+            if (!XFilesystem.FileExists(templateDescPath))
+            {
+                unrealVS.Output.Erro("Cannot locate templates at path: {0}", templateDescPath);
+                return null;
+            }
+
+            FUnrealTemplates templates = FUnrealTemplates.Load(templateDescPath);
+
+            return new FUnrealService(engine, uprjFilePath, templates);
         }
 
         private FUnrealEngine _engine;
@@ -136,27 +102,62 @@ namespace FUnreal
         private string _pluginsPath;
         private string _sourcePath;
         private FUnrealTemplates _templates;
-       
+        private FUnrealProject _projectModel;
 
-        public FUnrealService(FUnrealEngine engine, string uprjAbsPath, string prjName, string templatePath)
+        public FUnrealService(FUnrealEngine engine, string uprjAbsPath, FUnrealTemplates templates)
         {
             _engine = engine;
             _engineUbt = engine.UnrealBuildTool;
             _engineMajorVer = engine.Version.Major.ToString();
 
             _uprjFileAbsPath = uprjAbsPath;
-            ProjectName = prjName;
-            _templates = FUnrealTemplates.Load(XFilesystem.PathCombine(templatePath, "descriptor.xml"));
+            ProjectName = XFilesystem.GetFilenameNoExt(uprjAbsPath);
+            _templates = templates;
         
             _prjPath = XFilesystem.PathParent(uprjAbsPath);
             _pluginsPath = XFilesystem.PathCombine(_prjPath, "Plugins");
             _sourcePath = XFilesystem.PathCombine(_prjPath, "Source");
+
+            _projectModel = new FUnrealProject(ProjectName, uprjAbsPath); //just to avoid NullPointerException in case project model is never loaded
         }
+
+        public FUnrealService(FUnrealEngine engine, FUnrealProject project, FUnrealTemplates templates)
+             : this(engine, project.DescriptorFilePath, templates)
+        {
+            _projectModel = project;
+        }
+
+        public FUnrealProject GetUProject()
+        {
+            return _projectModel;
+        }
+
+        public async Task<bool> UpdateProjectAsync(FUnrealNotifier notifier)
+        {
+            FUnrealProjectFactory factory = new FUnrealProjectFactory();
+
+            var upro = await factory.CreateV4Async(_uprjFileAbsPath, notifier);
+
+            if (upro == null) return false;
+
+            _projectModel = upro;
+            return true;
+        }
+
 
         public string ProjectName { get;  }
 
         public bool IsSourceCodePath(string fullPath, bool afterModuleDir=false)
         {
+            var module = GetUProject().AllModules.FindByBelongingPath(fullPath);
+            if (module == null) return false;
+
+            if (fullPath == module.BuildFilePath) return false;
+
+            if (afterModuleDir && fullPath == module.FullPath) return false;
+
+            return true;
+
             //         ProjectType       .uplugin        .Build.cs
             //Path Es: <Project>\Plugins\<Plugin>\Source\<Module>\{Private,Public}
             //         <Project>\Source\<Module>\{Private,Public}
@@ -171,7 +172,8 @@ namespace FUnreal
             string regexGamePath = @"^Source\\[^\\\r\n\t]+(?:\\[^\\\r\n\t]+){0,}$";
             string regex = $"{regexPluginPath}|{regexGamePath}";
             */
-           
+
+            /*
             string moduleRegex = @"PRJ_PATH\\(?:Plugins\\[^\\]+?\\){0,1}Source\\[^\\]+";
             moduleRegex = moduleRegex.Replace("PRJ_PATH", Regex.Escape(_prjPath));
             string afterModuleRegex = $@"{moduleRegex}\\[^\\]+";
@@ -185,6 +187,14 @@ namespace FUnreal
                 regexSatisfied =  Regex.IsMatch(fullPath, moduleRegex);
             }
             return regexSatisfied && !fullPath.EndsWith(".Build.cs");
+            */
+
+            /*
+            string modulePath = ModulePathFromSourceCodePath(fullPath);
+            if (modulePath == null) return false;
+
+            if (fullPath.EndsWith(".Build.cs")) return false;
+            */
         }
 
         public FUnrealSourceType TypeForSourcePath(string path)
@@ -194,96 +204,50 @@ namespace FUnreal
             string modulePath = ModulePathFromSourceCodePath(path);
 
             string afterModulePath = XFilesystem.PathSubtract(path, modulePath);
+            
+            string firstModuleSubfolder = XFilesystem.PathSplit(afterModulePath)[0];
 
-            if (afterModulePath == "Public" || afterModulePath.StartsWith("Public\\"))
+            if (firstModuleSubfolder == "Public")
             {
                 return FUnrealSourceType.PUBLIC;
             }
 
-            if (afterModulePath == "Private" || afterModulePath.StartsWith("Private\\"))
+            if (firstModuleSubfolder == "Private")
             {
                 return FUnrealSourceType.PRIVATE;
             }
 
-            return FUnrealSourceType.FREE;
+            return FUnrealSourceType.CUSTOM;
         }
 
-        /*
-                public bool IsSourceCodePublicPath(string fullPath)
-                {
-                    string regex = @"^(?:Plugins\\[^\\\r\n\t]+\\){0,1}Source\\[^\\\r\n\t]+\\Public(?:\\[^\\\r\n\t]+){0,}$";
-                    string relPath = XFilesystem.PathSubtract(fullPath, _prjPath);
-                    return Regex.IsMatch(relPath, regex);
-                }
-
-                public bool IsSourceCodePrivatePath(string fullPath)
-                {
-                    string regex = @"^(?:Plugins\\[^\\\r\n\t]+\\){0,1}Source\\[^\\\r\n\t]+\\Private(?:\\[^\\\r\n\t]+){0,}$";
-                    string relPath = XFilesystem.PathSubtract(fullPath, _prjPath);
-                    return Regex.IsMatch(relPath, regex);
-                }
-        */
         public void ComputeSourceCodePaths(string currentPath, string className, FUnrealSourceType classType,
             out string headerPath, out string sourcePath, out string sourceRelPath)
         {
-
-            string relPath = XFilesystem.PathSubtract(currentPath, _prjPath);
-
-            //- Plugins\Plugin01\Source\Module01
-            //- Plugins\Plugin01\Source\Module01\Folder1
-            //- Plugins\Plugin01\Source\Module01\Public
-            //- Source\Module01\Public\Folder1
-            //- Source\Module01\Private\Folder1
-
-            string startWithSourceFolder;
-            if (relPath.StartsWith("Plugins\\"))
-            {
-                startWithSourceFolder = XFilesystem.PathChild(relPath, 2);
-            } else
-            {
-                startWithSourceFolder = relPath;
-            }
-
-            //Now should have relpath like these:
-            //- Source\Module01
-            //- Source\Module01\Folder1
-            //- Source\Module01\Public
-            //- Source\Module01\Public\Folder1
-            //- Source\Module01\Private\Folder1
-
-            string afterModulePath = XFilesystem.PathChild(startWithSourceFolder, 2);
-
-            //Now should have relpath like these:
-            //- ""
-            //- Folder1
-            //- Public
-            //- Public\Folder1
-            //- Private\Folder1
-
             bool isPublicPath = false;
             bool isPrivatePath = false;
             //bool isFreePath = false;
 
-            //string pluginNameOrNull = PluginNameFromSourceCodePath(currentPath);
-            //string moduleName = ModuleNameFromSourceCodePath(currentPath);
-
             string modulePath = ModulePathFromSourceCodePath(currentPath);
 
-            if (afterModulePath == "Public" || afterModulePath.StartsWith("Public\\"))
+            string relPathAfterModuleDir = XFilesystem.PathSubtract(currentPath, modulePath);
+            string firstModuleSubfolder = XFilesystem.PathSplit(relPathAfterModuleDir)[0];
+
+            if (firstModuleSubfolder == "Public")
             {
-                sourceRelPath = XFilesystem.PathSubtract(afterModulePath, "Public");
+                sourceRelPath = XFilesystem.PathSubtract(relPathAfterModuleDir, "Public");
                 isPublicPath = true;
             }
-            else if (afterModulePath == "Private" || afterModulePath.StartsWith("Private\\"))
+            else if (firstModuleSubfolder == "Private")
             {
-                sourceRelPath = XFilesystem.PathSubtract(afterModulePath, "Private");
+                sourceRelPath = XFilesystem.PathSubtract(relPathAfterModuleDir, "Private");
                 isPrivatePath = true;
-            } else
+            }
+            else
             {
-                sourceRelPath = afterModulePath;
+                sourceRelPath = relPathAfterModuleDir;
                 //isFreePath = true;
             }
-            
+
             string headerBasePath;
             string sourceBasePath;
 
@@ -292,15 +256,16 @@ namespace FUnreal
                 if (isPublicPath)
                 {
                     headerBasePath = currentPath;
-                    sourceBasePath = XFilesystem.PathCombine(modulePath, "Private", sourceRelPath); 
+                    sourceBasePath = XFilesystem.PathCombine(modulePath, "Private", sourceRelPath);
                 }
                 else if (isPrivatePath)
                 {
                     headerBasePath = XFilesystem.PathCombine(modulePath, "Public", sourceRelPath);
                     sourceBasePath = currentPath;
-                } else
+                }
+                else
                 {
-                    headerBasePath = XFilesystem.PathCombine(modulePath, "Public", sourceRelPath); 
+                    headerBasePath = XFilesystem.PathCombine(modulePath, "Public", sourceRelPath);
                     sourceBasePath = XFilesystem.PathCombine(modulePath, "Private", sourceRelPath);
                 }
             }
@@ -333,21 +298,6 @@ namespace FUnreal
             sourcePath = XFilesystem.PathCombine(sourceBasePath, $"{className}.cpp");
         }
 
-
-        private FUnrealProject GetUProject()
-        {
-            //NOTA: Per ora lo ricreo sempre per essere sicuro di intercettare modifiche fatte dall'utente senza usare FUnreal.
-            return new FUnrealProject(ProjectName, _uprjFileAbsPath);
-        }
-
-        public FUnrealPluginModule GetPluginModule(string pluginName, string moduleName)
-        {
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
-            var module = plugin.Modules[moduleName];
-            return module;
-        }
-
         public List<FUnrealTemplate> PluginTemplates()
         {
             return _templates.GetTemplates("plugins", _engineMajorVer);
@@ -363,57 +313,78 @@ namespace FUnreal
             return _templates.GetTemplates("modules", _engineMajorVer);
         }
 
-        public string AbsPluginPath(string plugName)
+        private FUnrealPlugin PluginByName(string name)
         {
-            return XFilesystem.PathCombine(_pluginsPath, plugName);
+            return GetUProject().Plugins[name];
         }
 
-        public string AbsPluginModulePath(string plugName, string modName)
+        private FUnrealModule ModuleByName(string name)
         {
-            string plugPath = AbsPluginPath(plugName);
-            return XFilesystem.PathCombine(plugPath, "Source", modName);
+            return GetUProject().AllModules[name];
         }
 
-        public string AbsGameModulePath(string modName)
+        //TODO: Usato solo da ProjectRelativePluginPath
+        public string AbsPluginPath_RealOrTheorical(string plugName)
         {
-            return XFilesystem.PathCombine(AbsProjectPath(), "Source", modName);
+            var plug = PluginByName(plugName);
+            if (plug == null)
+            {
+                //default path
+                return XFilesystem.PathCombine(_pluginsPath, plugName);
+            }
+            return plug.FullPath;
         }
 
-        public string AbsProjectPath()
+        public string AbsModulePath(string modName)
+        {
+            var module = ModuleByName(modName);
+            if (module == null) return null;
+            return module.FullPath;
+        }
+
+        private string AbsProjectPath()
         {
             return _prjPath;
         }
 
-        public string AbsProjectSourceFolderPath()
+        private string AbsProjectSourceFolderPath()
         {
             return _sourcePath;
         }
-
-        public string RelPluginPath(string pluginName)
+        
+        // UI Only
+        public string ProjectRelativePathForPlugin(string pluginName)
         {
             string prjPath = AbsProjectPath();
-            string absPath = AbsPluginPath(pluginName);
+            string absPath = AbsPluginPath_RealOrTheorical(pluginName);
             string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
             return relPath;
         }
 
-        public string RelPluginModulePath(string plugName, string modName)
+        // UI Only
+        public string ProjectRelativePathForPluginModuleDefault(string plugName, string modName)
         {
             string prjPath = AbsProjectPath();
-            string absPath = AbsPluginModulePath(plugName, modName);
+
+            //default path
+            string plugPath = AbsPluginPath_RealOrTheorical(plugName);
+            string absModPath = XFilesystem.PathCombine(plugPath, "Source", modName);
+
+            string relPath = XFilesystem.PathSubtract(absModPath, prjPath, true);
+            return relPath;
+        }
+
+        // UI Only
+        public string ProjectRelativePathForGameModuleDefault(string moduleName)
+        {
+            string prjPath = AbsProjectPath();
+            string absPath = XFilesystem.PathCombine(prjPath, "Source", moduleName);
             string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
             return relPath;
         }
 
-        public string RelGameModulePath(string moduleName)
-        {
-            string prjPath = AbsProjectPath();
-            string absPath = AbsGameModulePath(moduleName);
-            string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
-            return relPath;
-        }
-
-        public string RelPath(string fullPath)
+        // UI Only
+        public string ProjectRelativePath(string fullPath)
         {
             string prjPath = AbsProjectPath();
             string absPath = fullPath;
@@ -421,35 +392,49 @@ namespace FUnreal
             return relPath;
         }
 
-        public string RelPathToModule(string fullPath)
+        // UI Only
+        public string ModuleRelativePath(string fullPath)
         {
             string modPath = ModulePathFromSourceCodePath(fullPath);
             string relPath = XFilesystem.PathSubtract(fullPath, modPath, true);
             return relPath;
         }
 
+        // UI Only
+        public string ProjectRelativePathForModule(string modName)
+        {
+            var mod = ModuleByName(modName);
+            if (mod == null) return null;
+            return XFilesystem.PathSubtract(mod.FullPath, AbsProjectPath(), true);
+        }
+
         public bool ExistsPlugin(string pluginName)
         {
-            string pluginPath = AbsPluginPath(pluginName);
-            return Directory.Exists(pluginPath);
+            return GetUProject().Plugins.Exists(pluginName);    
         }
 
-        public bool ExistsPluginModule(string pluginName, string moduleName)
+        public bool ExistsModule(string moduleName)
         {
+            /*
             string modulePath = AbsPluginModulePath(pluginName, moduleName);
             return Directory.Exists(modulePath);
+            */
+            var module = ModuleNamed(moduleName);
+            return module != null;
         }
 
-        public bool ExistsGameModule(string modName)
+        private FUnrealModule ModuleNamed(string moduleName)
         {
-            string modulePath = AbsGameModulePath(modName);
-            return Directory.Exists(modulePath);
+            var project = GetUProject();
+            return project.AllModules[moduleName];
         }
-
-       
        
         public string ModuleNameFromSourceCodePath(string path)
         {
+            var found = GetUProject().AllModules.FindByBelongingPath(path);
+            if (found == null) return null;
+            return found.Name;
+            /*
             string moduleGroupRegex = @"PRJ_PATH\\(?:Plugins\\[^\\]+?\\){0,1}Source\\([^\\]+)";
             string prjExcape = Regex.Escape(_prjPath);
             moduleGroupRegex = moduleGroupRegex.Replace("PRJ_PATH", prjExcape);
@@ -461,10 +446,15 @@ namespace FUnreal
                 return group.Value;
             }
             return null;
+            */
         }
 
         public string ModulePathFromSourceCodePath(string path)
         {
+            var found = GetUProject().AllModules.FindByBelongingPath(path);
+            if (found == null) return null;
+            return found.FullPath;
+            /*
             string moduleGroupRegex = @"PRJ_PATH\\(?:Plugins\\[^\\]+?\\){0,1}Source\\[^\\]+";
             string prjExcape = Regex.Escape(_prjPath);
             moduleGroupRegex = moduleGroupRegex.Replace("PRJ_PATH", prjExcape);
@@ -475,10 +465,15 @@ namespace FUnreal
                 return match.Value;
             }
             return null;
+            */
         }
 
         public string PluginNameFromSourceCodePath(string path)
-        {   
+        {
+            var found = GetUProject().Plugins.FindByBelongingPath(path);
+            if (found == null) return null;
+            return found.Name;
+            /*
             string moduleGroupRegex = @"PRJ_PATH\\Plugins\\([^\\]+?)(?:\\[^\\]+){0,}$";
             string prjExcape = Regex.Escape(_prjPath);
             moduleGroupRegex = moduleGroupRegex.Replace("PRJ_PATH", prjExcape);
@@ -490,8 +485,8 @@ namespace FUnreal
                 return group.Value;
             }
             return null;
+            */
         }
-
 
         public bool ExistsSourceDirectory(string sourcePath)
         {
@@ -505,34 +500,33 @@ namespace FUnreal
             return XFilesystem.FileExists(sourcePath);
         }
 
-        public bool IsModulePathOrTargetFile(string fullPath)
-        {
-            string moduleName = ModuleNameFromSourceCodePath(fullPath);
-            if (moduleName == null) return false;
-
-            //Improve with regex
-            if (fullPath.EndsWith(moduleName)) return true;
-            if (fullPath.EndsWith($"{moduleName}.Build.cs")) return true;
-            return false;
-        }
-
         public bool IsPluginFolder(string fullPath)
         {
+            /*
             string pluginName = PluginNameFromSourceCodePath(fullPath);
             if (pluginName == null) return false;
 
-            string expectedPath = AbsPluginPath(pluginName);
+            string expectedPath = AbsPluginPath_RealOrTheorical(pluginName);
             return expectedPath == fullPath;
+            */
+
+            var found = GetUProject().Plugins.FindByPath(fullPath);
+            if (found == null) return false;
+            return true;
         }
 
         public bool IsPluginDescriptorFile(string fullPath)
         {
-            return fullPath.EndsWith(".uplugin");
+            var found = GetUProject().Plugins.FindByBelongingPath(fullPath); 
+            if (found == null) return false;
+            return fullPath == found.DescriptorFilePath;
         }
 
-        public bool IsModuleTargetFile(string fullPath)
+        public bool IsModuleBuildFile(string fullPath)
         {
-            return fullPath.EndsWith(".Build.cs");
+            var found = GetUProject().AllModules.FindByBelongingPath(fullPath);
+            if (found == null) return false;
+            return fullPath == found.BuildFilePath;
         }
 
         public bool IsProjectDescriptorFile(string fullPath)
@@ -542,8 +536,6 @@ namespace FUnreal
 
         public bool IsPluginModulePath(string fullPath)
         {
-            //Basterebbe il match con la regex che calcola il module name
-
             string pluginName = PluginNameFromSourceCodePath(fullPath);
             string moduleName = ModuleNameFromSourceCodePath(fullPath);
             
@@ -553,8 +545,6 @@ namespace FUnreal
 
         public bool IsGameModulePath(string fullPath)
         {
-            //Basterebbe il match con la regex che calcola il module name
-
             string pluginName = PluginNameFromSourceCodePath(fullPath);
             string moduleName = ModuleNameFromSourceCodePath(fullPath);
 
@@ -564,13 +554,9 @@ namespace FUnreal
 
         public bool IsPrimaryGameModulePath(string fullPath)
         {
-            string moduleName = ModuleNameFromSourceCodePath(fullPath);
-            if (moduleName == null) return false;
-
-            var project = GetUProject();
-            var module = project.GameModules[moduleName];
+            var module = GetUProject().GameModules.FindByBelongingPath(fullPath);
             if (module == null) return false;
-            return module.IsPrimaryGame;
+            return module.IsPrimaryGameModule;
         }
 
         public async Task<bool> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
@@ -584,9 +570,11 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_PluginNotExists, pluginName);
                 return false;
             }
-            if (moduleNameOrNull != null && ExistsPluginModule(pluginName, moduleNameOrNull))
+            if (moduleNameOrNull != null && ExistsModule(moduleNameOrNull))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleAlreadyExists, pluginName, moduleNameOrNull);
+                var prevModule = ModuleByName(moduleNameOrNull);
+                var relPath = ProjectRelativePath(prevModule.FullPath);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleAlreadyExists, relPath);
                 return false;
             }
 
@@ -628,51 +616,44 @@ namespace FUnreal
 
         public async Task<bool> DeletePluginAsync(string pluginName, FUnrealNotifier notifier)
         {
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
-            if (!plugin.Exists)
+            if (!ExistsPlugin(pluginName))
             {
-                notifier.Erro($"Plugin not found: ${pluginName}");
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginNotFound, pluginName);
                 return false;
             }
 
-            notifier.Info($"Detecting plugin: {pluginName} ...");
-            if (!plugin.Exists)
-            {
-                notifier.Erro($"Plugin not found at path: {plugin.FullPath}");
-                return false;
-            }
-
+            var plugin = PluginByName(pluginName);
             string plugPath = plugin.FullPath;
-            notifier.Info($"Deleting plugin: {plugin.FullPath} ...");
+            notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, plugin.FullPath);
             if (!XFilesystem.DeleteDir(plugPath))
             {
-                notifier.Erro($"Delete failed!");
+                notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
                 return false;
             }
 
             if (XFilesystem.IsEmptyDir(_pluginsPath))
             {
-                notifier.Info($"Deleting plugins folder because empty: {_pluginsPath} ...");
+                notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, _pluginsPath);
                 if (!XFilesystem.DeleteDir(_pluginsPath))
                 {
-                    notifier.Warn($"Delete failed!");
+                    notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
                 }
             }
 
-            notifier.Info($"Checking .uproject for plugin declaration: {_uprjFileAbsPath} ...");
+
+            //Update uproject file
             var uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
             if (uprojectJson.Plugins) {
                 var pluginJson = uprojectJson.Plugins[pluginName];
                 if (pluginJson) {
-                    notifier.Info($"Removing plugin config from .uproject file...");
+                    notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, _uprjFileAbsPath);
                     pluginJson.Remove();
                     uprojectJson.Plugins.RemoveIfEmpty();
                     uprojectJson.Save();
                 }
             }
-            
-            notifier.Info($"Regenerating VS project files ...");
+
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
             XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
             if (ubtResult.IsError)
             {
@@ -695,8 +676,7 @@ namespace FUnreal
                 return false;
             }
 
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
+            var plugin = PluginByName(pluginName);
 
             //1. Rename .uplugin file and replace "FriendlyName" (only if is the same as pluginName)
             string upluginFilePath = plugin.DescriptorFilePath;
@@ -742,18 +722,17 @@ namespace FUnreal
             string engine = _engineMajorVer;
             string name = templeName;
 
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
-            
-            if (plugin == null)
+            if (!ExistsPlugin(pluginName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_PluginNotExists, pluginName);
                 return false;
             }
-            var module = plugin.Modules[moduleName];
-            if (module != null)
+
+            if (ExistsModule(moduleName))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleAlreadyExists, pluginName, moduleName);
+                var prevModule = ModuleByName(moduleName);
+                var relPath = ProjectRelativePath(prevModule.FullPath);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleAlreadyExists, relPath);
                 return false;
             }
 
@@ -779,13 +758,13 @@ namespace FUnreal
                 return false;
             }
 
+            var plugin = PluginByName(pluginName);
+
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, plugin.SourcePath);
             PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
             strategy.AddPlaceholder(moduleNamePH, moduleName);
 
-            //string pluginPath = AbsPluginPath(pluginName);
-            //string sourcePath = XFilesystem.PathCombine(pluginPath, "Source");
             string sourcePath = plugin.SourcePath;
             await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
 
@@ -817,19 +796,20 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginNotFound, pluginName);
                 return false;
             }
-            if (!ExistsPluginModule(pluginName, moduleName))
+            if (!ExistsModule(moduleName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleNotFound, pluginName, moduleName);
                 return false;
             }
-            if (ExistsPluginModule(pluginName, newModuleName))
+            if (ExistsModule(newModuleName))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleAlreadyExists, pluginName, moduleName);
+                var prevModule = ModuleByName(moduleName);
+                var relPath = ProjectRelativePath(prevModule.FullPath);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleAlreadyExists, relPath);
                 return false;
             }
 
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
+            var plugin = PluginByName(pluginName);
             var module = plugin.Modules[moduleName];
             string modulePath = module.FullPath;
 
@@ -994,19 +974,20 @@ namespace FUnreal
 
         public async Task<bool> DeletePluginModuleAsync(string pluginName, string moduleName, FUnrealNotifier notifier)
         {
-            var project = GetUProject();
-            var plugin = project.Plugins[pluginName];
-            if (!plugin.Exists)
+            if (!ExistsPlugin(pluginName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginNotFound, pluginName);
                 return false;
             }
 
-            FUnrealPluginModule module = plugin.Modules[moduleName];
+            var plugin = PluginByName(pluginName);
+            FUnrealModule module = plugin.Modules[moduleName];
             if (module == null) {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleNotFound, pluginName, moduleName);
                 return false;
             }
+
+            var project = GetUProject();
 
             //1. Remove dependency from other modules .Build.cs
             //notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency);
@@ -1014,7 +995,7 @@ namespace FUnreal
             //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
             string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
             regexDepend = regexDepend.Replace("SEARCH", moduleName);
-            foreach(var other in plugin.Modules)
+            foreach(var other in project.AllModules) //plugin.Modules
             {
                 if (other.Name == module.Name) continue;
 
@@ -1026,7 +1007,6 @@ namespace FUnreal
                     XFilesystem.WriteFile(other.BuildFilePath, buildText);
                 }
             }
-
 
             //2. Delete module path
             notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
@@ -1058,8 +1038,15 @@ namespace FUnreal
             string engine = _engineMajorVer;
             string name = templeName;
 
-            string modulePath = ModulePathFromSourceCodePath(absBasePath);
-            string moduleName = XFilesystem.GetLastPathToken(modulePath);
+            //string modulePath = ModulePathFromSourceCodePath(absBasePath);
+            //string moduleName = XFilesystem.GetLastPathToken(modulePath);
+
+            var module = GetUProject().AllModules.FindByBelongingPath(absBasePath);
+            if (module == null)
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_ModuleNotExists);
+                return false;
+            }
 
             ComputeSourceCodePaths(absBasePath, className, classType, 
                 out string headerPath, 
@@ -1095,7 +1082,7 @@ namespace FUnreal
 
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
-            string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{moduleName.ToUpper()}_API " : ""; //Final space to separate from Class Name
+            string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{module.ApiMacro} " : ""; //Final space to separate from Class Name
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
             if (incluPath != "") incluPath += "/";             //Final Path separator to separate from Class Name
 
@@ -1123,7 +1110,7 @@ namespace FUnreal
             return true;
         }
 
-        public async Task<bool> DeleteSourceDirectoryAsync(List<string> sourcePaths, FUnrealNotifier notifier)
+        public async Task<bool> DeleteSourcesAsync(List<string> sourcePaths, FUnrealNotifier notifier)
         {
             notifier.Info(XDialogLib.Ctx_CheckProjectPlayout);
 
@@ -1188,8 +1175,7 @@ namespace FUnreal
             string engine = _engineMajorVer;
             string name = templeName;
 
-            
-            if (ExistsGameModule(moduleName))
+            if (ExistsModule(moduleName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleAlreadyExists, moduleName);
                 return false;
@@ -1246,7 +1232,7 @@ namespace FUnreal
                 {
                     string csText = XFilesystem.ReadFile(targetFilePath);
 
-                    //Capture Group1 for all module names sucs as: "Mod1", "Mod2" and replacing with "Mod1", "Mod2", "ModuleName"
+                    //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
                     string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
                     var match = Regex.Match(csText, regex); 
                     if (match.Success && match.Groups.Count == 2)
@@ -1284,12 +1270,12 @@ namespace FUnreal
 
         public async Task<bool> RenameGameModuleAsync(string moduleName, string newModuleName, bool updateCppFiles, FUnrealNotifier notifier)
         {
-            if (!ExistsGameModule(moduleName))
+            if (!ExistsModule(moduleName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
                 return false;
             }
-            if (ExistsGameModule(newModuleName))
+            if (ExistsModule(newModuleName))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleAlreadyExists, moduleName);
                 return false;
@@ -1297,7 +1283,7 @@ namespace FUnreal
 
             var project = GetUProject();
             var module = project.GameModules[moduleName];
-            bool IsPrimaryGameModule = module.IsPrimaryGame;
+            bool IsPrimaryGameModule = module.IsPrimaryGameModule;
 
 
             //string modulePath = AbsGameModulePath(moduleName);
@@ -1574,7 +1560,7 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
                 return false;
             }
-            //TODO: Should stop in case moduleName is Primary Module.
+            //TODO: Should stop in case moduleName is Primary Module. (by now just prevented by UI button disabled)
 
 
             //1. Remove dependency from other modules .Build.cs
@@ -1615,7 +1601,7 @@ namespace FUnreal
                 }
             }
 
-            //4. Delete module in all project [TARGET].Target.cs 
+            //4. Remove module in all project [TARGET].Target.cs 
             {
                 string moduleDepend = $"\"{moduleName}\"";
                 string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH"""; //NOTE: Regex repeated in different parts
@@ -1645,11 +1631,9 @@ namespace FUnreal
             return true;
         }
 
-
         public async Task<bool> AddSourceFileAsync(string absBasePath, string fileName, FUnrealNotifier notifier)
         {
-            string modulePath = ModulePathFromSourceCodePath(absBasePath);
-            string moduleName = XFilesystem.GetLastPathToken(modulePath);
+            //Eventually check if is a valid module path
 
             string filePath = XFilesystem.PathCombine(absBasePath, fileName);
 
@@ -1672,158 +1656,126 @@ namespace FUnreal
             return true;
         }
 
-    }
-
-    public class FUnrealTemplates
-    {
-        public static FUnrealTemplates Load(string templateDescriptorPath)
+        public async Task<bool> RenameFileAsync(string filePath, string newFileNameWithExt, FUnrealNotifier notifier)
         {
-            string templatePath = Path.GetDirectoryName(templateDescriptorPath);
-
-            XmlDocument xml = new XmlDocument();
-            try { 
-                xml.Load(templateDescriptorPath);
-            } catch (Exception e)
+            if (!ExistsSourceFile(filePath))
             {
-                Debug.Print(e.Message);
-                return new FUnrealTemplates();
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileNotFound, filePath);
+                return false;
             }
 
-            FUnrealTemplates result = new FUnrealTemplates();
-
-            XmlNodeList templateNodes =  xml.GetElementsByTagName("template");
-            foreach(XmlNode tplNode in templateNodes)
+            string newFilePath = XFilesystem.FileChangeNameWithExt(filePath, newFileNameWithExt);
+            if (ExistsSourceFile(newFilePath))
             {
-                string ctx     = tplNode.Attributes["context"]?.Value;
-                string ueCsv   = tplNode.Attributes["ue"]?.Value;
-                string name    = tplNode.Attributes["name"]?.Value;
-                string relPath = tplNode.Attributes["path"]?.Value;
-                if (ctx == null || name == null || ueCsv == null || relPath == null) continue;
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileAlreadyExists, newFilePath);
+                return false;
+            }
 
-                XmlNode uiNode = tplNode.SelectSingleNode("ui");
-                string uiName = uiNode?.Attributes["label"]?.Value;
-                string uiDesc = uiNode?.Attributes["desc"]?.Value;
-                if (uiName == null || uiDesc == null) continue;
+            //NOTA: Ridurre i file da scansionare verificando quali moduli esterni (oltre a quello cui appartiene il file)
+            //      dipendono da quello cui appartiene il file.
+            //      Quindi poi va lanciata ricerca di sostituzione sui file dei moduli trovati + il corrente.
+            //      Ulteriormente il replace va fatto solo se:
+            //      - il nuovo filename finisce per .h   (in tutti gli altri casi no)
+            //      - il vecchio filename finisce per .h
 
-                string absPath = XFilesystem.PathCombine(templatePath, relPath);
-                FUnrealTemplate tpl = new FUnrealTemplate(name, absPath, uiName, uiDesc);
-                XmlNodeList placeHolderNodes = tplNode.SelectNodes("placeholder");
-                foreach(XmlElement plhNode in placeHolderNodes)
+            bool isHeaderFileScenario = XFilesystem.HasExtension(filePath, ".h") && XFilesystem.HasExtension(newFileNameWithExt, ".h");
+            if (isHeaderFileScenario)
+            {
+                var project = GetUProject();
+                var allModules = project.AllModules;
+
+                var fileModule = allModules.FindByBelongingPath(filePath);
+                if (fileModule == null)
                 {
-                    string role  = plhNode.Attributes["role"]?.Value;
-                    string value = plhNode.Attributes["value"]?.Value;
-                    if (role == null || value == null) continue;
-
-                    tpl.SetPlaceHolder(role, value);
+                    notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_ModuleNotExists);
+                    return false;
                 }
+                var fileModuleName = fileModule.Name;
 
-                XmlNode metaNode = tplNode.SelectSingleNode("meta");
-                if (metaNode != null)
+                // Select all Modules dependent to fileModule
+                notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, fileModuleName);
+                var dependentModules = new FUnrealCollection<IFUnrealModule>();
+                dependentModules.Add(fileModule);
+                foreach (var other in allModules)
                 {
-                    foreach (XmlAttribute attr in metaNode?.Attributes)
+                    if (other == fileModule) continue;
+
+                    string buildText = XFilesystem.ReadFile(other.BuildFilePath);
+
+                    string dependency = $"\"{fileModuleName}\"";
+                    if (buildText.Contains(dependency))
                     {
-                        string metaName  = attr.Name;
-                        string metaValue = attr.Value;
-                        tpl.SetMeta(metaName, metaValue);
+                        notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_DependentModule, other.Name);
+                        dependentModules.Add(other);
                     }
                 }
 
-                string[] ueArray = ueCsv.Split(',');
-                foreach(string ue in ueArray)
+
+                notifier.Info(XDialogLib.Ctx_UpdatingFiles);
+
+                //Check file for #include "FILENAME.generated.h"
+                string fileNameNoExt = XFilesystem.GetFilenameNoExt(filePath);
+                string newFileNameNoExt = XFilesystem.GetFilenameNoExt(newFileNameWithExt);
+                string incGenRegex = $@"(?<=#include\s+""){fileNameNoExt}(?=\.generated\.h"")";
+                string fileContent = XFilesystem.ReadFile(filePath);
+                if (Regex.IsMatch(fileContent, incGenRegex))
                 {
-                    result.SetTemplate(ctx, ue, name, tpl);
+                    notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, filePath);
+                    fileContent = Regex.Replace(fileContent, incGenRegex, newFileNameNoExt);
+                    XFilesystem.WriteFile(filePath, fileContent);
+                }
+
+                string incRegex = $@"(?<=#include\s+(?:""|<)(?:\w+/)*){fileNameNoExt}(?=\.h(?:""|>))";
+                Action<string> replaceAction = (path) =>
+                {
+                    string text = XFilesystem.ReadFile(path);
+
+                    if (Regex.IsMatch(text, incRegex))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
+                        text = Regex.Replace(text, incRegex, newFileNameNoExt);
+                        XFilesystem.WriteFile(path, text);
+                    }
+                };
+
+
+                //Configure Parellel Max Degree 
+
+                await Task.Run(async () =>
+                {
+                    foreach (var module in dependentModules)
+                    {
+                        string modulePath = module.FullPath;
+                        List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
+                        Parallel.ForEach(headerPaths, replaceAction);
+
+                        List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
+                        Parallel.ForEach(sourcePaths, replaceAction);
+                    }
+                });
+            }
+
+            //For all kind of file (.h included) rename the file
+            {
+                notifier.Info(XDialogLib.Ctx_RenamingFiles, XDialogLib.Info_RenamingFileToNewName, filePath, newFileNameWithExt);
+                string fileRenamed = XFilesystem.RenameFileNameWithExt(filePath, newFileNameWithExt);
+                if (fileRenamed == null)
+                {
+                    notifier.Erro(XDialogLib.Ctx_RenamingFiles, XDialogLib.Error_FileRenameFailed);
+                    return false;
                 }
             }
-            return result;
-        }
 
-
-        Dictionary<string, FUnrealTemplate> templatesByKey;
-        private Dictionary<string, List<FUnrealTemplate>> templatesByContext;
-
-        public FUnrealTemplates()
-        {
-            templatesByKey = new Dictionary<string, FUnrealTemplate>();
-            templatesByContext = new Dictionary<string, List<FUnrealTemplate>>();
-        }
-
-        public int Count { get { return templatesByKey.Count; } }
-
-        public void SetTemplate(string context, string ue, string name, FUnrealTemplate tpl)
-        {
-            string key = context + "_" + ue + "_" + name;
-            templatesByKey[key] = tpl;
-
-            string ctxKey = context + "_" + ue;
-            if (!templatesByContext.TryGetValue(ctxKey, out var list))
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
+            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
+            if (ubtResult.IsError)
             {
-                list = new List<FUnrealTemplate>();
-                templatesByContext[ctxKey] = list;
-            };
-            list.Add(tpl);
+                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                return false;
+            }
+            return true;
         }
 
-        public FUnrealTemplate GetTemplate(string context, string ue, string name)
-        {
-            string key = context + "_" + ue + "_" + name;
-            if (!templatesByKey.TryGetValue(key, out FUnrealTemplate tpl)) return null;
-            return tpl;
-        }
-
-        public List<FUnrealTemplate> GetTemplates(string context, string ue)
-        {
-            string ctxKey = context + "_" + ue;
-            return templatesByContext[ctxKey];
-        }
-    }
-
-    public class FUnrealTemplate
-    {
-        Dictionary<string, string> placeHolders;
-        Dictionary<string, string> metas;
-
-        public string Name { get; internal set; }
-        public string BasePath { get; internal set; }
-        public string Label { get; private set; }
-        public string Description { get; private set; }
-
-        public FUnrealTemplate(string name, string templatePath, string label, string desc)
-        {
-            Name = name;
-            BasePath = templatePath;
-            Label = label;
-            Description = desc;
-            placeHolders = new Dictionary<string, string>();
-            metas = new Dictionary<string, string>();
-        }
-
-        public int PlaceHolderCount { get { return placeHolders.Count; } }
-
-        public void SetPlaceHolder(string role, string name)
-        {
-            placeHolders[role] = name;
-        }
-
-        public string GetPlaceHolder(string role)
-        {
-            if (!placeHolders.TryGetValue(role, out string name)) return null;
-            return name;
-        }
-
-        public bool HasPlaceHolder(string role)
-        {
-            return placeHolders.ContainsKey(role);
-        }
-
-        public void SetMeta(string name, string value)
-        {
-            metas[name] = value;
-        }
-
-        public string GetMeta(string name)
-        {
-            if (!metas.TryGetValue(name, out string value)) return null;
-            return value;
-        }
+        
     } 
 }

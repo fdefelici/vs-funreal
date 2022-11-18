@@ -31,19 +31,22 @@ namespace FUnrealTest
             File.WriteAllText(filePath, contents);
         }
 
-        public static void DeleteDir(string basePath)
+        public static void DeleteDir(string basePath, params string[] parts)
         {
-            if (!Directory.Exists(basePath)) return;
-            Directory.Delete(basePath, true);
+            string path = XFilesystem.PathCombine(basePath, parts);
+
+            if (!Directory.Exists(path)) return;
+            Directory.Delete(path, true);
         }
 
-        public static void MakeFile(string dirPath, params string[] parts)
+        public static string MakeFile(string dirPath, params string[] parts)
         {
             string filePath = PathCombine(dirPath, parts);
 
             string basePath = Path.GetDirectoryName(filePath)!;
             MakeDir(basePath);
             WriteFile(filePath, "");
+            return filePath;
         }
 
         public static void DeepCopy(string sourcePath, string targetPath)
@@ -83,6 +86,27 @@ namespace FUnrealTest
         public static string PathParent(string path, int level=1)
         {
             return XFilesystem.PathParent(path, level);
+        }
+
+        public static string RenameFile(string filePath, string name)
+        {
+            return XFilesystem.RenameFileName(filePath, name);
+        }
+
+        internal static string RenameFolder(string sourcePath, string dirName)
+        {
+            string basePath = Path.GetDirectoryName(sourcePath);
+            string destPath = PathCombine(basePath, dirName);
+
+            Directory.Move(sourcePath, destPath);
+
+            return destPath;
+        }
+
+        internal static void DeleteFile(string module01)
+        {
+            if (!File.Exists(module01)) return;
+            File.Delete(module01);
         }
     }
 }

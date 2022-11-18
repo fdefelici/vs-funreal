@@ -1,9 +1,13 @@
 ﻿namespace FUnreal
 {
-    public class FUnrealPluginModule
+    public class FUnrealPluginModule : IFUnrealModule
     {
         private FUnrealPlugin plugin;
-        
+        private FUnrealPlugin plug;
+        private string modName;
+        private string modFile;
+
+        /*
         public FUnrealPluginModule(FUnrealPlugin plugin, string moduleName)
         {
             this.plugin = plugin;
@@ -12,6 +16,17 @@
             BuildFilePath = XFilesystem.PathCombine(FullPath, $"{moduleName}.Build.cs");
             PublicPath = XFilesystem.PathCombine(FullPath, "Public");
             ApiMacro = $"{moduleName.ToUpper()}_API";
+        }
+        */
+
+        public FUnrealPluginModule(FUnrealPlugin plug, string modName, string modFile)
+        {
+            plugin = plug;
+            Name = modName;
+            BuildFilePath = modFile;
+            FullPath = XFilesystem.PathParent(modFile);
+            PublicPath = XFilesystem.PathCombine(FullPath, "Public");
+            ApiMacro = $"{Name.ToUpper()}_API";
         }
 
         public string Name { get; }
