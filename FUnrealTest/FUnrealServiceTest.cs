@@ -227,7 +227,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RenameExistentModuleWithoutCppFiles()
+        public void RenameExistentModuleWithoutRenamingSourceFiles()
         {
             SetUpTestCaseForProject("UPrjOnePlugMod");
             
@@ -267,7 +267,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RenameExistentModuleWithCppFilesNotAligned()
+        public void RenameExistentModuleWithCppFilesNotNamingAligned()
         {
             SetUpTestCaseForProject("UPrjOnePlugMod");
 
@@ -278,19 +278,19 @@ namespace FUnrealTest
             Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
 
             Assert.IsTrue(TestUtils.ExistsDir(uprojectPath, "Plugins/Plugin01/Source/NewModule03"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Private/Module03NotAligned.cpp"));
-            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Public/Module03NotAligned.h"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Private/NewModule03Module.cpp"));
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Public/NewModule03Module.h"));
             Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/NewModule03.Build.cs"));
 
-            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Public/Module03NotAligned.h");
+            string fileHea = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Public/NewModule03Module.h");
             Assert.IsTrue(fileHea.Contains("class FModule03Module"));
 
-            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Private/Module03NotAligned.cpp");
-            Assert.IsTrue(fileCpp.Contains("#include \"Module03NotAligned.h\""));
+            string fileCpp = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/Private/NewModule03Module.cpp");
+            Assert.IsTrue(fileCpp.Contains("#include \"NewModule03Module.h\""));
             Assert.IsTrue(fileCpp.Contains("#define LOCTEXT_NAMESPACE \"FModule03Module\""));
             Assert.IsTrue(fileCpp.Contains("void FModule03Module::StartupModule()"));
             Assert.IsTrue(fileCpp.Contains("void FModule03Module::ShutdownModule()"));
-            Assert.IsTrue(fileCpp.Contains("IMPLEMENT_MODULE(FModule03Module, Module03)")); 
+            Assert.IsTrue(fileCpp.Contains("IMPLEMENT_MODULE(FModule03Module, NewModule03)")); 
 
             string fileCs = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01/Source/NewModule03/NewModule03.Build.cs");
             Assert.IsTrue(fileCs.Contains("public class NewModule03"));

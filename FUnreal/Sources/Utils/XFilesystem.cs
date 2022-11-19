@@ -359,10 +359,12 @@ namespace FUnreal
 
         public static List<string> FindFiles(string path, bool recursive, string searchPattern, Func<string, bool> filter)
         {
+            List<string> result = new List<string>();
+            if (!DirectoryExists(path)) return result;
+
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;  
             var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
 
-            List<string> result = new List<string>();
             foreach(string each in filePaths)
             {
                 if (filter(each))
@@ -482,15 +484,22 @@ namespace FUnreal
             XFilesystem.WriteFile(filePath, "");
         }
 
-        public static string FileChangeExtension(string filePath, string newExtention)
+        public static string ChangeFilePathExtension(string filePath, string newExtention)
         {
             return Path.ChangeExtension(filePath, newExtention);
         }
 
-        public static string FileChangeNameWithExt(string filePath, string newFileNameWithExt)
+        public static string FilePathChangeNameWithExt(string filePath, string newFileNameWithExt)
         {
             string basePath = PathParent(filePath);
             return PathCombine(basePath, newFileNameWithExt);
+        }
+
+        public static string ChangeFilePathName(string filePath, string newFileName)
+        {
+            string ext = Path.GetExtension(filePath);
+            string basePath = PathParent(filePath);
+            return PathCombine(basePath, $"{newFileName}{ext}");
         }
 
         public static async Task<List<string>> DirectoryFilesAsync(string dirPath, string searchPattern, bool recurse)
@@ -517,6 +526,16 @@ namespace FUnreal
         public static int PathCount(string path)
         {
             return PathSplit(path).Count();
+        }
+
+        public static bool IsChildPath(string childPath, string parentPath)
+        {
+            return childPath.Contains(parentPath);
+        }
+
+        public static string ChangePathBase(string fullPath, string basePath, string newBasePath)
+        {
+            return fullPath.Replace(basePath, newBasePath);
         }
     }
 }

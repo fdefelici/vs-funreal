@@ -457,6 +457,7 @@ return result;
             FullPath = XFilesystem.PathParent(moduleBuildFilePath);
             BuildFilePath = moduleBuildFilePath;
             PublicPath = XFilesystem.PathCombine(FullPath, "Public");
+            PrivatePath = XFilesystem.PathCombine(FullPath, "Private");
             ApiMacro = $"{Name.ToUpper()}_API";
         }
 
@@ -464,13 +465,15 @@ return result;
         public string FullPath { get; }
         public string BuildFilePath { get; }
         public string PublicPath { get; }
+        public string PrivatePath { get; internal set; }
+
         public string ApiMacro { get; }
 
 
         public bool Exists { get { return XFilesystem.FileExists(BuildFilePath); } }
 
         public bool IsPrimaryGameModule { get; set; }
-
+       
         public override bool Equals(object obj)
         {
             if (!(obj is IFUnrealModule)) return false;

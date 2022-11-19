@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FModule01RenModule : public IModuleInterface
+class FModule01Module : public IModuleInterface
 {
 public:
 

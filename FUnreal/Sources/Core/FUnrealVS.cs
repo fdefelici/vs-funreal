@@ -11,6 +11,7 @@ using Microsoft.Internal.VisualStudio.PlatformUI;
 using EnvDTE;
 using EnvDTE80;
 using FUnreal;
+using VSLangProj;
 
 namespace FUnreal
 {
@@ -71,7 +72,18 @@ namespace FUnreal
 
         public FUnrealLogger Output { get; private set; }
 
-        private FUnrealVS() { }
+        private FUnrealVS() {
+
+            SolutionItem item = null;
+
+            EnvDTE.Project prj;
+            ///prj.ProjectItems.AddFolder()
+            //prj.ProjectItems.Item(1).ProjectItems.Ad
+
+            VirtualFolder f;
+            Community.VisualStudio.Toolkit.Project prj2;
+            prj2.
+        }
 
         public async Task InitializeAsync()
         {
@@ -104,7 +116,7 @@ namespace FUnreal
         public string GetUProjectFilePath()
         {
             string solAbsPath = GetSolutionFilePath();
-            string uprjFilePath = XFilesystem.FileChangeExtension(solAbsPath, "uproject");
+            string uprjFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
             return uprjFilePath;
         }
 
@@ -201,7 +213,7 @@ namespace FUnreal
 
                 var solution = await VS.Solutions.GetCurrentSolutionAsync();
                 string solutionPath = solution.FullPath;
-                string uprojectPath = XFilesystem.FileChangeExtension(solutionPath, "uproject");
+                string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
                 return XFilesystem.FileExists(uprojectPath);
             });
 

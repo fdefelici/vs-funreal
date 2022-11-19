@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FMyModRenamedModule : public IModuleInterface
+class FMyModModule : public IModuleInterface
 {
 public:
 

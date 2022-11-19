@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ProjectReloadHandler.cs" />
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
+    <Compile Include="Sources\Core\FUnrealServiceTasks.cs" />
     <Compile Include="Sources\Core\FUnrealTemplates.cs" />
     <Compile Include="Sources\UI\Common\IXCommand.cs" />
     <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />

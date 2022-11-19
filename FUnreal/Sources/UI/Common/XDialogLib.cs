@@ -51,9 +51,9 @@ namespace FUnreal
         internal static string Info_UpdatingModuleTargetFile = "Updating module target file {0} ...";
         internal static string Warn_ProjectTargetFileNotFound = "Project target file not found: {0}";
         internal static string Info_UpdatingProjectTargetFile = "Updating project target file {0} ...";
-        internal static string Warn_ModuleCppFileNotFound = "Module cpp file not detected as: {0} or {1}";
-        internal static string Info_UpdatingModuleNameInCpp = "Updating name in module file {0} ...";
-        internal static string Info_RenamingCppFiles = "Renaming C++ file: {0}";
+        internal static string Warn_ModuleSourcesNotFound = "Cannot locate module source files in {0}";
+        internal static string Info_UpdatingFile = "Updating file {0} ...";
+        internal static string Info_RenamingFile = "Renaming file {0} to {1} ...";
         internal static string Info_RenamingFolder = "Renaming folder: {0} to {1}";
         internal static string Error_PluginAlreadyExists = "Plugin already exists: {0}";
         internal static string Ctx_UpdatingProject = "Updating UProject ...";
