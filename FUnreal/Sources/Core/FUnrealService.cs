@@ -17,6 +17,13 @@ using System.Windows.Shapes;
 namespace FUnreal
 {
     public enum FUnrealSourceType { INVALID = -1, PUBLIC, PRIVATE, CUSTOM }
+    public struct FUnrealTemplateCtx
+    {
+        public const string PLUGINS = "plugins";
+        public const string MODULES = "modules";
+        public const string SOURCES = "sources";
+    }
+
 
     public class FUnrealService
     {
@@ -88,6 +95,24 @@ namespace FUnreal
             }
 
             FUnrealTemplates templates = FUnrealTemplates.Load(templateDescPath);
+            
+            //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
+            string ueMajorVer = engine.Version.Major.ToString();
+            if (templates.GetTemplates(FUnrealTemplateCtx.PLUGINS, ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
+                return null;    
+            }
+            if (templates.GetTemplates(FUnrealTemplateCtx.MODULES, ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Cannot load module templates from path: {0}", templateDescPath);
+                return null;
+            }
+            if (templates.GetTemplates(FUnrealTemplateCtx.SOURCES, ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Cannot load source templates from path: {0}", templateDescPath);
+                return null;
+            }
 
             return new FUnrealService(engine, uprjFilePath, templates);
         }
@@ -384,11 +409,11 @@ namespace FUnreal
         }
 
         // UI Only
-        public string ProjectRelativePath(string fullPath)
+        public string ProjectRelativePath(string fullPath, bool keepProjectNameAsFirstItemOfThePath = true)
         {
             string prjPath = AbsProjectPath();
             string absPath = fullPath;
-            string relPath = XFilesystem.PathSubtract(absPath, prjPath, true);
+            string relPath = XFilesystem.PathSubtract(absPath, prjPath, keepProjectNameAsFirstItemOfThePath);
             return relPath;
         }
 
@@ -1015,6 +1040,11 @@ namespace FUnreal
         public async Task<bool> DeleteSourcesAsync(List<string> sourcePaths, FUnrealNotifier notifier)
         {
             notifier.Info(XDialogLib.Ctx_CheckProjectPlayout);
+            if (sourcePaths.Count == 0)
+            {
+                notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.NothingToDelete);
+                return true;
+            }
 
             List<string> dirs = new List<string>();
             List<string> files = new List<string>();
@@ -1186,7 +1216,7 @@ namespace FUnreal
         {
             if (!ExistsModule(moduleName))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleNotFound, moduleName);
                 return false;
             }
             if (ExistsModule(newModuleName))
@@ -1246,7 +1276,7 @@ namespace FUnreal
             var module = project.GameModules[moduleName];
             if (module == null)
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_GameModuleNotFound, moduleName);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleNotFound, moduleName);
                 return false;
             }
             //TODO: Should stop in case moduleName is Primary Module. (by now just prevented by UI button disabled)
@@ -1382,8 +1412,10 @@ namespace FUnreal
                 var fileModuleName = fileModule.Name;
 
                 // Select all Modules dependent to fileModule
+
+                //see FUnrealServiceTasks.Module_DependetModules
                 notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, fileModuleName);
-                var dependentModules = new FUnrealCollection<IFUnrealModule>();
+                var dependentModules = new FUnrealCollection<FUnrealModule>();
                 dependentModules.Add(fileModule);
                 foreach (var other in allModules)
                 {
@@ -1465,6 +1497,84 @@ namespace FUnreal
             return true;
         }
 
-        
+        public async Task<bool> RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
+        {
+            if (!ExistsSourceDirectory(folderPath))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_SourceDirectoryNotFound, folderPath);
+                return false;
+            }
+
+            string newFolderPath = XFilesystem.ChangeDirName(folderPath, newFolderName);
+            if (ExistsSourceDirectory(newFolderPath))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_DirectoryAlreadyExists, newFolderPath);
+                return false;
+            }
+
+            var project = GetUProject();
+            var module = project.AllModules.FindByBelongingPath(folderPath);
+            if (module == null) 
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleNotFound, $"for path {folderPath}");
+                return false;
+            }
+
+            //Examples:
+            //#include "utils/core/alpha/Pippo.h"
+            //#include "utils/core/Mario.h"
+            //#include "altro/core/deriv/Other.h"
+            //Rename utils/core in utils/core2
+
+            //1. Detect if .h are involved and prepare substitution list for #include directive
+            bool needIncludeUpdate = false;
+            bool hasPublicHeaderInvolved = false;
+            //   TODO: Public vs Private. Need to take into accont Custom folder.... to be threated as Public (eventually could check in .Build.cs...
+            if (folderPath != module.PublicPath && folderPath != module.PrivatePath) 
+            {
+                needIncludeUpdate = true;
+                XFilesystem.FindFile(folderPath, true, "*.h", filePath =>
+                {
+                    hasPublicHeaderInvolved = XFilesystem.IsChildPath(filePath, module.PublicPath);
+                    return hasPublicHeaderInvolved;
+                });
+            }
+
+            if (needIncludeUpdate)
+            {
+                string basePath = hasPublicHeaderInvolved ? module.PublicPath : module.PrivatePath;
+                string relPath = XFilesystem.PathSubtract(folderPath, basePath);
+                string newRelPath = XFilesystem.ChangeDirName(relPath, newFolderName);
+                string incOldPath = XFilesystem.PathToUnixStyle(relPath);
+                string incNewPath = XFilesystem.PathToUnixStyle(newRelPath);
+
+                //2. Replace #include directive in all dependent module for Public
+                if (hasPublicHeaderInvolved)
+                {
+                    var otherModules = FUnrealServiceTasks.Module_DependentModules(module, project.AllModules);
+                    await FUnrealServiceTasks.Modules_FixIncludeDirectiveAsync(otherModules, incOldPath, incNewPath, notifier);
+                }
+
+                //3. Replace #include directive in current module Public + Private
+                if (needIncludeUpdate)
+                {
+                    //NOTE: can be optimized in case header is Private. So only files under Privated need to be processed
+                    await FUnrealServiceTasks.Module_FixIncludeDirectiveAsync(module, incOldPath, incNewPath, notifier);
+                }
+            }
+
+            bool taskSuccess;
+            //4. Replace #include directive in current module Public + Private
+            taskSuccess = await FUnrealServiceTasks.Source_RenameFolderAsync(folderPath, newFolderName, notifier);
+            if (!taskSuccess) return false;
+
+            //5. Regen VS Solution
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            return true;
+        }
+
+
     } 
 }

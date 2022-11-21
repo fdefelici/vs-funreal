@@ -64,7 +64,8 @@
         <Label     Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">New  Name:</Label>
         <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginNewNameTbx" 
                    TextChanged="pluginNewNameTbx_Changed" 
-                   PreviewTextInput="pluginNewNameTbx_Validation"
+                   PreviewTextInput="pluginNewNameTbx_Validation" 
+                   DataObject.Pasting="pasteText_Validation"
                    />
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginNewPathTbl" Margin="0,5,0,10"> New\Plugin\Path</TextBlock>
 

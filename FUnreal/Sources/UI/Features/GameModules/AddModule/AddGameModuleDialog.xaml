@@ -67,7 +67,7 @@
         <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="templateTbl" Margin="0,5,0,10">Template Description</TextBlock>
 
         <Label     Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Module Name:</Label>
-        <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNameTbx" TextChanged="moduleNameTbxChanged" PreviewTextInput="inputText_Validation" />
+        <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNameTbx" TextChanged="moduleNameTbxChanged" PreviewTextInput="inputText_Validation" DataObject.Pasting="pasteText_Validation" />
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="modulePathTbl" Margin="0,5,0,10">Module Path</TextBlock>
 
         <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>

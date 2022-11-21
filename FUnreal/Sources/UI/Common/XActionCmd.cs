@@ -36,7 +36,8 @@ namespace FUnreal
         {
             //Better way to call async method from here, preserving call context?
             Command.Enabled = true;
-            Command.Visible = Controller.ShouldBeVisibleAsync().GetAwaiter().GetResult();  
+            //Command.Visible = Controller.ShouldBeVisibleAsync().GetAwaiter().GetResult();  
+            Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await Controller.ShouldBeVisibleAsync());
         }
 
         protected override Task ExecuteAsync(OleMenuCmdEventArgs e)

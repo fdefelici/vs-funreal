@@ -40,8 +40,11 @@ namespace FUnreal
             OnRenameAsync?.Invoke().FireAndForget();
         }
 
-        private void moduleNewNameTbx_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e)
-            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
+        private void inputText_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+            => XDialogLib.TextBox_ClassName_InputValidation(sender, e);
+
+        private void pasteText_Validation(object sender, DataObjectPastingEventArgs e)
+            => XDialogLib.TextBox_ClassName_PasteValidation(sender, e);
 
         private void renameFilesCbx_Changed(object sender, RoutedEventArgs e)
         {

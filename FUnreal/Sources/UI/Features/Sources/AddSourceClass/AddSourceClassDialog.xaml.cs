@@ -49,9 +49,10 @@ namespace FUnreal
         }
 
         private void inputText_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e) 
-            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
+            => XDialogLib.TextBox_ClassName_InputValidation(sender, e);
 
-
+        private void pasteText_Validation(object sender, DataObjectPastingEventArgs e)
+            => XDialogLib.TextBox_ClassName_PasteValidation(sender, e);
         private void publicRdb_Checked(object sender, RoutedEventArgs e)
         {
             _classTypeIndex = 0;

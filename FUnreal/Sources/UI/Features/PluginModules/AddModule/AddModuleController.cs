@@ -21,20 +21,15 @@ namespace FUnreal
 
         public override async Task DoActionAsync()
         {
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
+            _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
+
+
             _dialog = new AddModuleDialog();
             _dialog.OnConfirmAsync = ConfirmAsync;
             _dialog.OnTemplateChangeAsync = TemplateChangedAsync;
             _dialog.OnModuleNameChangeAsync = ModuleNameChangedAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
-
-            if (_templates.Count == 0)
-            {
-                await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_TemplatesNotFound);
-                return;
-            }
-
-            var itemVs = await _unrealVS.GetSelectedItemAsync();
-            _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
             _dialog.pluginNameTbl.Text = _currentPluginName;
             _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(_currentPluginName);

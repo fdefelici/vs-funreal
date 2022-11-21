@@ -5,13 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
-using System.IO;
-using Microsoft.VisualStudio.Threading;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using EnvDTE;
-using EnvDTE80;
-using FUnreal;
-using VSLangProj;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace FUnreal
 {
@@ -23,8 +19,8 @@ namespace FUnreal
         private const string WARN = "WARN";
         private const string ERRO = "ERRO";
 
-        private Community.VisualStudio.Toolkit.OutputWindowPane _pane;
-        public FUnrealLogger(Community.VisualStudio.Toolkit.OutputWindowPane pane)
+        private OutputWindowPane _pane;
+        public FUnrealLogger(OutputWindowPane pane)
         {
             _pane = pane;
         }
@@ -61,6 +57,31 @@ namespace FUnreal
 
     public class FUnrealVS
     {
+        public static async Task<bool> IsUnrealSolutionAsync()
+        {
+            /*
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                // Switch to main thread
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                // Do your work on the main thread here.
+
+                var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                string solutionPath = solution.FullPath;
+                string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
+                return XFilesystem.FileExists(uprojectPath);
+            });
+            */
+
+            await XThread.SwitchToUIThreadIfItIsNotAsync();
+            
+            var solution = await VS.Solutions.GetCurrentSolutionAsync();
+            string solutionPath = solution.FullPath;
+            string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
+            return XFilesystem.FileExists(uprojectPath);
+        }
+
+
         public static async Task<FUnrealVS> CreateAsync()
         {
             var uvs = new FUnrealVS();
@@ -72,24 +93,15 @@ namespace FUnreal
 
         public FUnrealLogger Output { get; private set; }
 
-        private FUnrealVS() {
+        private FUnrealDTE _unrealDTE;
 
-            SolutionItem item = null;
-
-            EnvDTE.Project prj;
-            ///prj.ProjectItems.AddFolder()
-            //prj.ProjectItems.Item(1).ProjectItems.Ad
-
-            VirtualFolder f;
-            Community.VisualStudio.Toolkit.Project prj2;
-            prj2.
-        }
+        private FUnrealVS() { }
 
         public async Task InitializeAsync()
         {
             VS.Events.SolutionEvents.OnAfterLoadProject += (project) =>
             {
-                Debug.Print($"----------------- PROJECT LOADED: {project.Name}");
+                XDebug.Info($"Project Loaded Event detected: {project.Name}");
 
                 string uprjFilePath = GetUProjectFilePath();
                 string fileName = XFilesystem.GetFilenameNoExt(uprjFilePath);
@@ -97,16 +109,19 @@ namespace FUnreal
                 if (project.Name != fileName) return;
 
                 OnUProjectLoadedAsync?.Invoke().FireAndForget();
+
+                _unrealDTE.TryToSelectSolutionExplorerItem();
             };
 
-
-            Community.VisualStudio.Toolkit.OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnrealToolbox);
-
+            OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnrealToolbox);
             Output = new FUnrealLogger(pane);
+
+            _unrealDTE = await FUnrealDTE.CreateInstanceAsync();
+            if (!_unrealDTE.IsValid)
+            {
+                XDebug.Erro("Invalid FUnrealDTE instance!");
+            }
         }
-
-
-
 
         public string GetSolutionFilePath()
         {
@@ -131,7 +146,6 @@ namespace FUnreal
             var items = await VS.Solutions.GetActiveItemsAsync();
             return items.Count() == 1;
         }
-
 
         public async Task<List<FUnrealVSItem>> GetSelectedItemsAsync()
         {
@@ -203,61 +217,17 @@ namespace FUnreal
             return items.Count() > 1;
         }
 
-        public static bool IsUnrealSolution()
-        {
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                // Switch to main thread
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                // Do your work on the main thread here.
-
-                var solution = await VS.Solutions.GetCurrentSolutionAsync();
-                string solutionPath = solution.FullPath;
-                string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
-                return XFilesystem.FileExists(uprojectPath);
-            });
-
-        }
+    
 
         public string GetUnrealEnginePath()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            string natvisFilePath = _unrealDTE.UENatvisPath;
 
-            DTE2 dTE2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            string visualStudioDebuggingPath = XFilesystem.PathParent(natvisFilePath);
+            string extrasPath = XFilesystem.PathParent(visualStudioDebuggingPath);
+            string enginePath = XFilesystem.PathParent(extrasPath);
 
-            foreach (EnvDTE.Project project in dTE2.Solution.Projects)
-            {
-                /*
-                Debug.Print("Project Full: {0}", project.FullName);
-                Debug.Print("Project Name: {0}", project.Name);
-                Debug.Print("Project File: {0}", project.FileName);
-                Debug.Print("        Kind: {0}", project.Kind);
-                Debug.Print("       Items: {0}", project.ProjectItems.Count);
-                */
-
-                //Microsoft.VisualStudio.CommonIDE.Solutions
-                //DteMiscProject
-                if (project.Name.Equals("Visualizers", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (project.ProjectItems.Count != 1) return null;
-
-                    ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
-
-                    if (item.FileCount != 1) return null;
-
-                    string absFilePath = item.FileNames[1];    //Collection 1-based (not starting from 0!!!)
-                    Debug.Print(" Natvis file path: {0}", absFilePath);
-
-                    string visualStudioDebuggingPath = XFilesystem.PathParent(absFilePath);
-                    string extrasPath = XFilesystem.PathParent(visualStudioDebuggingPath);
-                    string enginePath = XFilesystem.PathParent(extrasPath);
-
-                    Debug.Print(" Engine Path: {0}", enginePath);
-                    return enginePath;
-                }
-            }
-
-            return null;
+            return enginePath;
         }
 
         public void ShowStatusBarMessage(string format, params string[] args)
@@ -265,6 +235,36 @@ namespace FUnreal
             string message = XString.Format(format, args);
             VS.StatusBar.ShowMessageAsync(message).FireAndForget();
         }
+
+        public async Task<bool> ExistsFolderInSelectedFolderParentAsync(string name)
+        {
+            return await _unrealDTE.ExistsFolderInSelectedFolderParentAsync(name);
+        }
+
+        public async Task<bool> ExistsSubpathFromSelectedFolderAsync(params string[] parts)
+        {
+            return await _unrealDTE.ExistsSubpathFromSelectedFolderAsync(parts);
+        }
+
+        public async Task<bool> AddSubpathToSelectedFolderAsync(string[] parts)
+        {
+            return await _unrealDTE.AddSubpathToSelectedFolderAsync(parts);
+        }
+
+
+        public async Task<bool> RemoveProjectItemByRelPathAsync(string relPathToProjectExcluded)
+        {
+            return await _unrealDTE.RemoveProjectItemByRelPathAsync(relPathToProjectExcluded);
+        }
+
+        /*
+         * Remove folder from VS just in case empty folders exists (in this case ubt regeneration does't update Virtual Folder / Filters)
+         */
+        public async Task<bool> RemoveFoldersIfAnyInCurrentSelectionAsync()
+        {
+            return await _unrealDTE.RemoveFoldersFromSelectionAsync();  
+        }
+
     }
 
     /* 
@@ -278,25 +278,25 @@ namespace FUnreal
         - Type              = PhysicalFile
      */
 
-    /* 
-       SolutionItem Properties for VirtualFolder attached to Project
-        - Children          = IEnumerable<SolutionItem>
-        - FullPath          = null
-        - Name              = "Config"
-        - Parent            = "UENLOpt" (Project) [SolutionItem]
-        - Text              = "Config"
-        - Type              = VirtualFolder
-     */
+        /* 
+            SolutionItem Properties for VirtualFolder attached to Project
+            - Children          = IEnumerable<SolutionItem>
+            - FullPath          = null
+            - Name              = "Config"
+            - Parent            = "UENLOpt" (Project) [SolutionItem]
+            - Text              = "Config"
+            - Type              = VirtualFolder
+            */
 
-    /* 
-       SolutionItem Properties for VirtualFolder some levels under the project
-        - Children          = IEnumerable<SolutionItem>
-        - FullPath          = null
-        - Name              = "Plugins\\NewPlugin2\\Source\\DajeMod"
-        - Parent            = "Plugins\\NewPlugin2\\Source" (VirtualFolder) [SolutionItem]
-        - Text              = "DajeMod"
-        - Type              = VirtualFolder
-     */
+        /* 
+            SolutionItem Properties for VirtualFolder some levels under the project
+            - Children          = IEnumerable<SolutionItem>
+            - FullPath          = null
+            - Name              = "Plugins\\NewPlugin2\\Source\\DajeMod"
+            - Parent            = "Plugins\\NewPlugin2\\Source" (VirtualFolder) [SolutionItem]
+            - Text              = "DajeMod"
+            - Type              = VirtualFolder
+            */
 
     public struct FUnrealVSItem
     {
@@ -318,7 +318,7 @@ namespace FUnreal
                    string cleanedPath = XFilesystem.PathParent(prjPath, 3);
 
                    string fullPath = XFilesystem.PathCombine(cleanedPath, _item.Name);
-                    return fullPath;
+                   return fullPath;
                 } 
                 else return _item.FullPath; 
             } 

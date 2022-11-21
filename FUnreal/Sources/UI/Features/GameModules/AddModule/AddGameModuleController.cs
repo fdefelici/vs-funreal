@@ -20,20 +20,15 @@ namespace FUnreal
 
         public override async Task DoActionAsync()
         {
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
+
+
             _dialog = new AddGameModuleDialog();
             _dialog.OnConfirmAsync = ConfirmAsync;
             _dialog.OnTemplateChangeAsync = TemplateChangedAsync;
             _dialog.OnModuleNameChangeAsync = ModuleNameChangedAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
-            if (_templates.Count == 0)
-            {
-                await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_TemplatesNotFound);
-                return;
-            }
-
-            var itemVs = await _unrealVS.GetSelectedItemAsync();
-       
             //NOTE: doing this as last operation because it will fire templatechange event
             _dialog.templateCbx.ItemsSource = _templates;
             _dialog.templateCbx.SelectedIndex = 0;   //fire TemplateChanged Event

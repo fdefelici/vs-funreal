@@ -47,9 +47,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectReloadHandler.cs" />
+    <Compile Include="Sources\Core\FUnrealDTE.cs" />
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
     <Compile Include="Sources\Core\FUnrealServiceTasks.cs" />
     <Compile Include="Sources\Core\FUnrealTemplates.cs" />
+    <Compile Include="Sources\UI\Common\Controls\MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\UI\Common\IXCommand.cs" />
     <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />
     <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleCmd.cs" />
@@ -64,6 +68,13 @@
     <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
       <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\UI\Features\Sources\RenameFolder\RenameFolderCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\RenameFolder\RenameFolderController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderCmd.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderController.cs" />
+    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml.cs">
+      <DependentUpon>AddFolderDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileCmd.cs" />
     <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileCmd.cs" />
@@ -76,7 +87,6 @@
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
     <Compile Include="Sources\Core\FUnrealNotifier.cs" />
     <Compile Include="Sources\Core\FUnrealPlugin.cs" />
-    <Compile Include="Sources\Core\FUnrealPluginModule.cs" />
     <Compile Include="Sources\Core\FUnrealUPluginFile.cs" />
     <Compile Include="Sources\Core\FUnrealUProjectFile.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassCmd.cs" />
@@ -85,10 +95,9 @@
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
-    <Compile Include="Sources\Utils\FUnrealFSWatcher.cs" />
-    <Compile Include="Sources\Utils\FUnrealFSWatcherBIS.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
     <Compile Include="Sources\Utils\XString.cs" />
+    <Compile Include="Sources\Utils\XThread.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
     <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
       <DependentUpon>FProgressPanel.xaml</DependentUpon>
@@ -135,6 +144,7 @@
     <Compile Include="Sources\UI\Features\ToolboxMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
+    <None Include=".editorconfig" />
     <None Include="FUnrealPackage.vsct_OLD" />
     <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -196,6 +206,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Sources\UI\Common\Controls\MessageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Sources\UI\Common\Controls\FProgressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -225,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sources\UI\Common\Controls\ConfirmDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -10,7 +10,6 @@ namespace FUnreal
     {
         public const string PackageGuidString = "43b90373-5388-42b6-9074-100c2b543eec";
 
-
         public const int ToolboxMenu         = 0x0002;
         public const int AddPluginCmd        = 0x0005;
         public const int DeleteSourceCmd     = 0x0006;
@@ -25,5 +24,7 @@ namespace FUnreal
         public const int DeleteGameModuleCmd = 0x0015;
         public const int AddSourceFileCmd    = 0x0016;
         public const int RenameSourceFileCmd = 0x0017;
+        public const int AddFolderCmd        = 0x0018;
+        public const int RenameFolderCmd     = 0x0019;
     }
 }

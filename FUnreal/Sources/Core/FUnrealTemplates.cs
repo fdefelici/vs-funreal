@@ -110,7 +110,8 @@ namespace FUnreal
         public List<FUnrealTemplate> GetTemplates(string context, string ue)
         {
             string ctxKey = context + "_" + ue;
-            return templatesByContext[ctxKey];
+            if (!templatesByContext.TryGetValue(ctxKey, out List<FUnrealTemplate> tpls)) return new List<FUnrealTemplate>();
+            return tpls;
         }
     }
 

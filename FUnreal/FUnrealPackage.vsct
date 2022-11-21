@@ -139,6 +139,22 @@
         </Strings>
       </Button>
 
+      <Button guid="guidFUnrealPackage" id="AddFolderCmd" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Add Folder...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidFUnrealPackage" id="RenameFolderCmd" type="Button">
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Rename...</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
   </Commands>
 
@@ -200,6 +216,7 @@
     <CommandPlacement guid="guidFUnrealPackage" id="DeleteSourceCmd" priority="0x0002">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
+    
 
     <!-- source folder -->
     <CommandPlacement guid="guidFUnrealPackage" id="AddSourceClassCmd" priority="0x0001">
@@ -209,7 +226,15 @@
     <CommandPlacement guid="guidFUnrealPackage" id="AddSourceFileCmd" priority="0x0002">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
     </CommandPlacement>
-  
+
+    <CommandPlacement guid="guidFUnrealPackage" id="AddFolderCmd" priority="0x0003">
+      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidFUnrealPackage" id="RenameFolderCmd" priority="0x0001">
+      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
+    </CommandPlacement>
+    
 
     <CommandPlacement guid="guidFUnrealPackage" id="AddGameModuleCmd" priority="0x0001">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
@@ -223,10 +248,7 @@
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
 
-
-
   </CommandPlacements>
-
 
 
   <Symbols>
@@ -250,6 +272,8 @@
       <IDSymbol name="DeleteGameModuleCmd"          value="0x0015" />
       <IDSymbol name="AddSourceFileCmd"             value="0x0016" />
       <IDSymbol name="RenameSourceFileCmd"          value="0x0017" />
+      <IDSymbol name="AddFolderCmd"                 value="0x0018" />
+      <IDSymbol name="RenameFolderCmd"              value="0x0019" />
 
     </GuidSymbol>
   </Symbols>

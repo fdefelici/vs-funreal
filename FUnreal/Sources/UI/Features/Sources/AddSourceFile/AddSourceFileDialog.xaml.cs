@@ -8,6 +8,14 @@ namespace FUnreal
 {
     public partial class AddSourceFileDialog : DialogWindow
     {
+        public static AddSourceFileDialog CreateInRenameMode()
+        {
+            var view = new AddSourceFileDialog();
+            view.Title = "FUnreal Toolbox: Rename Source File";
+            view.addButton.Content = "Rename";
+            return view;
+        }
+
         public Func<Task> OnConfirmAsync { get; set; }
         public Func<Task> OnFileNameChangeAsync { get; set; }
         
@@ -38,6 +46,10 @@ namespace FUnreal
 
         private void inputText_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e) 
             => XDialogLib.TextBox_FileNameWithExt_InputValidation(sender, e);
+
+        private void pasteText_Validation(object sender, DataObjectPastingEventArgs e)
+            => XDialogLib.TextBox_FileNameWithExt_PasteValidation(sender, e);
+
 
         public void HideError()
         {
@@ -85,14 +97,6 @@ namespace FUnreal
         {
             errorMsgLbl.Content = msg;
             errorMsgLbl.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        public static AddSourceFileDialog CreateInRenameMode()
-        {
-            var view = new AddSourceFileDialog();
-            view.Title = "FUnreal Toolbox: Rename Source File";
-            view.addButton.Content = "Rename";
-            return view;
         }
     }
 }

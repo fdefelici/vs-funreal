@@ -32,13 +32,6 @@ namespace FUnreal
             _dialog.OnConfirmAsync = ConfirmAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
-
-            if (_templates.Count == 0)
-            {
-                await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_TemplatesNotFound);
-                return;
-            }
-
             _dialog.pluginTemplCbx.ItemsSource = _templates;
             _dialog.pluginTemplCbx.SelectedIndex = 0;  //Fire Template Changed
             _dialog.pluginTemplTbl.Text = _templates[0].Description;

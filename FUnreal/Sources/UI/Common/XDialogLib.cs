@@ -1,6 +1,11 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+
 
 namespace FUnreal
 {
@@ -8,20 +13,22 @@ namespace FUnreal
     {
         public const string ErrorMsg_SomethingWentWrong = "Ops! Something went wrong...";
         public const string ErrorMsg_PluginNotExists = "It seems that selected plugin doesn't exists. Maybe filesystem and VS Solution are misaligned!";
-        internal static string ErrorMsg_TemplatesNotFound = "Templates not found for FUnreal!";
         internal static string ErrorMsg_ModuleNotExists = "It seems that selected module doesn't exists. Maybe filesystem and VS Solution are misaligned!";
         internal static string ErrorMsg_ModuleAlreadyExists = "Module already exist at {0}";
         public static string InfoMsg_PluginDelete = "This plugin will be deleted permanently!";
         internal static string ErrorMsg_FileAlreadyExists = "A file already exists with this name!";
+        internal static string ErrorMsg_FolderAlreadyExists = "A folder already exists with this name!";
+        public static string ErrorMsg_InvalidInput = "Input is not valid!";
         public static string ErrorMsg_InvalidPath = "Invalid Path {0}";
         internal static string ErrorMsg_SourcePathNotFound = "Path not found!";
+        internal static string ErrorMsg_PathNotExists = "Path doesn't exist on filesystem!";
         public static string InfoMsg_SourcePathDelete = "This path will be deleted permanently!";
 
 
+        public static string Error_DirectoryAlreadyExists = "Directory already exists {0}";
         public static string Error_FileAlreadyExists = "File already exists {0}";
 
-        private const string Input_FileName_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";
-        private const string Input_FileNameWithExt_ValidationRegex = @"^[a-zA-Z][a-zA-Z0-9_\.]*$";
+        
 
         public static string Ctx_CheckProjectPlayout = "Checking project layout ...";
         public static string Ctx_UpdatingModuleDependency = "Updating module dependency ...";
@@ -41,7 +48,7 @@ namespace FUnreal
         public static string Error_PluginModuleNotFound = "Module not found: {0}::{1}";
         public static string Error_ModuleAlreadyExists = "Module already exists at: {0}";
         public static string Error_GameModuleAlreadyExists = "Module already exists: {0}";
-        public static string Error_GameModuleNotFound = "Module not found: {0}";
+        public static string Error_ModuleNotFound = "Module not found: {0}";
         internal static string Ctx_RegenSolutionFiles = "Regenerating VS Soluton files ...";
         internal static string Error_TemplateNotFound = "Template not found for ({0}, {1}, {2})";
         internal static string Error_TemplateWrongConfig = "Template configuration error for ({0}, {1}, {2})";
@@ -78,10 +85,32 @@ namespace FUnreal
         internal static string Info_DependentModule = "Dependent module {0}";
         internal static string info_UpdatingFile = "Updating file {0} ...";
         internal static string Title_FUnrealToolbox = "FUnreal Toolbox";
+        internal static string NothingToDelete = "Nothing to delete on filesystem.";
+        public const string Input_ClassName_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";
+        public const string Input_FileNameWithExt_ValidationRegex = @"^[a-zA-Z0-9_\.]+$";
+        //private const string Input_SubPath_ValidationRegex = @"^(?:[a-zA-Z0-9_]+\\{0,1}){1,}(?<!\\\\)$"; //@"^[a-zA-Z0-9_]+(?:\\[a-zA-Z0-9_]+){0,}"; //not end with \ [^\\]$";
+        //private const string Input_SubPath_ValidationRegex = @"^([a-zA-Z0-9_]+\\{0,1})+\\{0,1}$";
+        public const string Input_SubPath_ValidationRegex = @"^[a-zA-Z0-9_][a-zA-Z0-9_\\]*$";
+        public const string Input_FolderName_ValidationRegex = "^[a-zA-Z0-9_]*$";
 
-        public static void TextBox_FileName_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+
+        public static bool IsValidFileNameWitExt(string fileName)
         {
-            TextBox_InputValidation(sender, e, Input_FileName_ValidationRegex);
+            bool validChars = Regex.IsMatch(fileName, Input_FileNameWithExt_ValidationRegex);
+            if (!validChars) return false;
+
+            string regexOnlyThisChar = "^(?:\\.+|_+)$";
+            if (Regex.IsMatch(fileName, regexOnlyThisChar)) return false;
+           
+            if (fileName.Contains("..")) return false;
+
+            return true;
+        }
+
+
+        public static void TextBox_ClassName_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            TextBox_InputValidation(sender, e, Input_ClassName_ValidationRegex);
         }
 
         public static void TextBox_FileNameWithExt_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -89,20 +118,103 @@ namespace FUnreal
             TextBox_InputValidation(sender, e, Input_FileNameWithExt_ValidationRegex);
         }
 
-        private static void TextBox_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e, string regex)
+        public static void TextBox_FolderName_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
-            if (!(sender is TextBox)) return;
+            TextBox_InputValidation(sender, e, Input_FolderName_ValidationRegex);
+        }
 
+        public static void TextBox_SubPath_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            string futureText = TextBox_InputValidation(sender, e, Input_SubPath_ValidationRegex);
+            
+            string doubleSepar = $"{XFilesystem.PathSeparatorStr}{XFilesystem.PathSeparatorStr}";
+            if (futureText.Contains(doubleSepar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        public static void TextBox_ClassName_PasteValidation(object sender, DataObjectPastingEventArgs e)
+        {
+            TextBox_PasteValidation(sender, e, Input_ClassName_ValidationRegex);
+        }
+
+        public static void TextBox_FileNameWithExt_PasteValidation(object sender, DataObjectPastingEventArgs e)
+        {
+            TextBox_PasteValidation(sender, e, Input_FileNameWithExt_ValidationRegex);
+        }
+
+        public static void TextBox_FolderName_PasteValidation(object sender, DataObjectPastingEventArgs e)
+        {
+            TextBox_PasteValidation(sender, e, Input_FolderName_ValidationRegex);
+        }
+
+        public static void TextBox_SubPath_PasteValidation(object sender, DataObjectPastingEventArgs e)
+        {
+            string futureText = TextBox_PasteValidation(sender, e, Input_SubPath_ValidationRegex);
+
+            string doubleSepar = $"{XFilesystem.PathSeparatorStr}{XFilesystem.PathSeparatorStr}";
+            if (futureText.Contains(doubleSepar))
+            {
+                e.CancelCommand();
+            }
+        }
+
+        public static async Task ShowErrorDialogAsync(string title, string message = "")
+        {
+            var dialog = new MessageDialog(title, message);
+            await dialog.ShowDialogAsync();
+        }
+
+        private static string TextBox_InputValidation(object sender, System.Windows.Input.TextCompositionEventArgs e, string regex)
+        {
             string insertedText = e.Text;
-            TextBox tbx = (TextBox)sender;
-            string currentText = tbx.Text;
-            string futureText = currentText.Remove(tbx.SelectionStart, tbx.SelectionLength);
-            futureText = futureText.Insert(tbx.CaretIndex, insertedText);
+            string futureText = TextBox_ComputeFutureText(sender, insertedText);
 
-            bool isGoodFormat = Regex.IsMatch(futureText, regex);
-            if (!isGoodFormat) e.Handled = true;
+            try { 
+                bool isGoodFormat = Regex.IsMatch(futureText, regex);
+                if (!isGoodFormat) e.Handled = true;
+            } catch (Exception ex)
+            {
+                XDebug.Erro(ex.ToString()); 
+                return string.Empty;
+            }
+
+            return futureText;
+        }
+
+        private static string TextBox_PasteValidation(object sender, DataObjectPastingEventArgs e, string regex)
+        {
+            bool valid = false;
+            string futureText = String.Empty;
+            if (e.DataObject.GetDataPresent(typeof(string)))
+            {
+                string pasteText = e.DataObject.GetData(typeof(string)) as string;
+                futureText = TextBox_ComputeFutureText(sender, pasteText);
+
+                bool isGoodFormat = Regex.IsMatch(futureText, regex);
+
+                valid = isGoodFormat;
+            }
+
+            if (!valid)
+            {
+                e.CancelCommand();
+            }
+            return futureText;
         }
 
 
+        private static string TextBox_ComputeFutureText(object sender, string insertedText)
+        {
+            if (!(sender is TextBox)) return string.Empty;
+            TextBox tbx = (TextBox)sender;
+
+            string currentText = tbx.Text;
+            string futureText = currentText.Remove(tbx.SelectionStart, tbx.SelectionLength);
+            futureText = futureText.Insert(tbx.CaretIndex, insertedText);
+            return futureText;
+        }
+       
     }
 }

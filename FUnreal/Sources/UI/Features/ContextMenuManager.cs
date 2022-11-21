@@ -71,8 +71,6 @@ namespace FUnreal
 
             
 
-
-
             //Project
             Func<Task<bool>> SingleProjectScenario = async () => 
             {
@@ -161,8 +159,10 @@ namespace FUnreal
 
             Func<Task<bool>> SingleSourceFolder = async () =>
             {
+                if (!await _unrealVS.IsSingleSelectionAsync()) return false;
+
                 var item = await _unrealVS.GetSelectedItemAsync();
-                return await _unrealVS.IsSingleSelectionAsync() && _unrealService.IsSourceCodePath(item.FullPath, true);
+                return _unrealService.IsSourceCodePath(item.FullPath, true);
             };
 
             Func<Task<bool>> MultiSourceFolder = async () =>
@@ -211,11 +211,11 @@ namespace FUnreal
             //CTX FolderNode
             { 
                 var folderMenu = new Dictionary<Func<Task<bool>>, List<int>>();
-                folderMenu[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.DeleteSourceCmd };
+                folderMenu[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameFolderCmd, S.DeleteSourceCmd };
                 folderMenu[MultiSourceFolder] = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
-                folderMenu[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
+                folderMenu[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
                 folderMenu[SinglePluginFolder] = itemMenu[DotPluginScenario];
-                folderMenu[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
+                folderMenu[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
                 menuContexts[FolderNodeContext] = folderMenu;
             }
 

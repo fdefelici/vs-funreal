@@ -29,12 +29,6 @@ namespace FUnreal
             _dialog.OnConfirmAsync = ConfirmAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
-            if (_templates.Count == 0)
-            {
-                await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_TemplatesNotFound);
-                return;
-            }
-
             var item = await _unrealVS.GetSelectedItemAsync();
             _absPathSelected = item.FullPath;
             _absPathSelectedType = _unrealService.TypeForSourcePath(_absPathSelected);

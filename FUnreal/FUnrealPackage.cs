@@ -38,7 +38,7 @@ namespace FUnreal
             //NOTE: This workaround works only if VS IDE is launched from scratch. 
             //      Don't work if from a VS IDE solution, it is opened another solution using Open -> Project/Solution (VSpackage is not reloaded)
 
-            if (FUnrealVS.IsUnrealSolution())
+            if (await FUnrealVS.IsUnrealSolutionAsync())
             {
                 FUnrealVS unrealVS = await FUnrealVS.CreateAsync();
                 FUnrealService unrealService = FUnrealService.Create(unrealVS);
@@ -71,6 +71,8 @@ namespace FUnreal
                 AddSourceClassCmd.Instance.Controller = new AddSourceClassController(unrealService, unrealVS, ctxMenuMgr);
                 AddSourceFileCmd.Instance.Controller = new AddSourceFileController(unrealService, unrealVS, ctxMenuMgr);
                 RenameSourceFileCmd.Instance.Controller = new RenameSourceFileController(unrealService, unrealVS, ctxMenuMgr);
+                AddFolderCmd.Instance.Controller = new AddFolderController(unrealService, unrealVS, ctxMenuMgr);
+                RenameFolderCmd.Instance.Controller = new RenameFolderController(unrealService, unrealVS, ctxMenuMgr);
 
                 AddGameModuleCmd.Instance.Controller = new AddGameModuleController(unrealService, unrealVS, ctxMenuMgr);
                 RenameGameModuleCmd.Instance.Controller = new RenameGameModuleController(unrealService, unrealVS, ctxMenuMgr);

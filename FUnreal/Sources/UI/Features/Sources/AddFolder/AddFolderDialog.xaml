@@ -1,0 +1,74 @@
+﻿<platform:DialogWindow x:Class="FUnreal.AddFolderDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FUnreal"
+             xmlns:platform="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             toolkit:Themes.UseVsTheme="True"
+             mc:Ignorable="d"
+
+        Title="FUnreal Toolbox: Add Folder(s)"
+        MinHeight="0"
+        MinWidth="600"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner" 
+        FocusManager.FocusedElement="{Binding ElementName=pluginNameTbx}">
+
+    <Grid Name="gridLayout" Margin="10,10,10,10" Height="Auto" VerticalAlignment="Center">
+        <Grid.Resources>
+            <Style TargetType="Button" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogButtonStyleKey}}">
+                <Setter Property="Width" Value="70" />
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Margin" Value="5,0,0,0" />
+            </Style>
+
+            <Style x:Key="ErrorMsg" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="BorderBrush" Value="Red" />
+                <Setter Property="Foreground" Value="Red" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+            </Style>
+            
+            <Style x:Key="FieldNameClass" TargetType="Label" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
+                <Setter Property="Margin" Value="0,5,0,5" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Label     Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldNameClass}" Name="pathLbl" >Folder (or Path):</Label>
+        <TextBox   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="pathTbx" 
+                   TextChanged="classNameTbxChanged" PreviewTextInput="inputText_Validation" DataObject.Pasting="pasteText_Validation" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="folderPathTbl" Margin="0,5,0,5">Folder Path</TextBlock>
+
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
+        <StackPanel Grid.Row="4" Grid.Column="2"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Name="addButton" Click="okButton_Click" IsDefault="True">Add</Button>
+            <Button Name="cancelButton" IsCancel="True">Cancel</Button>
+        </StackPanel>
+
+        <local:FProgressPanel Grid.Row="5" Grid.ColumnSpan="3" x:Name="taskProgressPanel"/>
+    </Grid>
+</platform:DialogWindow>

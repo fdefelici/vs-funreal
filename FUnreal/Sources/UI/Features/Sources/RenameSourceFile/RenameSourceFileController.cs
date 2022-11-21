@@ -21,15 +21,21 @@ namespace FUnreal
 
         public override async Task DoActionAsync()
         {
+            var item = await _unrealVS.GetSelectedItemAsync();
+            _absFilePath = item.FullPath;
+            if (!XFilesystem.FileExists(_absFilePath))
+            {
+                await XDialogLib.ShowErrorDialogAsync(XDialogLib.ErrorMsg_PathNotExists, _absFilePath);
+                return;
+            }
+
+            _absBasePath = XFilesystem.PathParent(_absFilePath);
+            _originalFileName = XFilesystem.GetFileNameWithExt(_absFilePath);
+
             _dialog = AddSourceFileDialog.CreateInRenameMode();
             _dialog.OnFileNameChangeAsync = FileNameChangedAsync;
             _dialog.OnConfirmAsync = ConfirmAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
-
-            var item = await _unrealVS.GetSelectedItemAsync();
-            _absFilePath = item.FullPath;
-            _absBasePath = XFilesystem.PathParent(_absFilePath);
-            _originalFileName = XFilesystem.GetFileNameWithExt(_absFilePath);
 
             _dialog.fileNameTbx.Focus();
             _dialog.fileNameTbx.Text = _originalFileName;  //Fire Name Changed
@@ -54,19 +60,21 @@ namespace FUnreal
             else if (fileNameWithExt == _originalFileName)
             {
                 _dialog.addButton.IsEnabled = false;
-            } 
-            else 
-            { 
-                if (XFilesystem.FileExists(filePath))
-                {
-                    _dialog.addButton.IsEnabled = false;
-                    _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
-                }
-                else
-                {
-                    _dialog.addButton.IsEnabled = true;
-                    _dialog.HideError();
-                }
+            }
+            else if (!XDialogLib.IsValidFileNameWitExt(fileNameWithExt))
+            {
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_InvalidInput);
+            }
+            else if (XFilesystem.FileExists(filePath))
+            {
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
+            }
+            else
+            {
+                _dialog.addButton.IsEnabled = true;
+                _dialog.HideError();
             }
             return Task.CompletedTask;
         }

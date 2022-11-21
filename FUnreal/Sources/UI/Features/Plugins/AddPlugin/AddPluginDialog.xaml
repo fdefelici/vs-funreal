@@ -71,7 +71,7 @@
 
         <Label     Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Plugin Name:</Label>
         <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginNameTbx" 
-                   TextChanged="pluginNameTbxChanged" PreviewTextInput="inputText_Validation" />
+                   TextChanged="pluginNameTbxChanged" PreviewTextInput="inputText_Validation" DataObject.Pasting="pasteText_Validation" />
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginPathTbl" Margin="0,5,0,10">Plugin Path</TextBlock>
 
         <Label     Grid.Row="4" Grid.Column="0" Style="{StaticResource FieldNameClass}">Module Name:</Label>

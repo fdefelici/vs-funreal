@@ -58,7 +58,7 @@
         
         <Label     Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldNameClass}">File Name:</Label>
         <TextBox   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="fileNameTbx" 
-                   TextChanged="classNameTbxChanged" PreviewTextInput="inputText_Validation" />
+                   TextChanged="classNameTbxChanged" PreviewTextInput="inputText_Validation" DataObject.Pasting="pasteText_Validation" />
         <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="filePathTbl" Margin="0,5,0,5">File Path</TextBlock>
 
         <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>

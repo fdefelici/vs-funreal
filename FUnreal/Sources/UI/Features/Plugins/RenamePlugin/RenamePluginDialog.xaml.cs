@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FUnreal
 {
@@ -43,7 +44,9 @@ namespace FUnreal
         }
 
         private void pluginNewNameTbx_Validation(object sender, System.Windows.Input.TextCompositionEventArgs e)
-            => XDialogLib.TextBox_FileName_InputValidation(sender, e);
+            => XDialogLib.TextBox_ClassName_InputValidation(sender, e);
+        private void pasteText_Validation(object sender, DataObjectPastingEventArgs e)
+            => XDialogLib.TextBox_ClassName_PasteValidation(sender, e);
 
         public void EditModeEnabled(bool enabled)
         {

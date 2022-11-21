@@ -1,7 +1,13 @@
 ﻿using Community.VisualStudio.Toolkit;
+using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+
+
+using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal
 {
@@ -47,18 +53,20 @@ namespace FUnreal
             {
                 _dialog.addButton.IsEnabled = false;
             }
+            else if (!XDialogLib.IsValidFileNameWitExt(fileNameWithExt)) 
+            {
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_InvalidInput);
+            }
+            else if (XFilesystem.FileExists(filePath))
+            {
+                _dialog.addButton.IsEnabled = false;
+                _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
+            }
             else
             {
-                if (XFilesystem.FileExists(filePath))
-                {
-                    _dialog.addButton.IsEnabled = false;
-                    _dialog.ShowError(XDialogLib.ErrorMsg_FileAlreadyExists);
-                }
-                else
-                {
-                    _dialog.addButton.IsEnabled = true;
-                    _dialog.HideError();
-                }
+                _dialog.addButton.IsEnabled = true;
+                _dialog.HideError();
             }
             return Task.CompletedTask;
         }

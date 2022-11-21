@@ -12,6 +12,10 @@ namespace FUnreal
 {
     public class XFilesystem
     {
+        public static readonly char PathSeparatorChar = Path.DirectorySeparatorChar;
+        public static readonly string PathSeparatorStr = $"{PathSeparatorChar}";
+
+
         //TODO: Make Async and Parallel
         public static bool DeepCopy(string sourcePath, string targetPath)
         {
@@ -536,6 +540,26 @@ namespace FUnreal
         public static string ChangePathBase(string fullPath, string basePath, string newBasePath)
         {
             return fullPath.Replace(basePath, newBasePath);
+        }
+
+        public static bool CreateDir(string fullPath)
+        {
+            if (DirectoryExists(fullPath)) return true; 
+
+            try
+            {
+                Directory.CreateDirectory(fullPath);
+                return true;
+            } catch (Exception) 
+            {
+                return false;                
+            }
+        }
+
+        public static string ChangeDirName(string fullPath, string newDirName)
+        {
+            string parent = XFilesystem.PathParent(fullPath);
+            return XFilesystem.PathCombine(parent, newDirName);
         }
     }
 }

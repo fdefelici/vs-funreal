@@ -65,90 +65,7 @@ namespace FUnreal
             Plugins.Clear();
             GameModules.Clear();
         }
-
-
-        /*
-public FUnrealPlugins Plugins
-{
-get
-{
-var result = new FUnrealPlugins();
-List<string> paths = XFilesystem.FindDirectories(PluginsPath);
-foreach (string path in paths)
-{
-string dirName = XFilesystem.GetLastPathToken(path);
-FUnrealPlugin plug = new FUnrealPlugin(this, dirName);
-if (plug.Exists)
-{
-result.Add(plug);
-}
-}
-return result;
-}
-}
-
-public FUnrealCollection<FUnrealGameModule> GameModules
-{
-get
-{
-var result = new FUnrealCollection<FUnrealGameModule>();
-List<string> paths = XFilesystem.FindDirectories(SourcePath);
-foreach (string path in paths)
-{
-string dirName = XFilesystem.GetLastPathToken(path);
-FUnrealGameModule mod = new FUnrealGameModule(this, dirName);
-if (mod.Exists)
-{
-result.Add(mod);
-}
-}
-return result;
-}
-}
-
-
-
-public List<string> TargetFiles
-{
-get
-{
-List<string> paths = XFilesystem.FindFiles(SourcePath, false, "*.Target.cs");
-return paths;
-}
-}
-
-public FUnrealCollection<IFUnrealModule> AllModules
-{
-get
-{
-var result = new FUnrealCollection<IFUnrealModule>();
-
-foreach(var g in GameModules)
-{
-result.Add(g);
-}
-foreach(var plugin in Plugins)
-{
-foreach (var g in plugin.Modules)
-{
-result.Add(g);
-}
-}
-
-return result;
-}
-}
-
-*/
-
     }
-
-        public interface IFUnrealModule : IFunrealCollectionItem
-    {
-        string BuildFilePath { get; }
-        string FullPath { get; }
-    }
-
 
     public interface IFunrealCollectionItem
     {
@@ -310,19 +227,7 @@ return result;
     }
     public class FUnrealPlugin : IFUnrealModuleContainer
     {
-        private string pluginsPath;
-        private FUnrealProject uproject;
-
-        /*
-        public FUnrealPlugin(FUnrealProject project, string pluginName)
-        {
-            this.pluginsPath = project.PluginsPath;
-            Name = pluginName;
-            this.FullPath = XFilesystem.PathCombine(pluginsPath, pluginName);
-            this.SourcePath = XFilesystem.PathCombine(FullPath, "Source");
-            this.DescriptorFilePath = XFilesystem.PathCombine(FullPath, $"{pluginName}.uplugin");
-        }
-        */
+        private readonly FUnrealProject uproject;
 
         public FUnrealPlugin(FUnrealProject uproject, string plugName, string plugFile)
         {
@@ -341,27 +246,6 @@ return result;
         public string DescriptorFilePath { get; internal set; }
 
         public FUnrealCollection<FUnrealModule> Modules { get; }
-
-        /*
-        public FUnrealCollection<FUnrealPluginModule> Modules
-        {
-            get
-            {
-                var result = new FUnrealCollection<FUnrealPluginModule>();
-                List<string> modulePaths = XFilesystem.FindDirectories(SourcePath);
-                foreach (string modulePath in modulePaths)
-                {
-                    string dirName = XFilesystem.GetLastPathToken(modulePath);
-                    FUnrealPluginModule module = new FUnrealPluginModule(this, dirName);
-                    if (module.Exists)
-                    {
-                        result.Add(module);
-                    }
-                }
-                return result;
-            }
-        }
-        */
 
         public bool Exists
         {
@@ -383,74 +267,13 @@ return result;
         }
     }
 
-    public class FUnrealGameModule : IFUnrealModule
-    {
-        public FUnrealGameModule(FUnrealProject project, string moduleName)
-        {
-            Name = moduleName;
-            FullPath = XFilesystem.PathCombine(project.SourcePath, moduleName);
-            BuildFilePath = XFilesystem.PathCombine(FullPath, $"{moduleName}.Build.cs");
-            PublicPath = XFilesystem.PathCombine(FullPath, "Public");
-            ApiMacro = $"{moduleName.ToUpper()}_API";
-        }
-
-        public string Name { get; }
-        public string FullPath { get; }
-        public string BuildFilePath { get; }
-
-        public bool Exists { get { return XFilesystem.FileExists(BuildFilePath); } }
-
-        public bool IsPrimaryGame
-        {
-            get
-            {
-                string found = XFilesystem.FindFile(FullPath, true, "*.cpp", file =>
-                {
-                    string text = XFilesystem.ReadFile(file);
-                    if (text.Contains("PRIMARY_GAME_MODULE")) return true;
-                    return false;
-                });
-
-                if (found == null) return false;
-                return true;
-            }
-
-        }
-
-        public string PublicPath { get; internal set; }
-        public string ApiMacro { get; internal set; }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is FUnrealGameModule)) return false;
-            FUnrealGameModule mod = obj as FUnrealGameModule;
-            return Name == mod.Name;
-        }
-
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
-    }
-
     public interface IFUnrealModuleContainer
     {
         string FullPath { get;}
     }
 
-    public class FUnrealModule : IFUnrealModule
+    public class FUnrealModule : IFunrealCollectionItem
     {
-        /*
-        public FUnrealModule(string moduleBuildFilePath)
-        {
-            Name = XFilesystem.GetFilenameNoExt(moduleBuildFilePath, true);
-            FullPath = XFilesystem.PathParent(moduleBuildFilePath);
-            BuildFilePath = moduleBuildFilePath;
-            PublicPath = XFilesystem.PathCombine(FullPath, "Public");
-            ApiMacro = $"{Name.ToUpper()}_API";
-        }
-        */
-
         public FUnrealModule(IFUnrealModuleContainer owner, string name, string moduleBuildFilePath)
         {
             Name = name;
@@ -476,8 +299,8 @@ return result;
        
         public override bool Equals(object obj)
         {
-            if (!(obj is IFUnrealModule)) return false;
-            IFUnrealModule mod = obj as IFUnrealModule;
+            if (!(obj is FUnrealModule)) return false;
+            FUnrealModule mod = obj as FUnrealModule;
             return Name == mod.Name;
         }
 

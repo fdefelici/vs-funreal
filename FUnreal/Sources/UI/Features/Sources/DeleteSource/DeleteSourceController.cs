@@ -10,6 +10,7 @@ namespace FUnreal
     {
         private FUnrealNotifier _notifier;
         private ConfirmDialog _dialog;
+        List<FUnrealVSItem> _selectedItems;
 
         public DeleteSourceController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS, ctxMenuMgr)
@@ -19,10 +20,31 @@ namespace FUnreal
 
         public override async Task DoActionAsync()
         {
-            var itemsVs = await _unrealVS.GetSelectedItemsAsync();
+            _selectedItems = await _unrealVS.GetSelectedItemsAsync();
 
-            List<string> sourcePaths = new List<string>();
-            foreach (var item in itemsVs)
+            string detailMsg;
+            if (_selectedItems.Count == 1)
+            {
+                detailMsg = _unrealService.ModuleRelativePath(_selectedItems[0].FullPath);
+            }
+            else
+            {
+                detailMsg = $"{_selectedItems.Count} paths selected";
+            }
+
+            _dialog = new ConfirmDialog(XDialogLib.InfoMsg_SourcePathDelete, detailMsg);
+            _notifier.OnSendMessage = _dialog.SetProgressMessage;
+            _dialog.OnConfirm = DeleteConfirmedAsync;
+
+            await _dialog.ShowDialogAsync();
+        }
+
+        private async Task DeleteConfirmedAsync()
+        {
+            _dialog.ShowActionInProgress();
+
+            var validSourcePaths = new List<string>();
+            foreach (var item in _selectedItems)
             {
                 string itemPath = item.FullPath;
 
@@ -31,41 +53,27 @@ namespace FUnreal
 
                 if (isValidFile || isValidFolder)
                 {
-                    sourcePaths.Add(itemPath);
+                    validSourcePaths.Add(itemPath);
                 }
-                else
+                else //Item only present in VS Solution Explorer
                 {
-                    await VS.MessageBox.ShowErrorAsync(XDialogLib.ErrorMsg_SourcePathNotFound, itemPath);
-                    return;
+                    //In case item not exists on filesystem, remove it silently from VS view
+                    string relPath = _unrealService.ProjectRelativePath(item.FullPath, false);
+                    await _unrealVS.RemoveProjectItemByRelPathAsync(relPath);
                 }
             }
 
-            string detailMsg;
-            if (sourcePaths.Count == 1)
+            //Remove folder from VS just in case where empty folders exists (in this case ubt regeneration does't update Virtual Folder / Filters)
+            await _unrealVS.RemoveFoldersIfAnyInCurrentSelectionAsync();
+
+            bool success = await _unrealService.DeleteSourcesAsync(validSourcePaths, _notifier);
+            if (!success)
             {
-                detailMsg = _unrealService.ModuleRelativePath(sourcePaths[0]);
-            }
-            else
-            {
-                detailMsg = $"{sourcePaths.Count} paths selected";
+                _dialog.ShowActionInError();
+                return;
             }
 
-            _dialog = new ConfirmDialog(XDialogLib.InfoMsg_SourcePathDelete, detailMsg);
-            _notifier.OnSendMessage = _dialog.SetProgressMessage;
-            _dialog.OnConfirm = async () =>
-            {
-                _dialog.ShowActionInProgress();
-                bool success = await _unrealService.DeleteSourcesAsync(sourcePaths, _notifier);
-                if (!success)
-                {
-                    _dialog.ShowActionInError();
-                } else
-                {
-                    _dialog.Close();
-                }
-            };
-
-            await _dialog.ShowDialogAsync();
+            _dialog.Close();
         }
     }
 }

@@ -277,6 +277,69 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
+        public static List<FUnrealModule> Module_DependentModules(FUnrealModule module, FUnrealCollection<FUnrealModule> allModules)
+        {
+            var result = new List<FUnrealModule>();
+            foreach (var other in allModules)
+            {
+                if (other == module) continue;
+
+                string csFile = other.BuildFilePath;
+                string buildText = XFilesystem.ReadFile(csFile);
+                string dependency = $"\"{module.Name}\"";
+                if (buildText.Contains(dependency)) result.Add(other);
+            }
+            return result;
+        }
+
+        public static async Task<bool> Modules_FixIncludeDirectiveAsync(List<FUnrealModule> modules, string includeBasePath, string newIncludeBasePath, FUnrealNotifier notifier)
+        {
+            //Configure Parellel Max Degree 
+            await Task.Run(async () =>
+            {
+                foreach (var module in modules)
+                {
+                    await Module_FixIncludeDirectiveAsync(module, includeBasePath, newIncludeBasePath, notifier);
+                }
+            });
+            return true;
+        }
+        public static async Task<bool> Module_FixIncludeDirectiveAsync(FUnrealModule module, string incOldPath, string incNewPath, FUnrealNotifier notifier)
+        {
+            string incRegex = $@"(?<=#include\s+(?:""|<)){incOldPath}(?=(?:/\w+)+\.h(?:""|>))";
+            Action<string> replaceAction = (path) =>
+            {
+                string text = XFilesystem.ReadFile(path);
+
+                if (Regex.IsMatch(text, incRegex))
+                {
+                    notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
+                    text = Regex.Replace(text, incRegex, incNewPath);
+                    XFilesystem.WriteFile(path, text);
+                }
+            };
+
+            await Task.Run( async () =>
+            {
+                string modulePath = module.FullPath;
+                List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
+                Parallel.ForEach(headerPaths, replaceAction);
+
+                List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
+                Parallel.ForEach(sourcePaths, replaceAction);
+            });
+
+            return true;
+        }
+
+        public static async Task<bool> Source_RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
+        {
+            return await Task.Run( () =>
+            {
+                string newPath = XFilesystem.RenameDir(folderPath, newFolderName);
+                return newPath != null;
+            });
+        }
 
         private static bool TryFindModuleSources(FUnrealModule module, out string headerFilePath, out string sourceFilePath)
         {
@@ -336,6 +399,8 @@ namespace FUnreal.Sources.Core
             sourceFilePath = cppPath;
             return true;
         }
+
+      
     }
 }
 

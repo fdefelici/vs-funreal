@@ -1,0 +1,58 @@
+﻿<platform:DialogWindow x:Class="FUnreal.MessageDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FUnreal"
+             xmlns:platform="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:draw="clr-namespace:System.Drawing;assembly=System.Drawing"
+             toolkit:Themes.UseVsTheme="True"
+             mc:Ignorable="d"
+
+        Title="FUnreal Toolbox"
+        MinHeight="0"
+        MinWidth="300"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner" 
+        FocusManager.FocusedElement="{Binding ElementName=confirmBtn}" >
+
+    <Grid Margin="10,10,10,10" Height="Auto" VerticalAlignment="Center">
+        <Grid.Resources>
+            <Style TargetType="Button" BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogButtonStyleKey}}">
+                <Setter Property="Width" Value="70" />
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Margin" Value="5,0,0,0" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="160" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="40" x:Name="Separator"/>
+            <RowDefinition Height="Auto" x:Name="Buttons"/>
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Height="32" Width="32" Source="{local:ImageSourceFromIconExt {x:Static draw:SystemIcons.Error}}" />
+        <Label   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="msg1Lbl" >Message 1</Label>
+        <Label   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+            <TextBlock Name="msg2Lbl" TextWrapping="Wrap">Message 2</TextBlock>
+        </Label>
+
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    >
+            <Button Name="confirmBtn" Click="ConfirmBtnClicked" IsDefault="True" IsCancel="True">Ok</Button>
+        </StackPanel>
+    </Grid>
+</platform:DialogWindow>
