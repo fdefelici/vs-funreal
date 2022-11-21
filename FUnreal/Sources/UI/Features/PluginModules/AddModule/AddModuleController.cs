@@ -57,7 +57,6 @@ namespace FUnreal
                 return;
             }
 
-            //if false, show error message;
             _dialog.Close();
         }
 
