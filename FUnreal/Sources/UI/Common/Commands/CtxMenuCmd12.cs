@@ -5,8 +5,8 @@ using System.Diagnostics;
 
 namespace FUnreal
 {
-    [Command(VSCTSymbols.AddModuleCmd)]
-    public class AddModuleCmd : XActionCmd<AddModuleCmd>
+    [Command(VSCTSymbols.Cmd12)]
+    public class CtxMenuCmd12 : XActionCmd<CtxMenuCmd12>
     {
 
     }

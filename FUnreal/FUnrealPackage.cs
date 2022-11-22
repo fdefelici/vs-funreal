@@ -50,33 +50,14 @@ namespace FUnreal
                     return;
                 }
 
+                /* Configure Menu Commands */
                 ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
 
                 var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS); //object instance kept alive by unrealVS
                 unrealVS.OnUProjectLoadedAsync = projectLoadHandler.ExecuteAsync;
 
-
+                //Bind Cmd with VSCT file (To be done after ContexMenuManager)
                 await this.RegisterCommandsAsync();
-
-                /* Configure Menu Commands */
-                ToolboxMenu.Instance.Controller = new ToolboxMenuController(unrealService, unrealVS, ctxMenuMgr);
-
-                AddPluginCmd.Instance.Controller = new AddPluginController(unrealService, unrealVS, ctxMenuMgr);
-                DeleteSourceCmd.Instance.Controller = new DeleteSourceController(unrealService, unrealVS, ctxMenuMgr);
-                AddModuleCmd.Instance.Controller = new AddModuleController(unrealService, unrealVS, ctxMenuMgr);
-                DeletePluginCmd.Instance.Controller = new DeletePluginController(unrealService, unrealVS, ctxMenuMgr);
-                RenamePluginCmd.Instance.Controller = new RenamePluginController(unrealService, unrealVS, ctxMenuMgr);
-                RenameModuleCmd.Instance.Controller = new RenameModuleController(unrealService, unrealVS, ctxMenuMgr);
-                DeleteModuleCmd.Instance.Controller = new DeleteModuleController(unrealService, unrealVS, ctxMenuMgr);
-                AddSourceClassCmd.Instance.Controller = new AddSourceClassController(unrealService, unrealVS, ctxMenuMgr);
-                AddSourceFileCmd.Instance.Controller = new AddSourceFileController(unrealService, unrealVS, ctxMenuMgr);
-                RenameSourceFileCmd.Instance.Controller = new RenameSourceFileController(unrealService, unrealVS, ctxMenuMgr);
-                AddFolderCmd.Instance.Controller = new AddFolderController(unrealService, unrealVS, ctxMenuMgr);
-                RenameFolderCmd.Instance.Controller = new RenameFolderController(unrealService, unrealVS, ctxMenuMgr);
-
-                AddGameModuleCmd.Instance.Controller = new AddGameModuleController(unrealService, unrealVS, ctxMenuMgr);
-                RenameGameModuleCmd.Instance.Controller = new RenameGameModuleController(unrealService, unrealVS, ctxMenuMgr);
-                DeleteGameModuleCmd.Instance.Controller = new DeleteGameModuleController(unrealService, unrealVS, ctxMenuMgr);
 
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnrealToolbox} Loaded!");

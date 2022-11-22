@@ -1,5 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace FUnreal
         where T : class, new()
     {
         public static T Instance { get; internal set; }
+
+
         public IXActionController Controller { 
             get { return _controller; } 
             set 
@@ -26,6 +29,8 @@ namespace FUnreal
 
         public bool Enabled { get { return Command.Enabled; } set { Command.Enabled = value; } }
 
+        public string Label { get => Command.Text; set => Command.Text = value; }
+
         protected override Task InitializeCompletedAsync()
         {
             Instance = this as T;
@@ -37,7 +42,8 @@ namespace FUnreal
             //Better way to call async method from here, preserving call context?
             Command.Enabled = true;
             //Command.Visible = Controller.ShouldBeVisibleAsync().GetAwaiter().GetResult();  
-            Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await Controller.ShouldBeVisibleAsync());
+            //Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await Controller.ShouldBeVisibleAsync());
+            Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await ContextMenuManager.Instance.IsActiveAsync(this));
         }
 
         protected override Task ExecuteAsync(OleMenuCmdEventArgs e)

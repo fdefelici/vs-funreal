@@ -9,8 +9,8 @@
     <Menus>
       <Menu guid="guidFUnrealPackage" id="ToolboxMenu" type="Menu" priority="0x0001">
         <Parent guid="guidFUnrealPackage" id="ToolboxMenuGroup" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <!--CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag-->
         <Strings>
           <ButtonText>FUnreal Toolbox</ButtonText>
         </Strings>
@@ -18,7 +18,6 @@
       
     </Menus>
 
-    
     <Groups>
 
       <Group guid="guidFUnrealPackage" id="ToolboxMenuGroup" />
@@ -35,123 +34,48 @@
 
     <Buttons>
       
-      <Button guid="guidFUnrealPackage" id="AddPluginCmd" type="Button">
+      <Button guid="guidFUnrealPackage" id="Cmd11" type="Button">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Add Plugin...</ButtonText>
+          <ButtonText>Cmd11</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidFUnrealPackage" id="DeleteSourceCmd" type="Button">
+      <Button guid="guidFUnrealPackage" id="Cmd12" type="Button">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Delete</ButtonText>
+          <ButtonText>Cmd12</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidFUnrealPackage" id="AddModuleCmd" type="Button">
+      <Button guid="guidFUnrealPackage" id="Cmd13" type="Button">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Add Module...</ButtonText>
+          <ButtonText>Cmd13</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidFUnrealPackage" id="RenamePluginCmd" type="Button">
+      <Button guid="guidFUnrealPackage" id="Cmd21" type="Button">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Rename Plugin...</ButtonText>
+          <ButtonText>Cmd21</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidFUnrealPackage" id="DeletePluginCmd" type="Button">
+      <Button guid="guidFUnrealPackage" id="Cmd22" type="Button">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Delete Plugin</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="RenameModuleCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Rename Module...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="DeleteModuleCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Delete Module</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="AddSourceClassCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>New C++ Class...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="AddGameModuleCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Add Module...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="RenameGameModuleCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Rename Module...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="DeleteGameModuleCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Delete Module</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="AddSourceFileCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>New File...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="RenameSourceFileCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Rename...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="AddFolderCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>New Folder...</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidFUnrealPackage" id="RenameFolderCmd" type="Button">
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Rename...</ButtonText>
+          <ButtonText>Cmd22</ButtonText>
         </Strings>
       </Button>
 
@@ -179,72 +103,25 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIITEM" />
     </CommandPlacement>
     
-    
-    
+   
     <!-- COMMANDS -->
-    <!-- project -->
-    <CommandPlacement guid="guidFUnrealPackage" id="AddPluginCmd" priority="0x0001">
+    <CommandPlacement guid="guidFUnrealPackage" id="Cmd11" priority="0x0001">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
     </CommandPlacement>
 
-    <!-- .uplugin -->
-    <CommandPlacement guid="guidFUnrealPackage" id="AddModuleCmd" priority="0x0001">
+    <CommandPlacement guid="guidFUnrealPackage" id="Cmd12" priority="0x0002">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
     </CommandPlacement>
 
-    <CommandPlacement guid="guidFUnrealPackage" id="RenamePluginCmd" priority="0x0001">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-
-    <CommandPlacement guid="guidFUnrealPackage" id="DeletePluginCmd" priority="0x0002">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-
-    <!-- .Build.cs -->
-    <CommandPlacement guid="guidFUnrealPackage" id="RenameModuleCmd" priority="0x0001">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-
-    <CommandPlacement guid="guidFUnrealPackage" id="DeleteModuleCmd" priority="0x0002">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-
-    <!-- source file -->
-    <CommandPlacement guid="guidFUnrealPackage" id="RenameSourceFileCmd" priority="0x0001">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidFUnrealPackage" id="DeleteSourceCmd" priority="0x0002">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-    
-
-    <!-- source folder -->
-    <CommandPlacement guid="guidFUnrealPackage" id="AddSourceClassCmd" priority="0x0001">
+    <CommandPlacement guid="guidFUnrealPackage" id="Cmd13" priority="0x0003">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
     </CommandPlacement>
 
-    <CommandPlacement guid="guidFUnrealPackage" id="AddSourceFileCmd" priority="0x0002">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
-    </CommandPlacement>
-
-    <CommandPlacement guid="guidFUnrealPackage" id="AddFolderCmd" priority="0x0003">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
-    </CommandPlacement>
-
-    <CommandPlacement guid="guidFUnrealPackage" id="RenameFolderCmd" priority="0x0001">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
-    </CommandPlacement>
-    
-
-    <CommandPlacement guid="guidFUnrealPackage" id="AddGameModuleCmd" priority="0x0001">
-      <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner01Group"/>
-    </CommandPlacement>
-
-    <CommandPlacement guid="guidFUnrealPackage" id="RenameGameModuleCmd" priority="0x0001">
+    <CommandPlacement guid="guidFUnrealPackage" id="Cmd21" priority="0x0001">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
 
-    <CommandPlacement guid="guidFUnrealPackage" id="DeleteGameModuleCmd" priority="0x0002">
+    <CommandPlacement guid="guidFUnrealPackage" id="Cmd22" priority="0x0002">
       <Parent guid="guidFUnrealPackage" id="ToolboxMenuInner02Group"/>
     </CommandPlacement>
 
@@ -254,26 +131,16 @@
   <Symbols>
     <GuidSymbol name="guidFUnrealPackage" value="{43b90373-5388-42b6-9074-100c2b543eec}">
       
-      <IDSymbol name="ToolboxMenuGroup"             value="0x0001" />
-      <IDSymbol name="ToolboxMenu"                  value="0x0002"/>
-      <IDSymbol name="ToolboxMenuInner01Group"      value="0x0003" />
-      <IDSymbol name="ToolboxMenuInner02Group"      value="0x0004" />
-      
-      <IDSymbol name="AddPluginCmd"                 value="0x0005" />
-      <IDSymbol name="DeleteSourceCmd"              value="0x0006" />
-      <IDSymbol name="AddModuleCmd"                 value="0x0007" />
-      <IDSymbol name="RenamePluginCmd"              value="0x0008" />
-      <IDSymbol name="DeletePluginCmd"              value="0x0009" />
-      <IDSymbol name="RenameModuleCmd"              value="0x0010" />
-      <IDSymbol name="DeleteModuleCmd"              value="0x0011" />
-      <IDSymbol name="AddSourceClassCmd"            value="0x0012" />
-      <IDSymbol name="AddGameModuleCmd"             value="0x0013" />
-      <IDSymbol name="RenameGameModuleCmd"          value="0x0014" />
-      <IDSymbol name="DeleteGameModuleCmd"          value="0x0015" />
-      <IDSymbol name="AddSourceFileCmd"             value="0x0016" />
-      <IDSymbol name="RenameSourceFileCmd"          value="0x0017" />
-      <IDSymbol name="AddFolderCmd"                 value="0x0018" />
-      <IDSymbol name="RenameFolderCmd"              value="0x0019" />
+      <IDSymbol name="ToolboxMenuGroup"             value="0x9001" />
+      <IDSymbol name="ToolboxMenu"                  value="0x9002"/>
+      <IDSymbol name="ToolboxMenuInner01Group"      value="0x9003" />
+      <IDSymbol name="ToolboxMenuInner02Group"      value="0x9004" />
+
+      <IDSymbol name="Cmd11"             value="0x0011" />
+      <IDSymbol name="Cmd12"             value="0x0012" />
+      <IDSymbol name="Cmd13"             value="0x0013" />
+      <IDSymbol name="Cmd21"             value="0x0021" />
+      <IDSymbol name="Cmd22"             value="0x0022" />
 
     </GuidSymbol>
   </Symbols>

@@ -13,13 +13,11 @@ namespace FUnreal
 
         protected FUnrealService _unrealService;
         protected FUnrealVS _unrealVS;
-        protected ContextMenuManager _ctxMenuMgr;
 
-        public IXActionController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr)
+        public IXActionController(FUnrealService unrealService, FUnrealVS unrealVS)
         {
             _unrealService = unrealService;
             _unrealVS = unrealVS;
-            _ctxMenuMgr = ctxMenuMgr;
         }
 
         public IXActionCmd Command { get; set; }
@@ -28,10 +26,5 @@ namespace FUnreal
         {
             return Task.CompletedTask;
         }  
-
-        public virtual async Task<bool> ShouldBeVisibleAsync() 
-        {
-            return await _ctxMenuMgr.IsActiveAsync(Command.ID);
-        } 
     }
 }

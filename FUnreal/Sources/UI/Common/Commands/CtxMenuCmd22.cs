@@ -2,13 +2,11 @@
 using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Windows;
-using System;
 
 namespace FUnreal
 {
-    [Command(VSCTSymbols.AddSourceClassCmd)]
-    public class AddSourceClassCmd : XActionCmd<AddSourceClassCmd>
+    [Command(VSCTSymbols.Cmd22)]
+    public class CtxMenuCmd22 : XActionCmd<CtxMenuCmd22>
     {
 
     }

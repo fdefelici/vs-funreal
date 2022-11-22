@@ -10,11 +10,11 @@ namespace FUnreal
         private ConfirmDialog _dialog;
 
         public DeleteGameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }
-
+/*
         public override async Task<bool> ShouldBeVisibleAsync()
         {
             bool isVisile = await base.ShouldBeVisibleAsync();
@@ -28,7 +28,7 @@ namespace FUnreal
             }
             return isVisile;
         }
-
+*/
 
         public override async Task DoActionAsync()
         {

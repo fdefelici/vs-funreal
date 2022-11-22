@@ -242,5 +242,18 @@ namespace FUnrealTest
             //Thread.Sleep(3000);
         }
 
+
+        [TestMethod]
+        public void AndLogic()
+        {
+            int category = 0x0100;
+            int value1   = 0x0005;
+
+            int or = category | value1;
+
+            Assert.AreEqual(0x0105, or);
+            Assert.AreEqual(261, or);
+        }
+
     }
 }

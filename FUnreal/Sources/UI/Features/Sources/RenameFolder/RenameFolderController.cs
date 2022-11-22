@@ -19,7 +19,7 @@ namespace FUnreal
         private string _originalFolderName;
 
         public RenameFolderController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }

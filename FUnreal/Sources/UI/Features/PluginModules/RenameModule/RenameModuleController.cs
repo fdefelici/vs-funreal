@@ -12,7 +12,7 @@ namespace FUnreal
         private string _pluginName;
 
         public RenameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }

@@ -12,7 +12,7 @@ namespace FUnreal
         private AddGameModuleDialog _dialog;
 
         public AddGameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _templates = _unrealService.ModuleTemplates();
             _notifier = new FUnrealNotifier();

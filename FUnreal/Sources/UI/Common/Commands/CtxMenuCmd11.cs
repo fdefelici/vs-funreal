@@ -2,13 +2,11 @@
 using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Windows;
-using System;
 
 namespace FUnreal
 {
-    [Command(VSCTSymbols.AddFolderCmd)]
-    public class AddFolderCmd : XActionCmd<AddFolderCmd>
+    [Command(VSCTSymbols.Cmd11)]
+    public class CtxMenuCmd11 : XActionCmd<CtxMenuCmd11>
     {
 
     }

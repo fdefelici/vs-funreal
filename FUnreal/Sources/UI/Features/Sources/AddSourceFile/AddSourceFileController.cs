@@ -18,7 +18,7 @@ namespace FUnreal
         private string _absPathSelected;
 
         public AddSourceFileController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }

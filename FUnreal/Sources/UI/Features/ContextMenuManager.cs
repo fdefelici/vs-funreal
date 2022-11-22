@@ -1,54 +1,143 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using S = FUnreal.VSCTSymbols;
+using System.Windows;
+using C = FUnreal.VSCTSymbols;
 
 namespace FUnreal
 {
-    
+    public class ContextMenuTimer
+    {
+        private DateTime lastHit;
+
+        public TimeSpan CacheDuration { get; }
+
+        public ContextMenuTimer() 
+        {
+            lastHit = DateTime.Now;
+            CacheDuration = TimeSpan.FromMilliseconds(500);
+        }
+
+        public bool IsInTime()
+        {
+            var now = DateTime.Now;
+            TimeSpan delta = now - lastHit;
+
+            bool isValid = delta.CompareTo(CacheDuration) < 0;
+            lastHit = now;
+
+            return isValid;
+        }
+    }
+
+
     public class ContextMenuManager 
     {
+        public static ContextMenuManager Instance { get; private set; } 
+
         private FUnrealService _unrealService;
         private FUnrealVS _unrealVS;
 
 
-        private Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, List<int>>> menuContexts;
+        private Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, S>> menuContexts;
+        private Dictionary<int, XActionCmdConfig> cmdConfigPerScenario;
+
+        private ContextMenuTimer _timer;
+        private S _cachedScenario;
 
         public ContextMenuManager(FUnrealService unrealService, FUnrealVS unrealVS)
         {
             _unrealService = unrealService;
             _unrealVS = unrealVS;
 
+            _timer = new ContextMenuTimer();
+            _cachedScenario = S.NOT_FOUND;
+
             PrepareMenus();
+
+            Instance = this;
         }
 
-        //optimization: prefiltro sceneario menu in base al CTX_ITEMNODE, FOLDERNODE, PROJNODE etc...
-        //Idea ulteriore ottimizzazione:  numero ridotto di bottoni configurati su VSCT e poi quando test IsActive gli attacco: label e controller.
-        public async Task<bool> IsActiveAsync(int symbolId)
+        //NOTE: To simplify the VSCT file and make dynamic the context menu, each time the user does right-click, all the menu buttons are evaluated
+        //     Optimizations done:
+        //     - Reduce thh button number at minimum and make it generic (Cmd11, Cmd12....). The number is give by the biggest context menu of an item.
+        //     - Each time evaluate for a button, which label and controller (behaviour) to be used
+        //     - Searching for the right button config pass through some filtering:
+        //     -- First: context filtering based on type: CTX_ITEMNODE, FOLDERNODE, PROJNODE etc... (by the fact it doesn't seems possibile to retrive the context value, it will be recomputed)
+        //     -- Second: Caching timer to reuse last scenario found for all the buttons
+        public async Task<bool> IsActiveAsync(IXActionCmd cmd)
         {
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew();
+#endif //DEBUG
+
+            bool IsActive = false;
+            bool cacheHit = true;
+            if (!_timer.IsInTime())
+            {
+                _cachedScenario = await FindScenarioForCmdAsync();
+                cacheHit = false;
+            }
+
+            if (_cachedScenario != S.NOT_FOUND)
+            {
+                int id = ID(_cachedScenario, cmd.ID);
+                bool found = cmdConfigPerScenario.TryGetValue(id, out XActionCmdConfig config);
+                if (found)
+                {
+                    cmd.Label = config.Label;
+                    cmd.Controller = config.Controller;
+                    IsActive = true;
+                }
+            }
+#if DEBUG
+            stopwatch.Stop();
+            XDebug.Info($"CtxMenu Cmd 0x{cmd.ID:X4} [sceneario: 0x{(int)_cachedScenario:X4}, cached: {cacheHit} active: {IsActive}] configured in {stopwatch.ElapsedMilliseconds} ms");
+#endif //DEBUG
+            return IsActive;
+        }
+
+        private async Task<S> FindScenarioForCmdAsync()
+        {
+            var justFirstItem = await _unrealVS.GetSelectedItemAsync();
+            if (justFirstItem.ProjectName != _unrealService.ProjectName) return S.NOT_FOUND;
+            /*
+            var justFirstItem = await _unrealVS.GetSelectedItemAsync();
+            if (justFirstItem.IsProject)
+            {
+                if (justFirstItem.ProjectName != _unrealService.ProjectName) return S.NOT_FOUND;
+
+            } else
+            {
+                var prjPath = _unrealService.GetUProject().FullPath;
+
+                bool belongToPrj = XFilesystem.IsChildPath(justFirstItem.FullPath, prjPath);
+                if (!belongToPrj) return S.NOT_FOUND;
+            }
+            */
+
             //Choose Context
             foreach (var ctxPair in menuContexts)
             {
                 if (await ctxPair.Key.Invoke())
-                {   
+                {
                     //Find Menu config
                     foreach (var pair in ctxPair.Value)
                     {
                         if (await pair.Key.Invoke())
                         {
-                            return pair.Value.Contains(symbolId);
+                            return pair.Value;
                         }
                     }
-                    return false;
+                    return S.NOT_FOUND;
                 }
             }
-
-            return false;
+            return S.NOT_FOUND;
         }
 
         private void PrepareMenus()
         {
-            
             Func<Task<bool>> ProjectNodeContext = async () =>
             {
                 return await _unrealVS.IsSelectCtxProjectNodeAsync();
@@ -74,9 +163,11 @@ namespace FUnreal
             //Project
             Func<Task<bool>> SingleProjectScenario = async () => 
             {
-                return await _unrealVS.IsSingleSelectionAsync();
+                if (!await _unrealVS.IsSingleSelectionAsync()) return false;
+                //var justFirstItem = await _unrealVS.GetSelectedItemAsync();
+                //if (justFirstItem.ProjectName != _unrealService.ProjectName) return false;
+                return true;
             };
-
 
             Func<Task<bool>> DotProjectScenario = async () =>
             {
@@ -187,44 +278,135 @@ namespace FUnreal
                 return true;
             };
 
-            menuContexts = new Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, List<int>>>();
+            menuContexts = new Dictionary<Func<Task<bool>>, Dictionary<Func<Task<bool>>, S >>();
             
             //CTX ProjectNode
             {
-                var projectMenu = new Dictionary<Func<Task<bool>>, List<int>>();
-                projectMenu[SingleProjectScenario] = new List<int>() { S.ToolboxMenu, S.AddPluginCmd, S.AddGameModuleCmd }; ;
+                var projectMenu = new Dictionary<Func<Task<bool>>, S>();
+                projectMenu[SingleProjectScenario] = S.SingleProject;
                 menuContexts[ProjectNodeContext] = projectMenu;
             }
 
             //CTX ItemNode
-            var itemMenu = new Dictionary<Func<Task<bool>>, List<int>>();
-            { 
-                itemMenu[DotPluginScenario]     = new List<int>() { S.ToolboxMenu, S.AddModuleCmd, S.RenamePluginCmd, S.DeletePluginCmd };
-                itemMenu[DotProjectScenario]    = new List<int>() { S.ToolboxMenu, S.AddGameModuleCmd };
-                itemMenu[DotBuildCsPlugModScenario]    = new List<int>() { S.ToolboxMenu, S.RenameModuleCmd, S.DeleteModuleCmd };
-                itemMenu[DotBuildCsGameModScenario] = new List<int>() { S.ToolboxMenu, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
-                itemMenu[SingleFileScenario]    = new List<int>() { S.ToolboxMenu, S.RenameSourceFileCmd, S.DeleteSourceCmd };
-                itemMenu[MultiFileScenario]     = itemMenu[SingleFileScenario];
+            var itemMenu = new Dictionary<Func<Task<bool>>, S>();
+            {
+                itemMenu[DotPluginScenario]     = S.DotPlugin;
+                itemMenu[DotProjectScenario] = S.DotProject;
+                itemMenu[DotBuildCsPlugModScenario] = S.DotBuildCsPlugMod;
+                itemMenu[DotBuildCsGameModScenario] = S.DotBuildCsGameMod;
+                itemMenu[SingleFileScenario] = S.SingleFile;
+                itemMenu[MultiFileScenario] = S.MultiFile;
                 menuContexts[ItemNodeContext] = itemMenu;
             }
 
             //CTX FolderNode
             { 
-                var folderMenu = new Dictionary<Func<Task<bool>>, List<int>>();
-                folderMenu[SingleSourceFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameFolderCmd, S.DeleteSourceCmd };
-                folderMenu[MultiSourceFolder] = new List<int>() { S.ToolboxMenu, S.DeleteSourceCmd };
-                folderMenu[SinglePluginModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameModuleCmd, S.DeleteModuleCmd };
-                folderMenu[SinglePluginFolder] = itemMenu[DotPluginScenario];
-                folderMenu[SingleGameModuleFolder] = new List<int>() { S.ToolboxMenu, S.AddSourceClassCmd, S.AddSourceFileCmd, S.AddFolderCmd, S.RenameGameModuleCmd, S.DeleteGameModuleCmd };
+                var folderMenu = new Dictionary<Func<Task<bool>>, S>();
+                folderMenu[SingleSourceFolder] = S.SingleSourceFolder;
+                folderMenu[MultiSourceFolder] = S.MultiSourceFolder;
+                folderMenu[SinglePluginModuleFolder] = S.SinglePluginModuleFolder;
+                folderMenu[SinglePluginFolder] = S.SinglePluginFolder;
+                folderMenu[SingleGameModuleFolder] = S.SingleGameModuleFolder;
                 menuContexts[FolderNodeContext] = folderMenu;
             }
 
             //CTX MULTINODE   [VirtualFolder(s) + File(s)]
             { 
-                var miscMenu = new Dictionary<Func<Task<bool>>, List<int>>();
-                miscMenu[MultiMiscItem] = itemMenu[SingleFileScenario];
+                var miscMenu = new Dictionary<Func<Task<bool>>, S>();
+                miscMenu[MultiMiscItem] = S.MultiMiscItem;
                 menuContexts[MiscNodeContext] = miscMenu;
             }
+
+            cmdConfigPerScenario = new Dictionary<int, XActionCmdConfig>();
+
+            cmdConfigPerScenario[ID(S.SingleProject, C.Cmd11)] = new XActionCmdConfig("New Plugin...", new AddPluginController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleProject, C.Cmd12)] = new XActionCmdConfig("New Module...", new AddGameModuleController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.DotProject, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleProject, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.DotProject, C.Cmd12)] = cmdConfigPerScenario[ID(S.SingleProject, C.Cmd12)];
+
+            cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd11)] = new XActionCmdConfig("New Module...", new AddModuleController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd21)] = new XActionCmdConfig("Rename Plugin...", new RenamePluginController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd22)] = new XActionCmdConfig("Delete Plugin", new DeletePluginController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.DotBuildCsPlugMod, C.Cmd11)] = new XActionCmdConfig("Rename Module...", new RenameModuleController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.DotBuildCsPlugMod, C.Cmd12)] = new XActionCmdConfig("Delete Module", new DeleteModuleController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)] = new XActionCmdConfig("Rename Module...", new RenameGameModuleController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd12)] = new XActionCmdConfig("Delete Module", new DeleteGameModuleController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.SingleFile, C.Cmd11)] = new XActionCmdConfig("Rename...", new RenameSourceFileController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleFile, C.Cmd12)] = new XActionCmdConfig("Delete", new DeleteSourceController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.MultiFile, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleFile, C.Cmd12)];
+
+            cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd11)] = new XActionCmdConfig("New Class...", new AddSourceClassController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd12)] = new XActionCmdConfig("New File...", new AddSourceFileController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd13)] = new XActionCmdConfig("New Folder...", new AddFolderController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd21)] = new XActionCmdConfig("Rename...", new RenameFolderController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.SingleFile, C.Cmd12)];
+
+            cmdConfigPerScenario[ID(S.MultiSourceFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd22)];
+
+            cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd12)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd12)];
+            cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd13)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd13)];
+            cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd21)] = cmdConfigPerScenario[ID(S.DotBuildCsPlugMod, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotBuildCsPlugMod, C.Cmd12)];
+
+            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd12)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd21)];
+            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd13)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd22)];
+
+
+            cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd12)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd12)];
+            cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd13)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd13)];
+            cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd21)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd12)];
+
+            cmdConfigPerScenario[ID(S.MultiMiscItem, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd22)];
         }
+
+        private static int ID(S scenario, int cmd)
+        {
+            return (int)scenario | cmd;
+        }
+    }
+
+    
+
+
+    public enum S
+    {
+        NOT_FOUND = 0,
+        SingleProject               = 0x0100,
+        DotPlugin                   = 0x0200,
+        DotProject                  = 0x0300,
+        DotBuildCsPlugMod           = 0x0400,
+        DotBuildCsGameMod           = 0x0500,
+        SingleFile                  = 0x0600,
+        MultiFile                   = 0x0700,
+        SingleSourceFolder          = 0x0800,
+        MultiSourceFolder           = 0x0900,
+        SinglePluginModuleFolder    = 0x1000,
+        SinglePluginFolder          = 0x1100,
+        SingleGameModuleFolder      = 0x1200,
+        MultiMiscItem               = 0x1300
+    }
+
+
+
+    public class XActionCmdConfig
+    {
+        public string Label { get; }
+        public IXActionController Controller { get; }
+
+        public XActionCmdConfig(string label, IXActionController controller)
+        {
+            Label = label;
+            Controller = controller;
+        }
+
     }
 }

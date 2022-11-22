@@ -14,7 +14,7 @@ namespace FUnreal
         private FUnrealSourceType _absPathSelectedType;
 
         public AddSourceClassController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _templates = _unrealService.SourceTemplates();
             _notifier = new FUnrealNotifier();

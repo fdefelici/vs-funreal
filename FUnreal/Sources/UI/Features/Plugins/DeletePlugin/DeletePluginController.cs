@@ -11,7 +11,7 @@ namespace FUnreal
         private ConfirmDialog _dialog;
 
         public DeletePluginController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }

@@ -2,13 +2,12 @@
 using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Windows;
-using System;
 
 namespace FUnreal
 {
-    [Command(VSCTSymbols.RenameGameModuleCmd)]
-    public class RenameGameModuleCmd : XActionCmd<RenameGameModuleCmd>
+    [Command(VSCTSymbols.Cmd13)]
+    public class CtxMenuCmd13 : XActionCmd<CtxMenuCmd13>
     {
+
     }
 }

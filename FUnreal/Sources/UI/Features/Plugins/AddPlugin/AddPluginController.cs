@@ -15,7 +15,7 @@ namespace FUnreal
         private bool _templateHasModuleName;
 
         public AddPluginController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _templates = _unrealService.PluginTemplates();
             _notifier = new FUnrealNotifier();

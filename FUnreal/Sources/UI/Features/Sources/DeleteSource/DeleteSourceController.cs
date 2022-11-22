@@ -13,7 +13,7 @@ namespace FUnreal
         List<FUnrealVSItem> _selectedItems;
 
         public DeleteSourceController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
-            : base(unrealService, unrealVS, ctxMenuMgr)
+            : base(unrealService, unrealVS)
         {
             _notifier = new FUnrealNotifier();
         }
