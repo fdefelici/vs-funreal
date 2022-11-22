@@ -88,6 +88,7 @@ namespace FUnreal
                 {
                     cmd.Label = config.Label;
                     cmd.Controller = config.Controller;
+                    cmd.Enabled = config.Enabled;
                     IsActive = true;
                 }
             }
@@ -100,23 +101,10 @@ namespace FUnreal
 
         private async Task<S> FindScenarioForCmdAsync()
         {
+            //If item selected not belong to current projct skip it.
             var justFirstItem = await _unrealVS.GetSelectedItemAsync();
             if (justFirstItem.ProjectName != _unrealService.ProjectName) return S.NOT_FOUND;
-            /*
-            var justFirstItem = await _unrealVS.GetSelectedItemAsync();
-            if (justFirstItem.IsProject)
-            {
-                if (justFirstItem.ProjectName != _unrealService.ProjectName) return S.NOT_FOUND;
-
-            } else
-            {
-                var prjPath = _unrealService.GetUProject().FullPath;
-
-                bool belongToPrj = XFilesystem.IsChildPath(justFirstItem.FullPath, prjPath);
-                if (!belongToPrj) return S.NOT_FOUND;
-            }
-            */
-
+           
             //Choose Context
             foreach (var ctxPair in menuContexts)
             {
@@ -209,6 +197,16 @@ namespace FUnreal
                 return _unrealService.IsPluginModulePath(item.FullPath);
             };
 
+            //Primary Game Module
+            Func<Task<bool>> DotBuildCsPrimaryGameModScenario = async () =>
+            {
+                if (!await _unrealVS.IsSingleSelectionAsync()) return false;
+
+                var item = await _unrealVS.GetSelectedItemAsync();
+                bool isBuildFile = _unrealService.IsPrimaryGameModulePath(item.FullPath) && _unrealService.IsModuleBuildFile(item.FullPath);
+                return isBuildFile;
+            };
+
             //Game Module
             Func<Task<bool>> DotBuildCsGameModScenario = async () =>
             {
@@ -217,6 +215,14 @@ namespace FUnreal
                 var item = await _unrealVS.GetSelectedItemAsync();
                 bool isBuildFile = _unrealService.IsGameModulePath(item.FullPath) && _unrealService.IsModuleBuildFile(item.FullPath);
                 return isBuildFile;
+            };
+
+            Func<Task<bool>> SinglePrimaryGameModuleFolder = async () =>
+            {
+                if (!await _unrealVS.IsSingleSelectionAsync()) return false;
+
+                var item = await _unrealVS.GetSelectedItemAsync();
+                return _unrealService.IsPrimaryGameModulePath(item.FullPath);
             };
 
 
@@ -293,6 +299,7 @@ namespace FUnreal
                 itemMenu[DotPluginScenario]     = S.DotPlugin;
                 itemMenu[DotProjectScenario] = S.DotProject;
                 itemMenu[DotBuildCsPlugModScenario] = S.DotBuildCsPlugMod;
+                itemMenu[DotBuildCsPrimaryGameModScenario] = S.DotBuildCsPrimaryGameMod;
                 itemMenu[DotBuildCsGameModScenario] = S.DotBuildCsGameMod;
                 itemMenu[SingleFileScenario] = S.SingleFile;
                 itemMenu[MultiFileScenario] = S.MultiFile;
@@ -306,6 +313,7 @@ namespace FUnreal
                 folderMenu[MultiSourceFolder] = S.MultiSourceFolder;
                 folderMenu[SinglePluginModuleFolder] = S.SinglePluginModuleFolder;
                 folderMenu[SinglePluginFolder] = S.SinglePluginFolder;
+                folderMenu[SinglePrimaryGameModuleFolder] = S.SinglePrimaryGameModuleFolder;
                 folderMenu[SingleGameModuleFolder] = S.SingleGameModuleFolder;
                 menuContexts[FolderNodeContext] = folderMenu;
             }
@@ -334,6 +342,9 @@ namespace FUnreal
 
             cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)] = new XActionCmdConfig("Rename Module...", new RenameGameModuleController(_unrealService, _unrealVS, this));
             cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd12)] = new XActionCmdConfig("Delete Module", new DeleteGameModuleController(_unrealService, _unrealVS, this));
+
+            cmdConfigPerScenario[ID(S.DotBuildCsPrimaryGameMod, C.Cmd11)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.DotBuildCsPrimaryGameMod, C.Cmd12)] = new XActionCmdConfig("Delete Module");
 
             cmdConfigPerScenario[ID(S.SingleFile, C.Cmd11)] = new XActionCmdConfig("Rename...", new RenameSourceFileController(_unrealService, _unrealVS, this));
             cmdConfigPerScenario[ID(S.SingleFile, C.Cmd12)] = new XActionCmdConfig("Delete", new DeleteSourceController(_unrealService, _unrealVS, this));
@@ -365,6 +376,12 @@ namespace FUnreal
             cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd21)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)];
             cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd12)];
 
+            cmdConfigPerScenario[ID(S.SinglePrimaryGameModuleFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SinglePrimaryGameModuleFolder, C.Cmd12)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd12)];
+            cmdConfigPerScenario[ID(S.SinglePrimaryGameModuleFolder, C.Cmd13)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd13)];
+            cmdConfigPerScenario[ID(S.SinglePrimaryGameModuleFolder, C.Cmd21)] = cmdConfigPerScenario[ID(S.DotBuildCsGameMod, C.Cmd11)];
+            cmdConfigPerScenario[ID(S.SinglePrimaryGameModuleFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotBuildCsPrimaryGameMod, C.Cmd12)];
+
             cmdConfigPerScenario[ID(S.MultiMiscItem, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd22)];
         }
 
@@ -380,19 +397,21 @@ namespace FUnreal
     public enum S
     {
         NOT_FOUND = 0,
-        SingleProject               = 0x0100,
-        DotPlugin                   = 0x0200,
-        DotProject                  = 0x0300,
-        DotBuildCsPlugMod           = 0x0400,
-        DotBuildCsGameMod           = 0x0500,
-        SingleFile                  = 0x0600,
-        MultiFile                   = 0x0700,
-        SingleSourceFolder          = 0x0800,
-        MultiSourceFolder           = 0x0900,
-        SinglePluginModuleFolder    = 0x1000,
-        SinglePluginFolder          = 0x1100,
-        SingleGameModuleFolder      = 0x1200,
-        MultiMiscItem               = 0x1300
+        SingleProject                   = 0x0100,
+        DotPlugin                       = 0x0200,
+        DotProject                      = 0x0300,
+        DotBuildCsPlugMod               = 0x0400,
+        DotBuildCsPrimaryGameMod        = 0x0500,
+        DotBuildCsGameMod               = 0x0600,
+        SingleFile                      = 0x0700,
+        MultiFile                       = 0x0800,
+        SingleSourceFolder              = 0x0900,
+        MultiSourceFolder               = 0x1000,
+        SinglePluginModuleFolder        = 0x1100,
+        SinglePluginFolder              = 0x1200,
+        SinglePrimaryGameModuleFolder   = 0x1300,
+        SingleGameModuleFolder          = 0x1400,
+        MultiMiscItem                   = 0x1500
     }
 
 
@@ -402,10 +421,19 @@ namespace FUnreal
         public string Label { get; }
         public IXActionController Controller { get; }
 
+        public bool Enabled { get; }
+
+        public XActionCmdConfig(string label) 
+            :this(label, null)
+        {
+
+        }
+    
         public XActionCmdConfig(string label, IXActionController controller)
         {
             Label = label;
             Controller = controller;
+            Enabled = Controller != null;
         }
 
     }

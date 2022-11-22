@@ -20,7 +20,10 @@ namespace FUnreal
             set 
             { 
                 _controller = value;
-                _controller.Command = this;
+                if (_controller != null)
+                {   //TODO: To delete this link. No more required by Controller to know about the Command
+                    _controller.Command = this;
+                }
             } 
         }
         private IXActionController _controller;
