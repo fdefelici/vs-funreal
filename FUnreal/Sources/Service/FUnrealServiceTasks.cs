@@ -424,6 +424,69 @@ namespace FUnreal.Sources.Core
             return XFilesystem.PathToUnixStyle(heaRelPath);
         }
 
+        public static void Module_ComputeSourceCodePaths(FUnrealModule module, string currentPath, string className, FUnrealSourceType classType,
+          out string headerPath, out string sourcePath, out string sourceRelPath)
+        {
+            string modulePath = module.FullPath;
+
+            bool isPublicPath = XFilesystem.IsChildPath(currentPath, module.PublicPath, true);
+            bool isPrivatePath = XFilesystem.IsChildPath(currentPath, module.PrivatePath, true);
+
+            if (isPublicPath) sourceRelPath = XFilesystem.PathSubtract(currentPath, module.PublicPath);
+            else if (isPrivatePath) sourceRelPath = XFilesystem.PathSubtract(currentPath, module.PrivatePath);
+            else sourceRelPath = XFilesystem.PathSubtract(currentPath, module.FullPath);
+
+            string headerBasePath;
+            string sourceBasePath;
+
+            if (classType == FUnrealSourceType.PUBLIC) //Public/Private
+            {
+                if (isPublicPath)
+                {
+                    headerBasePath = currentPath;
+                    sourceBasePath = XFilesystem.PathCombine(module.PrivatePath, sourceRelPath);
+                }
+                else if (isPrivatePath)
+                {
+                    headerBasePath = XFilesystem.PathCombine(module.PublicPath, sourceRelPath);
+                    sourceBasePath = currentPath;
+                }
+                else
+                {
+                    headerBasePath = XFilesystem.PathCombine(module.PublicPath, sourceRelPath);
+                    sourceBasePath = XFilesystem.PathCombine(module.PrivatePath, sourceRelPath);
+                }
+            }
+            else if (classType == FUnrealSourceType.PRIVATE) //Private Only
+            {
+                if (isPublicPath)
+                {
+                    headerBasePath = XFilesystem.PathCombine(module.PrivatePath, sourceRelPath);
+                    sourceBasePath = headerBasePath;
+                }
+                else if (isPrivatePath)
+                {
+                    headerBasePath = currentPath;
+                    sourceBasePath = currentPath;
+                }
+                else
+                {
+                    headerBasePath = XFilesystem.PathCombine(module.PrivatePath, sourceRelPath);
+                    sourceBasePath = headerBasePath;
+                }
+            }
+            else // (classType == FUnrealSourceType.CUSTOM)
+            {
+                headerBasePath = currentPath;
+                sourceBasePath = currentPath;
+
+            }
+
+            headerPath = XFilesystem.PathCombine(headerBasePath, $"{className}.h");
+            sourcePath = XFilesystem.PathCombine(sourceBasePath, $"{className}.cpp");
+        }
+
+
         private static bool TryFindModuleSources(FUnrealModule module, out string headerFilePath, out string sourceFilePath)
         {
             bool moduleCppFound = true;
