@@ -298,19 +298,18 @@ namespace FUnreal.Sources.Core
             return result;
         }
 
-        public static async Task<bool> Modules_FixIncludeDirectiveAsync(List<FUnrealModule> modules, string includeBasePath, string newIncludeBasePath, FUnrealNotifier notifier)
+        public static async Task<bool> Modules_FixIncludeDirectiveBasePathAsync(List<FUnrealModule> modules, string includeBasePath, string newIncludeBasePath, FUnrealNotifier notifier)
         {
-            //await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
             await Task.Run(async () =>
             {
                 foreach (var module in modules)
                 {
-                    await Module_FixIncludeDirectiveAsync(module, includeBasePath, newIncludeBasePath, notifier);
+                    await Module_FixIncludeDirectiveBasePathAsync(module, includeBasePath, newIncludeBasePath, notifier);
                 }
             });
             return true;
         }
-        public static async Task<bool> Module_FixIncludeDirectiveAsync(FUnrealModule module, string incOldPath, string incNewPath, FUnrealNotifier notifier)
+        public static async Task<bool> Module_FixIncludeDirectiveBasePathAsync(FUnrealModule module, string incOldPath, string incNewPath, FUnrealNotifier notifier)
         {
             string incRegex = $@"(?<=#include\s+(?:""|<)){incOldPath}(?=(?:/\w+)+\.h(?:""|>))";
             Action<string> replaceAction = (path) =>
@@ -338,6 +337,45 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
+        public static async Task<bool> Modules_FixIncludeDirectiveFullPathAsync(List<FUnrealModule> modules, string includePath, string newIncludePath, FUnrealNotifier notifier)
+        {
+            await Task.Run(async () =>
+            {
+                foreach (var module in modules)
+                {
+                    await Module_FixIncludeDirectiveFullPathAsync(module, includePath, newIncludePath, notifier);
+                }
+            });
+            return true;
+        }
+        public static async Task<bool> Module_FixIncludeDirectiveFullPathAsync(FUnrealModule module, string incOldPath, string incNewPath, FUnrealNotifier notifier)
+        {
+            string incRegex = $@"(?<=#include\s+(?:""|<)){incOldPath}(?=(?:""|>))";
+            Action<string> replaceAction = (path) =>
+            {
+                string text = XFilesystem.ReadFile(path);
+
+                if (Regex.IsMatch(text, incRegex))
+                {
+                    notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
+                    text = Regex.Replace(text, incRegex, incNewPath);
+                    XFilesystem.WriteFile(path, text);
+                }
+            };
+
+            await Task.Run(async () =>
+            {
+                string modulePath = module.FullPath;
+                List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
+                Parallel.ForEach(headerPaths, replaceAction);
+
+                List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
+                Parallel.ForEach(sourcePaths, replaceAction);
+            });
+
+            return true;
+        }
+
         public static async Task<bool> Source_RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
         {
             return await ThreadHelper.JoinableTaskFactory.RunAsync(delegate
@@ -346,6 +384,44 @@ namespace FUnreal.Sources.Core
                 bool result = newPath != null;
                 return Task.FromResult(result);
             });
+        }
+        /*
+
+        public static void ComputeHeaderIncludePaths(FUnrealModule module, string headerFilePath, string newFileName,
+            out string curIncludePath,
+            out string newIncludePath
+            )
+        {
+            //string heaFileNameExt = XFilesystem.GetFileNameWithExt(headerFilePath);
+            bool isPublic = XFilesystem.IsChildPath(headerFilePath, module.PublicPath);
+            bool isPrivate = XFilesystem.IsChildPath(headerFilePath, module.PrivatePath);
+
+            string basePath = null;
+            if (isPublic) basePath = module.PublicPath;
+            else if (isPrivate) basePath = module.PrivatePath;
+            else basePath = module.FullPath;
+
+
+            string heaRelPath = XFilesystem.PathSubtract(headerFilePath, basePath);
+            string newHeaRelPath = XFilesystem.ChangeFilePathName(heaRelPath, newFileName);
+            curIncludePath = XFilesystem.PathToUnixStyle(heaRelPath);
+            newIncludePath = XFilesystem.PathToUnixStyle(newHeaRelPath);
+        }
+        */
+
+        public static string Module_ComputeHeaderIncludePath(FUnrealModule module, string headerFilePath)
+        {
+            bool isPublic = XFilesystem.IsChildPath(headerFilePath, module.PublicPath);
+            bool isPrivate = XFilesystem.IsChildPath(headerFilePath, module.PrivatePath);
+
+            string basePath = null;
+            if (isPublic) basePath = module.PublicPath;
+            else if (isPrivate) basePath = module.PrivatePath;
+            else basePath = module.FullPath;
+
+
+            string heaRelPath = XFilesystem.PathSubtract(headerFilePath, basePath);
+            return XFilesystem.PathToUnixStyle(heaRelPath);
         }
 
         private static bool TryFindModuleSources(FUnrealModule module, out string headerFilePath, out string sourceFilePath)

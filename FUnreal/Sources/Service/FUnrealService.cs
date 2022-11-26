@@ -1481,6 +1481,8 @@ namespace FUnreal
 
                 // Select all Modules dependent from fileModule
                 var dependentModules = FUnrealServiceTasks.Module_DependentModules(fileModule, allModules, notifier);
+                dependentModules.Add(fileModule); //add also current module to be scanned for updating include directive
+
 
                 notifier.Info(XDialogLib.Ctx_UpdatingFiles);
 
@@ -1496,32 +1498,9 @@ namespace FUnreal
                     XFilesystem.WriteFile(filePath, fileContent);
                 }
 
-                string incRegex = $@"(?<=#include\s+(?:""|<)(?:\w+/)*){fileNameNoExt}(?=\.h(?:""|>))";
-                Action<string> replaceAction = (path) =>
-                {
-                    string text = XFilesystem.ReadFile(path);
-
-                    if (Regex.IsMatch(text, incRegex))
-                    {
-                        notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
-                        text = Regex.Replace(text, incRegex, newFileNameNoExt);
-                        XFilesystem.WriteFile(path, text);
-                    }
-                };
-
-                
-                await Task.Run(async () =>
-                {
-                    foreach (var module in dependentModules)
-                    {
-                        string modulePath = module.FullPath;
-                        List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
-                        Parallel.ForEach(headerPaths, replaceAction);
-
-                        List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
-                        Parallel.ForEach(sourcePaths, replaceAction);
-                    }
-                });
+                string oldIncludePath = FUnrealServiceTasks.Module_ComputeHeaderIncludePath(fileModule, filePath);
+                string newIncludePath = FUnrealServiceTasks.Module_ComputeHeaderIncludePath(fileModule, newFilePath);
+                await FUnrealServiceTasks.Modules_FixIncludeDirectiveFullPathAsync(dependentModules, oldIncludePath, newIncludePath, notifier);
             }
 
             //For all kind of file (.h included) rename the file
@@ -1597,14 +1576,14 @@ namespace FUnreal
                 if (hasPublicHeaderInvolved)
                 {
                     var otherModules = FUnrealServiceTasks.Module_DependentModules(module, project.AllModules, notifier);
-                    await FUnrealServiceTasks.Module_FixIncludeDirectiveAsync(module, incOldPath, incNewPath, notifier);
+                    await FUnrealServiceTasks.Module_FixIncludeDirectiveBasePathAsync(module, incOldPath, incNewPath, notifier);
                 }
 
                 //3. Replace #include directive in current module Public + Private
                 if (needIncludeUpdate)
                 {
                     //NOTE: can be optimized in case header is Private. So only files under Privated need to be processed
-                    await FUnrealServiceTasks.Module_FixIncludeDirectiveAsync(module, incOldPath, incNewPath, notifier);
+                    await FUnrealServiceTasks.Module_FixIncludeDirectiveBasePathAsync(module, incOldPath, incNewPath, notifier);
                 }
             }
 

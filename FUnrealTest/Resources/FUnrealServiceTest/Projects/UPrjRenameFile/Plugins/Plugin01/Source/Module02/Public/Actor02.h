@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Actor01.h"
+#include "From/ElseWhere/Actor01.h"   //Not exists on filesystem. Just for testing purpose. This include should stay untouched because is not the same "Actor01.h"
 #include "Actor02.generated.h"
 
 UCLASS()

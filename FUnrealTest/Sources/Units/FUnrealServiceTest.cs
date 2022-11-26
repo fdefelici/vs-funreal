@@ -612,7 +612,6 @@ namespace FUnrealTest
             FAssert.AreEqualNN(filePrjExp, filePrj);
         }
 
-
         [TestMethod]
         public void RenameFile_HeaderWithDependency()
         {
