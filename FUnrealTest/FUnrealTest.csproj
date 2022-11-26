@@ -248,6 +248,7 @@
     <Compile Include="Sources\Units\FUnrealService_SmallApiTest.cs" />
     <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\MiscTest.cs" />
+    <Compile Include="Sources\Units\FUnrealServiceTasksTest.cs" />
     <Compile Include="Sources\Utils\FAssert.cs" />
     <Compile Include="Sources\Utils\FUnrealBuildToolMock.cs" />
     <Compile Include="Sources\Utils\TestUtils.cs" />

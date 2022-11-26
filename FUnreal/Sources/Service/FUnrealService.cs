@@ -1477,8 +1477,6 @@ namespace FUnreal
                     notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.ErrorMsg_ModuleNotExists);
                     return false;
                 }
-                var fileModuleName = fileModule.Name;
-
                 // Select all Modules dependent from fileModule
                 var dependentModules = FUnrealServiceTasks.Module_DependentModules(fileModule, allModules, notifier);
                 dependentModules.Add(fileModule); //add also current module to be scanned for updating include directive
@@ -1503,7 +1501,7 @@ namespace FUnreal
                 await FUnrealServiceTasks.Modules_FixIncludeDirectiveFullPathAsync(dependentModules, oldIncludePath, newIncludePath, notifier);
             }
 
-            //For all kind of file (.h included) rename the file
+            //For any kind of file (.h included) rename the file
             notifier.Info(XDialogLib.Ctx_RenamingFiles, XDialogLib.Info_RenamingFileToNewName, filePath, newFileNameWithExt);
             string filePathRenamed = XFilesystem.RenameFileNameWithExt(filePath, newFileNameWithExt);
             if (filePathRenamed == null)
@@ -1548,12 +1546,12 @@ namespace FUnreal
             //#include "utils/core/alpha/Pippo.h"
             //#include "utils/core/Mario.h"
             //#include "altro/core/deriv/Other.h"
-            //Rename utils/core in utils/core2
+            //Rename utils/core to utils/core2
 
             //1. Detect if .h are involved and prepare substitution list for #include directive
             bool needIncludeUpdate = false;
             bool hasPublicHeaderInvolved = false;
-            //   TODO: Public vs Private. Need to take into accont Custom folder.... to be threated as Public (eventually could check in .Build.cs...
+            //handle only Public or Private specific case. In case of Custom folder is threated always as private.... (eventually could check in .Build.cs)
             if (folderPath != module.PublicPath && folderPath != module.PrivatePath) 
             {
                 needIncludeUpdate = true;
@@ -1566,24 +1564,18 @@ namespace FUnreal
 
             if (needIncludeUpdate)
             {
-                string basePath = hasPublicHeaderInvolved ? module.PublicPath : module.PrivatePath;
-                string relPath = XFilesystem.PathSubtract(folderPath, basePath);
-                string newRelPath = XFilesystem.ChangeDirName(relPath, newFolderName);
-                string incOldPath = XFilesystem.PathToUnixStyle(relPath);
-                string incNewPath = XFilesystem.PathToUnixStyle(newRelPath);
+                string incOldPath = FUnrealServiceTasks.Module_ComputeHeaderIncludePath(module, folderPath);
+                string incNewPath = FUnrealServiceTasks.Module_ComputeHeaderIncludePath(module, newFolderPath);
 
-                //2. Replace #include directive in all dependent module for Public
+                //2. Replace #include directive in current module Public + Private
+                //NOTE: can be optimized in case header is Private. So only files under Privated need to be processed
+                await FUnrealServiceTasks.Module_FixIncludeDirectiveBasePathAsync(module, incOldPath, incNewPath, notifier);
+
+                //3. Replace #include directive in all dependent module for Public
                 if (hasPublicHeaderInvolved)
                 {
                     var otherModules = FUnrealServiceTasks.Module_DependentModules(module, project.AllModules, notifier);
-                    await FUnrealServiceTasks.Module_FixIncludeDirectiveBasePathAsync(module, incOldPath, incNewPath, notifier);
-                }
-
-                //3. Replace #include directive in current module Public + Private
-                if (needIncludeUpdate)
-                {
-                    //NOTE: can be optimized in case header is Private. So only files under Privated need to be processed
-                    await FUnrealServiceTasks.Module_FixIncludeDirectiveBasePathAsync(module, incOldPath, incNewPath, notifier);
+                    await FUnrealServiceTasks.Modules_FixIncludeDirectiveBasePathAsync(otherModules, incOldPath, incNewPath, notifier);
                 }
             }
 

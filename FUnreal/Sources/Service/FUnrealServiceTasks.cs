@@ -378,11 +378,12 @@ namespace FUnreal.Sources.Core
 
         public static async Task<bool> Source_RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
         {
-            return await ThreadHelper.JoinableTaskFactory.RunAsync(delegate
+            //return await ThreadHelper.JoinableTaskFactory.RunAsync(delegate
+            return await Task.Run( () =>
             {
                 string newPath = XFilesystem.RenameDir(folderPath, newFolderName);
                 bool result = newPath != null;
-                return Task.FromResult(result);
+                return result;
             });
         }
         /*
@@ -409,18 +410,17 @@ namespace FUnreal.Sources.Core
         }
         */
 
-        public static string Module_ComputeHeaderIncludePath(FUnrealModule module, string headerFilePath)
+        public static string Module_ComputeHeaderIncludePath(FUnrealModule module, string headerPath)
         {
-            bool isPublic = XFilesystem.IsChildPath(headerFilePath, module.PublicPath);
-            bool isPrivate = XFilesystem.IsChildPath(headerFilePath, module.PrivatePath);
+            bool isPublic = XFilesystem.IsChildPath(headerPath, module.PublicPath);
+            bool isPrivate = XFilesystem.IsChildPath(headerPath, module.PrivatePath);
 
-            string basePath = null;
+            string basePath;
             if (isPublic) basePath = module.PublicPath;
             else if (isPrivate) basePath = module.PrivatePath;
             else basePath = module.FullPath;
 
-
-            string heaRelPath = XFilesystem.PathSubtract(headerFilePath, basePath);
+            string heaRelPath = XFilesystem.PathSubtract(headerPath, basePath);
             return XFilesystem.PathToUnixStyle(heaRelPath);
         }
 
