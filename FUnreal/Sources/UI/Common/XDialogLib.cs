@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Text.RegularExpressions;
@@ -216,5 +217,45 @@ namespace FUnreal
             return futureText;
         }
        
+
+        public static void SetProgressMessage(FProgressPanel taskProgressPanel, FUnrealNotifier.MessageType Type, string headMessage, string traceMessage)
+        {
+            //Trying to locate UI FProgressPanel dispatcher to 
+            //avoid Exception 'The calling thread cannot access this object because a different thread owns it'
+            //when FUnrealNotifier try to send message to the UI Progress Bar
+            //because could be triggered from Background thread in FUnrealService (in particular the one due to Parallel.ForEach
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                // Switch to main thread
+                await XThread.SwitchToUIThreadIfItIsNotAsync();
+
+                Action action = () =>
+                {
+                    // Do your work on the main thread here.
+                    if (Type == FUnrealNotifier.MessageType.ERRO) taskProgressPanel.SetFailureMode();
+                    else taskProgressPanel.SetProgressMode();
+
+                    string prefix = $"[{Type}]";
+                    string trace = $"{prefix} {traceMessage}";
+                    taskProgressPanel.AddMessage(headMessage, trace);
+                };
+
+                System.Windows.Threading.Dispatcher dispatcher = taskProgressPanel.Dispatcher;
+
+                if (dispatcher == null)
+                {
+                    XDebug.Erro("FProgressPanel Dispatcher is NULL!");
+                    return;
+                }
+
+                //using the Async version make the UI freeze. Maybe produce some bad deadlock!
+                //await taskProgressPanel.Dispatcher.BeginInvoke(action);
+#pragma warning disable VSTHRD001 //switch to main thread done with XThread custom class
+                dispatcher.Invoke(action);
+#pragma warning restore 
+            });
+    
+        }
     }
 }

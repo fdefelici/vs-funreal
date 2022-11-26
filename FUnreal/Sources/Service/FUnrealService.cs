@@ -1018,9 +1018,6 @@ namespace FUnreal
             string engine = _engineMajorVer;
             string name = templeName;
 
-            //string modulePath = ModulePathFromSourceCodePath(absBasePath);
-            //string moduleName = XFilesystem.GetLastPathToken(modulePath);
-
             var module = GetUProject().AllModules.FindByBelongingPath(absBasePath);
             if (module == null)
             {
@@ -1467,10 +1464,11 @@ namespace FUnreal
             //      - il nuovo filename finisce per .h   (in tutti gli altri casi no)
             //      - il vecchio filename finisce per .h
 
+            var project = GetUProject();
+            
             bool isHeaderFileScenario = XFilesystem.HasExtension(filePath, ".h") && XFilesystem.HasExtension(newFileNameWithExt, ".h");
             if (isHeaderFileScenario)
             {
-                var project = GetUProject();
                 var allModules = project.AllModules;
 
                 var fileModule = allModules.FindByBelongingPath(filePath);
@@ -1481,26 +1479,8 @@ namespace FUnreal
                 }
                 var fileModuleName = fileModule.Name;
 
-                // Select all Modules dependent to fileModule
-
-                //see FUnrealServiceTasks.Module_DependetModules
-                notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, fileModuleName);
-                var dependentModules = new FUnrealCollection<FUnrealModule>();
-                dependentModules.Add(fileModule);
-                foreach (var other in allModules)
-                {
-                    if (other == fileModule) continue;
-
-                    string buildText = XFilesystem.ReadFile(other.BuildFilePath);
-
-                    string dependency = $"\"{fileModuleName}\"";
-                    if (buildText.Contains(dependency))
-                    {
-                        notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_DependentModule, other.Name);
-                        dependentModules.Add(other);
-                    }
-                }
-
+                // Select all Modules dependent from fileModule
+                var dependentModules = FUnrealServiceTasks.Module_DependentModules(fileModule, allModules, notifier);
 
                 notifier.Info(XDialogLib.Ctx_UpdatingFiles);
 
@@ -1529,9 +1509,7 @@ namespace FUnreal
                     }
                 };
 
-
-                //Configure Parellel Max Degree 
-
+                
                 await Task.Run(async () =>
                 {
                     foreach (var module in dependentModules)
@@ -1547,26 +1525,20 @@ namespace FUnreal
             }
 
             //For all kind of file (.h included) rename the file
+            notifier.Info(XDialogLib.Ctx_RenamingFiles, XDialogLib.Info_RenamingFileToNewName, filePath, newFileNameWithExt);
+            string filePathRenamed = XFilesystem.RenameFileNameWithExt(filePath, newFileNameWithExt);
+            if (filePathRenamed == null)
             {
-                notifier.Info(XDialogLib.Ctx_RenamingFiles, XDialogLib.Info_RenamingFileToNewName, filePath, newFileNameWithExt);
-                string fileRenamed = XFilesystem.RenameFileNameWithExt(filePath, newFileNameWithExt);
-                if (fileRenamed == null)
-                {
-                    notifier.Erro(XDialogLib.Ctx_RenamingFiles, XDialogLib.Error_FileRenameFailed);
-                    return false;
-                }
-            }
-
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
+                notifier.Erro(XDialogLib.Ctx_RenamingFiles, XDialogLib.Error_FileRenameFailed);
                 return false;
             }
 
+            bool taskSuccess;
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
             FUnrealServiceFileResult success = true;
-            success.FilePath = filePath;
+            success.FilePath = filePathRenamed;
             return success;
         }
 
@@ -1624,8 +1596,8 @@ namespace FUnreal
                 //2. Replace #include directive in all dependent module for Public
                 if (hasPublicHeaderInvolved)
                 {
-                    var otherModules = FUnrealServiceTasks.Module_DependentModules(module, project.AllModules);
-                    await FUnrealServiceTasks.Modules_FixIncludeDirectiveAsync(otherModules, incOldPath, incNewPath, notifier);
+                    var otherModules = FUnrealServiceTasks.Module_DependentModules(module, project.AllModules, notifier);
+                    await FUnrealServiceTasks.Module_FixIncludeDirectiveAsync(module, incOldPath, incNewPath, notifier);
                 }
 
                 //3. Replace #include directive in current module Public + Private

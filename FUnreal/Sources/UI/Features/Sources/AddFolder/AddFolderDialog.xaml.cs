@@ -98,15 +98,7 @@ namespace FUnreal
         }
 
         public void SetProgressMessage(FUnrealNotifier.MessageType Type, string headMessage, string traceMessage)
-        {
-            if (Type == FUnrealNotifier.MessageType.ERRO) taskProgressPanel.SetFailureMode();
-            else taskProgressPanel.SetProgressMode();
-
-            string prefix = $"[{Type}]";
-            string trace = $"{prefix} {traceMessage}";
-            taskProgressPanel.AddMessage(headMessage, trace);
-        }
-
+              => XDialogLib.SetProgressMessage(taskProgressPanel, Type, headMessage, traceMessage);
         public void ShowError(string msg)
         {
             errorMsgLbl.Content = msg;

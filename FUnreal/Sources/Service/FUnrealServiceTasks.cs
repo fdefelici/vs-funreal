@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -277,8 +278,9 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
-        public static List<FUnrealModule> Module_DependentModules(FUnrealModule module, FUnrealCollection<FUnrealModule> allModules)
+        public static List<FUnrealModule> Module_DependentModules(FUnrealModule module, FUnrealCollection<FUnrealModule> allModules, FUnrealNotifier notifier)
         {
+            notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, module.Name);
             var result = new List<FUnrealModule>();
             foreach (var other in allModules)
             {
@@ -287,14 +289,18 @@ namespace FUnreal.Sources.Core
                 string csFile = other.BuildFilePath;
                 string buildText = XFilesystem.ReadFile(csFile);
                 string dependency = $"\"{module.Name}\"";
-                if (buildText.Contains(dependency)) result.Add(other);
+                if (buildText.Contains(dependency))
+                {
+                    notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_DependentModule, other.Name);
+                    result.Add(other);
+                }
             }
             return result;
         }
 
         public static async Task<bool> Modules_FixIncludeDirectiveAsync(List<FUnrealModule> modules, string includeBasePath, string newIncludeBasePath, FUnrealNotifier notifier)
         {
-            //Configure Parellel Max Degree 
+            //await ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
             await Task.Run(async () =>
             {
                 foreach (var module in modules)
@@ -334,10 +340,11 @@ namespace FUnreal.Sources.Core
 
         public static async Task<bool> Source_RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
         {
-            return await Task.Run( () =>
+            return await ThreadHelper.JoinableTaskFactory.RunAsync(delegate
             {
                 string newPath = XFilesystem.RenameDir(folderPath, newFolderName);
-                return newPath != null;
+                bool result = newPath != null;
+                return Task.FromResult(result);
             });
         }
 

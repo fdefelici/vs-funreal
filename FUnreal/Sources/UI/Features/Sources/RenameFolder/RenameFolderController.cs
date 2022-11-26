@@ -92,6 +92,8 @@ namespace FUnreal
 
             _unrealVS.WhenProjectReload_MarkItemForSelection = success.FilePath;
 
+
+            _notifier.OnSendMessage = null;
             _dialog.Close();
         }
     }
