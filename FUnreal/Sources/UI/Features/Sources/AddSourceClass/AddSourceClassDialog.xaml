@@ -70,7 +70,7 @@
         <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="classTemplTbl" Margin="0,5,0,10">Template Description</TextBlock>
 
 
-        <Label      Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Class Type:</Label>
+        <Label      Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Path Type:</Label>
         <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
             <RadioButton Margin="0,0,12,0" GroupName="ClassTypeGroup" Name="publicRdb" Checked="publicRdb_Checked">Public</RadioButton>
             <RadioButton Margin="0,0,12,0" GroupName="ClassTypeGroup" Name="privateRdb"  Checked="privateRdb_Checked">Private</RadioButton>

@@ -28,7 +28,7 @@ namespace FUnreal
 
         public async Task ExecuteAsync()
         {
-            unrealVS.Output.Warn("ProjectReloadHandler - Start");
+            //unrealVS.Output.Warn("ProjectReloadHandler - Start");
 
             _errorMsg = "";
 
@@ -56,7 +56,7 @@ namespace FUnreal
 
 
             unrealVS.WhenProjectReload_MarkItemsForCreation = unrealService.KnownEmptyFolderPaths();
-            unrealVS.Output.Warn("ProjectReloadHandler - End");
+            //unrealVS.Output.Warn("ProjectReloadHandler - End");
             return;
         }
     }

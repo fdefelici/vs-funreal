@@ -155,9 +155,11 @@ namespace FUnreal
             errorMsgLbl.Visibility = System.Windows.Visibility.Visible;
         }
 
-        public void ShowFreeCheckbox(bool visible)
+        public void ShowClasseTypeCbx(bool publicVisible, bool privateVisible, bool customVisible)
         {
-            freeRdb.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            publicRdb.Visibility  = publicVisible ? Visibility.Visible : Visibility.Collapsed;
+            privateRdb.Visibility = privateVisible ? Visibility.Visible : Visibility.Collapsed;
+            freeRdb.Visibility    = customVisible ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

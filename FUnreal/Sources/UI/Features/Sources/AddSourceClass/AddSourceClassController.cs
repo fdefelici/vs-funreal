@@ -38,14 +38,18 @@ namespace FUnreal
                 return;
             }
 
-            //if type is Public or Private, then Custom type checkbox disappear because is no sense
-            if (_absPathSelectedType == FUnrealSourceType.PUBLIC || _absPathSelectedType == FUnrealSourceType.PRIVATE)
+            if (_unrealService.ModulePathFromSourceCodePath(_absPathSelected) == _absPathSelected)
             {
-                _dialog.ShowFreeCheckbox(false);
+                _dialog.ShowClasseTypeCbx(true, true, true);
+            } 
+            else if (_absPathSelectedType == FUnrealSourceType.PUBLIC || _absPathSelectedType == FUnrealSourceType.PRIVATE)
+            {
+                //if type is Public or Private, then Custom type checkbox disappear because is no sense
+                _dialog.ShowClasseTypeCbx(true, true, false);
             }
-            else
+            else //CUSTOM
             {
-                _dialog.ShowFreeCheckbox(true);
+                _dialog.ShowClasseTypeCbx(false, false, true);
             }
            
             _dialog.classTemplCbx.ItemsSource = _templates;
