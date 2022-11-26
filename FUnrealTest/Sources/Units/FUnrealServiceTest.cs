@@ -490,7 +490,11 @@ namespace FUnrealTest
             Assert.AreEqual(fileCsExp, fileCs);
 
             string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs");
-            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs");
+            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs"); //module name added here because is 'Runtime'
+            Assert.AreEqual(fileTargetExp, fileTarget);
+
+            fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameEditor.Target.cs");
+            fileTarget = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameEditor.Target.cs");  //module name added here by default
             Assert.AreEqual(fileTargetExp, fileTarget);
 
             string filePrjExp = TestUtils.ReadFile(expectedPath, "UPrjGame.uproject");

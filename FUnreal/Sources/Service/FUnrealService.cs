@@ -25,6 +25,15 @@ namespace FUnreal
         public const string SOURCES = "sources";
     }
 
+    public struct FUnrealTargets
+    {
+        public const string GAME = "";
+        public const string EDITOR = "Editor";
+        public const string CLIENT = "Client";
+        public const string SERVER = "Server";
+        public const string PROGRAM = "Program";
+    }
+
 
     public class FUnrealService
     {
@@ -1153,34 +1162,23 @@ namespace FUnreal
             string targetName;
             if (metaTarget == "Game")
             {
-                targetName = "";
+                targetName = FUnrealTargets.GAME;
             } 
             else
             {
-                targetName = metaTarget;
+                targetName = metaTarget; //Should check if its valid
             }
-            
-            string targetFileName = $"{ProjectName}{targetName}.Target.cs";
-            string targetFilePath = XFilesystem.PathCombine(AbsProjectSourceFolderPath(), targetFileName);
+            var project = GetUProject();
 
-            if (XFilesystem.FileExists(targetFilePath)) { 
-                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
-                {
-                    string csText = XFilesystem.ReadFile(targetFilePath);
+            bool taskSuccess;
 
-                    //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
-                    string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
-                    var match = Regex.Match(csText, regex); 
-                    if (match.Success && match.Groups.Count == 2)
-                    {
-                        string moduleList = match.Groups[1].Value;
-                        csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
-                        XFilesystem.WriteFile(targetFilePath, csText);
-                    }
-                }
-            } else
+            //let's say no problem if this tasks don't end successfully (for instance the Target file is missing)
+            taskSuccess = FUnrealServiceTasks.Project_AddModuleToTarget(project, targetName, moduleName, notifier);
+            if (targetName != FUnrealTargets.EDITOR)
             {
-                notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+                //By default game module needs to be added to editor target otherwise when launching from VS, 
+                //following error appear 'The following modules are missing or built with a different engine version'
+                taskSuccess = FUnrealServiceTasks.Project_AddModuleToTarget(project, FUnrealTargets.EDITOR, moduleName, notifier);
             }
 
             //Update .uproject
@@ -1195,7 +1193,7 @@ namespace FUnreal
             uprojectJson.Save();
 
             //X. Regen VS Project
-            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
 
             //X. Update Project Model

@@ -546,7 +546,35 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
-      
+        public static bool Project_AddModuleToTarget(FUnrealProject project, string targetName, string moduleName, FUnrealNotifier notifier)
+        {
+            string targetFileName = $"{project.Name}{targetName}.Target.cs";
+            string targetFilePath = XFilesystem.PathCombine(project.SourcePath, targetFileName);
+
+            if (XFilesystem.FileExists(targetFilePath))
+            {
+                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+                {
+                    string csText = XFilesystem.ReadFile(targetFilePath);
+
+                    //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
+                    string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
+                    var match = Regex.Match(csText, regex);
+                    if (match.Success && match.Groups.Count == 2)
+                    {
+                        string moduleList = match.Groups[1].Value;
+                        csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
+                        XFilesystem.WriteFile(targetFilePath, csText);
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+                return false;
+            }
+        }
     }
 }
 
