@@ -165,7 +165,7 @@ namespace FUnreal.Sources.Core
             string moduleApi = module.ApiMacro;
             string newModuleApi = $"{newModuleName.ToUpper()}_API";
 
-            //Parallel
+            //Parallel?
             foreach (var file in publicHeaderFiles)
             {
                 string text = XFilesystem.ReadFile(file);

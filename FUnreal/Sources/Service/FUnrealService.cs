@@ -1235,7 +1235,7 @@ namespace FUnreal
             taskSuccess = FUnrealServiceTasks.Module_UpdateAndRenameBuildCs(module, newModuleName, notifier);
             if (!taskSuccess) return false;
 
-            //2. Rename module .cpp and class and update #include directive in dependendent modules sources (look only to other game modules)
+            //2. Rename module .h/.cpp and update #include directive in dependendent modules sources (look only to other game modules)
             taskSuccess = await FUnrealServiceTasks.Module_UpdateAndRenameSourcesAsync(module, newModuleName, renameSourceFiles, project.GameModules, notifier, IsPrimaryGameModule);
             if (!taskSuccess) return false;
 
@@ -1263,7 +1263,7 @@ namespace FUnreal
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
 
-            //X. Update Project Module
+            //X. Update Project Model
             var moduleRenamed = _projectModuleFactory.RenameGameModule(_projectModel, module, newModuleName);
 
             FUnrealServiceModuleResult success = true;
