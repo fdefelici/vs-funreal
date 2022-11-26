@@ -87,6 +87,7 @@ namespace FUnreal
         internal static string info_UpdatingFile = "Updating file {0} ...";
         internal static string Title_FUnrealToolbox = "FUnreal Toolbox";
         internal static string NothingToDelete = "Nothing to delete on filesystem.";
+        internal static string Error_WrongTargetName = "Wrong Target Name {0}";
         public const string Input_ClassName_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";
         public const string Input_FileNameWithExt_ValidationRegex = @"^[a-zA-Z0-9_\.]+$";
         //private const string Input_SubPath_ValidationRegex = @"^(?:[a-zA-Z0-9_]+\\{0,1}){1,}(?<!\\\\)$"; //@"^[a-zA-Z0-9_]+(?:\\[a-zA-Z0-9_]+){0,}"; //not end with \ [^\\]$";

@@ -32,6 +32,8 @@ namespace FUnreal
         public const string CLIENT = "Client";
         public const string SERVER = "Server";
         public const string PROGRAM = "Program";
+
+        public static readonly string[] ALL = new string[] { GAME, EDITOR, CLIENT, SERVER, PROGRAM };
     }
 
 

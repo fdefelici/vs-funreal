@@ -548,6 +548,13 @@ namespace FUnreal.Sources.Core
 
         public static bool Project_AddModuleToTarget(FUnrealProject project, string targetName, string moduleName, FUnrealNotifier notifier)
         {
+            if (!XString.IsEqualToAny(targetName, FUnrealTargets.ALL))
+            {
+                notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Error_WrongTargetName, targetName);
+                return false;
+            }
+
+
             string targetFileName = $"{project.Name}{targetName}.Target.cs";
             string targetFilePath = XFilesystem.PathCombine(project.SourcePath, targetFileName);
 

@@ -17,5 +17,10 @@ namespace FUnreal
                 return format;
             }
         }
+
+        public static bool IsEqualToAny(string str, params string[] args)
+        {
+            return args.Contains(str);
+        }
     }
 }
