@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class AddGameModuleController : IXActionController
+    public class AddGameModuleController : AXActionController
     {
         private List<FUnrealTemplate> _templates;
         private FUnrealNotifier _notifier;
@@ -35,24 +35,6 @@ namespace FUnreal
             _dialog.templateTbl.Text = _templates[0].Description;
 
             await _dialog.ShowDialogAsync();
-        }
-
-        public async Task ConfirmAsync()
-        {
-            _dialog.ShowActionInProgress();
-            
-            string moduleName = _dialog.moduleNameTbx.Text;
-            string templeName = _templates[_dialog.templateCbx.SelectedIndex].Name;
-
-            bool success = await _unrealService.AddGameModuleAsync(templeName, moduleName, _notifier);
-            if (!success)
-            {
-                _dialog.ShowActionInError();
-                return;
-            }
-
-            //if false, show error message;
-            _dialog.Close();
         }
 
         public Task TemplateChangedAsync()
@@ -90,6 +72,25 @@ namespace FUnreal
                 _dialog.HideError();
             }
             return Task.CompletedTask;
+        }
+
+        public async Task ConfirmAsync()
+        {
+            _dialog.ShowActionInProgress();
+
+            string moduleName = _dialog.moduleNameTbx.Text;
+            string templeName = _templates[_dialog.templateCbx.SelectedIndex].Name;
+
+            var success = await _unrealService.AddGameModuleAsync(templeName, moduleName, _notifier);
+            if (!success)
+            {
+                _dialog.ShowActionInError();
+                return;
+            }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.BuildFilePath;
+
+            _dialog.Close();
         }
     }
 }

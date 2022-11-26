@@ -13,25 +13,11 @@ namespace FUnreal
         where T : class, new()
     {
         public static T Instance { get; internal set; }
-
-
-        public IXActionController Controller { 
-            get { return _controller; } 
-            set 
-            { 
-                _controller = value;
-                if (_controller != null)
-                {   //TODO: To delete this link. No more required by Controller to know about the Command
-                    _controller.Command = this;
-                }
-            } 
-        }
-        private IXActionController _controller;
-
+        public AXActionController Controller { get; set; }
+       
         public int ID => Command.CommandID.ID;
-
         public bool Enabled { get { return Command.Enabled; } set { Command.Enabled = value; } }
-
+        public bool Visible { get { return Command.Visible; } set { Command.Visible = value; } }
         public string Label { get => Command.Text; set => Command.Text = value; }
 
         protected override Task InitializeCompletedAsync()
@@ -42,11 +28,9 @@ namespace FUnreal
 
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            //Better way to call async method from here, preserving call context?
-            Command.Enabled = true;
-            //Command.Visible = Controller.ShouldBeVisibleAsync().GetAwaiter().GetResult();  
-            //Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await Controller.ShouldBeVisibleAsync());
-            Command.Visible = ThreadHelper.JoinableTaskFactory.Run(async () => await ContextMenuManager.Instance.IsActiveAsync(this));
+            //Command.Enabled = true;
+            //Command.Visible = false;    
+            ThreadHelper.JoinableTaskFactory.Run(async () => await ContextMenuManager.Instance.ConfigureCommandAsync(this));
         }
 
         protected override Task ExecuteAsync(OleMenuCmdEventArgs e)

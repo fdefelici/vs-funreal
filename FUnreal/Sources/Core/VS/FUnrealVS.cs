@@ -1,13 +1,11 @@
 ﻿using Community.VisualStudio.Toolkit;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
+
 
 namespace FUnreal
 {
@@ -81,7 +79,6 @@ namespace FUnreal
             return XFilesystem.FileExists(uprojectPath);
         }
 
-
         public static async Task<FUnrealVS> CreateAsync()
         {
             var uvs = new FUnrealVS();
@@ -89,29 +86,28 @@ namespace FUnreal
             return uvs;
         }
 
-        public Func<Task> OnUProjectLoadedAsync;
+        public List<Func<Task>> OnUProjectLoadedAsyncList; //using list instead of delegate, to have control on execution flow of the tasks
+
+        public void AddProjectLoadedHandler(Func<Task> task)
+        {
+            OnUProjectLoadedAsyncList.Add(task);
+        }
+        
 
         public FUnrealLogger Output { get; private set; }
 
         private FUnrealDTE _unrealDTE;
 
+        public string WhenProjectReload_MarkItemForSelection { get; set; }
+        public List<string> WhenProjectReload_MarkItemsForCreation { get; set; }
+
         private FUnrealVS() { }
 
         public async Task InitializeAsync()
         {
-            VS.Events.SolutionEvents.OnAfterLoadProject += (project) =>
-            {
-                XDebug.Info($"Project Loaded Event detected: {project.Name}");
+            OnUProjectLoadedAsyncList = new List<Func<Task>>();
 
-                string uprjFilePath = GetUProjectFilePath();
-                string fileName = XFilesystem.GetFilenameNoExt(uprjFilePath);
-
-                if (project.Name != fileName) return;
-
-                OnUProjectLoadedAsync?.Invoke().FireAndForget();
-
-                _unrealDTE.TryToSelectSolutionExplorerItem();
-            };
+            VS.Events.SolutionEvents.OnAfterLoadProject += OnAfterLoadProjectHandler;
 
             OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnrealToolbox);
             Output = new FUnrealLogger(pane);
@@ -121,7 +117,83 @@ namespace FUnreal
             {
                 XDebug.Erro("Invalid FUnrealDTE instance!");
             }
+
+            WhenProjectReload_MarkItemForSelection = null;
+            WhenProjectReload_MarkItemsForCreation = null;
         }
+
+        public async Task ForceLoadProjectEventAsync()
+        {
+            var projectName = GetUProjectName();
+            await OnAfterLoadProjectNameHandlerAsync(projectName);
+        }
+
+        private void OnAfterLoadProjectHandler(Project project)
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async () => await OnAfterLoadProjectNameHandlerAsync(project.Name));
+            //Or FireAndForget....
+        }
+
+        private async Task OnAfterLoadProjectNameHandlerAsync(string projectName)
+        {
+            XDebug.Info($"Project Loaded Event detected: {projectName}");
+
+            if (projectName != GetUProjectName()) return;
+
+            foreach (var task in OnUProjectLoadedAsyncList)
+            {
+                await task.Invoke();
+            }
+
+            await _unrealDTE.ReloadProjectAsync();
+
+            await TryToCreateSolutionExplorerItemsAsync();
+
+            TryToSelectSolutionExplorerItemAsync().FireAndForget();
+        }
+
+        private async Task TryToCreateSolutionExplorerItemsAsync()
+        {
+            XDebug.Info("MarkItemsForCreation: {0}", WhenProjectReload_MarkItemsForCreation == null ? "NULL" : WhenProjectReload_MarkItemsForCreation.Count.ToString());
+
+            if (WhenProjectReload_MarkItemsForCreation == null) return;
+
+            await XThread.SwitchToUIThreadIfItIsNotAsync();
+
+            var paths = WhenProjectReload_MarkItemsForCreation;
+            WhenProjectReload_MarkItemsForCreation = null;
+
+            foreach (var eachPath in paths)
+            {
+                string uprojectPath = GetUProjectPath();
+                string relItemPath = XFilesystem.PathSubtract(eachPath, uprojectPath);
+                string[] parts = XFilesystem.PathSplit(relItemPath);
+                await _unrealDTE.AddSubpathToProjectAsync(parts);
+            }
+
+        }
+
+        public string GetUProjectName()
+        {
+            var filePath = GetUProjectFilePath();
+            var fileName = XFilesystem.GetFilenameNoExt(filePath);
+            return fileName;
+        }
+
+        private async Task TryToSelectSolutionExplorerItemAsync()
+        {
+            if (string.IsNullOrEmpty(WhenProjectReload_MarkItemForSelection)) return;
+            
+            int delayMillis = 1000; //Task delayed, because after Project Reload, VS automatically select the active project (so selection will be overidden)
+
+            string uprojectPath = GetUProjectPath();
+            string relItemPath  = XFilesystem.PathSubtract(WhenProjectReload_MarkItemForSelection, uprojectPath);
+            string[] parts = XFilesystem.PathSplit(relItemPath);
+
+            WhenProjectReload_MarkItemForSelection = null;
+            await Task.Delay(delayMillis).ContinueWith(async (t) => await _unrealDTE.TryToSelectSolutionExplorerItemAsync(parts), TaskScheduler.Default);
+        }
+
 
         public string GetSolutionFilePath()
         {
@@ -133,6 +205,13 @@ namespace FUnreal
             string solAbsPath = GetSolutionFilePath();
             string uprjFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
             return uprjFilePath;
+        }
+
+        public string GetUProjectPath()
+        {
+            string filePath = GetUProjectFilePath();
+            string uprjPath = XFilesystem.PathParent(filePath);
+            return uprjPath;
         }
 
         public async Task<FUnrealVSItem> GetSelectedItemAsync()
@@ -265,6 +344,7 @@ namespace FUnreal
             return await _unrealDTE.RemoveFoldersFromSelectionAsync();  
         }
 
+       
     }
 
     /* 
@@ -337,224 +417,5 @@ namespace FUnreal
     }
 }
 
-/*
-     protected override void BeforeQueryStatus(EventArgs e)
-     {
-         ThreadHelper.ThrowIfNotOnUIThread();
-
-         this.Command.Visible = false;
-
-         DTE2 dTE2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
-         Debug.Print("Selected Count: {0}", dTE2.SelectedItems.Count);
-         if (dTE2.SelectedItems.Count != 1) return;
-
-         SelectedItem item = dTE2.SelectedItems.Item(1);
-         if (item.Project != null) return;
-
-         string fileName = item.Name;
-         Debug.Print("Selected: {0}", fileName);
-
-         if (!XFilesystem.HasExtension(fileName, ".Build.cs")) return;
-
-         this.Command.Visible = true;
-     }
-     */
 
 
-/*
-       protected override void BeforeQueryStatus(EventArgs e)
-       {
-           ThreadHelper.ThrowIfNotOnUIThread();
-
-
-           var guidSet  = VsMenus.guidCciSet;
-
-           var guidProj = VsMenus.IDM_VS_CTXT_PROJNODE;
-
-
-           Debug.WriteLine(e);
-
-           this.Command.Visible = false;
-
-           DTE2 dTE2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
-
-           var attrs = dTE2.ContextAttributes;
-
-
-           Debug.Print("Selected Count: {0}", dTE2.SelectedItems.Count);
-           if (dTE2.SelectedItems.Count != 1) return;
-
-           SelectedItem item = dTE2.SelectedItems.Item(1);
-
-           Debug.Print("Selected: {0}", item.Name);
-
-           this.Command.Visible = true;
-
-       }
-       */
-
-/*
- 
-  DTE2 dTE2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
-
-Solution sol = dTE2.Solution;
-Debug.Print("SOLUTION NAME: {0}", sol.FullName);
-Debug.Print("SOLUTION FILENAME: {0}", sol.FileName);
-Debug.Print("Projects Count: {0}", sol.Projects.Count);
-
-string solAbsPath = sol.FileName;
-            
-string uprjFilePath = XFilesystem.FileChangeExtension(solAbsPath, "uproject");
-bool found = XFilesystem.FileExists(uprjFilePath);
-
-if (!found) return null;
-
-Debug.Print("UProject Path: {0}", uprjFilePath);
-Debug.Print("UProject found: {0}", found);
-
-string enginePath = null;
-string gameProjectName = null;
-foreach (Project project in sol.Projects)
-{
-    Debug.Print("Project Full: {0}", project.FullName);
-    Debug.Print("Project Name: {0}", project.Name);
-    Debug.Print("Project File: {0}", project.FileName);
-    Debug.Print("        Kind: {0}", project.Kind);
-    Debug.Print("       Items: {0}", project.ProjectItems.Count);
-
-    //if (project.Name != "Games") continue;
-                
-        //  Skip:
-        // - "Engine" Folder project and related UEXX subproject
-        //
-
-    //Microsoft.VisualStudio.CommonIDE.Solutions
-    //DteMiscProject
-    if (project.Name.Equals("Visualizers", StringComparison.OrdinalIgnoreCase))
-    {
-        if (project.ProjectItems.Count == 1)
-        {
-            ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
-
-            if (item.FileCount == 1)
-            {
-                string absFilePath = item.FileNames[1];
-                Debug.Print(" Natvis file path: {0}", absFilePath);
-
-                string visualStudioDebuggingPath = XFilesystem.PathParent(absFilePath);
-                string extrasPath = XFilesystem.PathParent(visualStudioDebuggingPath);
-                enginePath = XFilesystem.PathParent(extrasPath);
-
-                Debug.Print(" Engine Path: {0}", enginePath);
-            }
-        }
-
-    }
-    else if (project.Name.Equals("Games", StringComparison.OrdinalIgnoreCase))
-    {
-        //foreach (ProjectItem item in project.ProjectItems)
-        if (project.ProjectItems.Count == 1)
-        {
-            ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
-
-            Debug.Print("    Item: {0}", item.Name);
-            Project SubPrj = item.SubProject;
-            //if (SubPrj == null) continue; 
-            Debug.Print("      Full: {0}", SubPrj.FullName);
-            Debug.Print("      Name: {0}", SubPrj.Name);
-            Debug.Print("      File: {0}", SubPrj.FileName);
-            Debug.Print("      Kind: {0}", SubPrj.Kind);
-            //games.Add(SubPrj);
-
-            gameProjectName = item.Name;
-        }
-    }
-}
-*/
-
-
-/*
-VS.Events.ProjectItemsEvents.AfterAddProjectItems += (args) =>
-{
-    foreach(var item in args)
-    {
-        Debug.WriteLine(item.Name);
-    }
-};
-
-VS.Events.ProjectItemsEvents.AfterRenameProjectItems += (args) =>
-{
-    Debug.WriteLine("RENAMED: ");
-    foreach (var item in args.ProjectItemRenames)
-    {
-
-        Debug.WriteLine(item.OldName);
-        Debug.WriteLine(item.SolutionItem.Name);
-    }
-};
-
-
-VS.Events.ProjectItemsEvents.AfterRemoveProjectItems += (args) =>
-{
-    Debug.WriteLine("RENAMED: ");
-    foreach (var item in args.ProjectItemRemoves)
-    {
-
-        Debug.WriteLine(item.RemovedItemName);
-    }
-};
-
-VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += () =>
-{
-    Debug.Print("-------------------------- NEW SOLUTION LOADED!!!!");
-};
-
-VS.Events.ProjectItemsEvents.AfterAddProjectItems += (items) => 
-{
-    Debug.Print("++++++++++++++++++++++++ ITEM ADDED!");
-    foreach (var item in items)
-    {
-        Debug.Print(item.FullPath);
-    }
-};
-*/
-/*
-watcher = new FileSystemWatcher();
-
-watcher.Path = "C:\\_fdf\\workspace_unreal\\ws_unreal\\UENLOpt";
-watcher.IncludeSubdirectories = true;
-watcher.Filter = "*.Build.cs";
-watcher.NotifyFilter = NotifyFilters.Attributes
-                    | NotifyFilters.CreationTime
-                    | NotifyFilters.DirectoryName
-                    | NotifyFilters.FileName
-                    | NotifyFilters.LastAccess
-                    | NotifyFilters.LastWrite
-                    | NotifyFilters.Security
-                    | NotifyFilters.Size;
-watcher.EnableRaisingEvents = true;
-watcher.Created += OnCreated;
-//watcher.Changed += OnChanged;
-watcher.Renamed += OnRenamed;
-watcher.Deleted += OnDeleted;
-*/
-
-/*
-_pluginFilesWatcher = new XFSWatcher();
-_pluginFilesWatcher.Path = prjPath;
-_pluginFilesWatcher.Filter = "*.uplugin";
-_pluginFilesWatcher.NotifyFilter = NotifyFilters.FileName; //| NotifyFilters.Security; //Security trigger OnChanged on CTRL+Z
-_pluginFilesWatcher.IncludeSubdirectories = true;
-
-_pluginFilesWatcher.OnCreated = (path) => { Debug.Print($"PLG CREATED: {path}"); };
-_pluginFilesWatcher.OnDeleted = (path) => { Debug.Print($"PLG DELETED: {path}"); };
-_pluginFilesWatcher.OnRenamed = (oldPath, newPath) => { Debug.Print($"PLG RENAMED: {oldPath} TO: {newPath}"); };
-
-_pluginFilesWatcher.Start();
-*/
-/*
-VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += () =>
-{
-    Debug.Print("----------------- SOLUTION LOADED!");
-};
-*/

@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class AddPluginController : IXActionController
+    public class AddPluginController : AXActionController
     {
         private AddPluginDialog _dialog;
         private string _lastPlugName;
@@ -144,12 +144,15 @@ namespace FUnreal
             string moduleNameOrNull = _templateHasModuleName ? _dialog.moduleNameTbx.Text : null;
             string templeName = _templates[_dialog.pluginTemplCbx.SelectedIndex].Name;
 
-            bool success = await _unrealService.AddPluginAsync(templeName, pluginName, moduleNameOrNull, _notifier);
+            var success = await _unrealService.AddPluginAsync(templeName, pluginName, moduleNameOrNull, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.DescrFilePath;
+
             _dialog.Close();
         }
     }

@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class AddModuleController : IXActionController
+    public class AddModuleController : AXActionController
     {
         private List<FUnrealTemplate> _templates;
         private FUnrealNotifier _notifier;
@@ -42,23 +42,6 @@ namespace FUnreal
             await _dialog.ShowDialogAsync();
         }
 
-        public async Task ConfirmAsync()
-        {
-            _dialog.ShowActionInProgress();
-            
-            string pluginName = _currentPluginName;
-            string moduleName = _dialog.moduleNameTbx.Text;
-            string templeName = _templates[_dialog.pluginTemplCbx.SelectedIndex].Name;
-
-            bool success = await _unrealService.AddPluginModuleAsync(templeName, pluginName, moduleName, _notifier);
-            if (!success)
-            {
-                _dialog.ShowActionInError();
-                return;
-            }
-
-            _dialog.Close();
-        }
 
         public Task TemplateChangedAsync()
         {
@@ -97,5 +80,26 @@ namespace FUnreal
             }
             return Task.CompletedTask;
         }
+
+        public async Task ConfirmAsync()
+        {
+            _dialog.ShowActionInProgress();
+
+            string pluginName = _currentPluginName;
+            string moduleName = _dialog.moduleNameTbx.Text;
+            string templeName = _templates[_dialog.pluginTemplCbx.SelectedIndex].Name;
+
+            var success = await _unrealService.AddPluginModuleAsync(templeName, pluginName, moduleName, _notifier);
+            if (!success)
+            {
+                _dialog.ShowActionInError();
+                return;
+            }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.BuildFilePath;
+
+            _dialog.Close();
+        }
+
     }
 }

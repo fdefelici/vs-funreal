@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal
 {
-    public class RenameFolderController : IXActionController
+    public class RenameFolderController : AXActionController
     {
         private AddFolderDialog _dialog;
         private FUnrealNotifier _notifier;
@@ -83,12 +83,14 @@ namespace FUnreal
             string fullPath = _absPathSelected;
             string newDirName = _dialog.pathTbx.Text;
 
-            bool success = await _unrealService.RenameFolderAsync(fullPath, newDirName, _notifier);
+            var success = await _unrealService.RenameFolderAsync(fullPath, newDirName, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.FilePath;
 
             _dialog.Close();
         }

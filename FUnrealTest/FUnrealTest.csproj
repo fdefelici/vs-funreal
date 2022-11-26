@@ -239,20 +239,22 @@
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFolder\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Sources\FUnrealBuildToolTest.cs" />
-    <Compile Include="Sources\FUnrealProjectFactoryTest.cs" />
-    <Compile Include="Sources\FUnrealServiceProjectTest.cs" />
-    <Compile Include="Sources\FUnrealServiceTest.cs" />
-    <Compile Include="Sources\FUnrealService_SmallApiTest.cs" />
-    <Compile Include="Sources\FUnrealTemplatesTest.cs" />
-    <Compile Include="Sources\MiscTest.cs" />
+    <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
+    <Compile Include="Sources\Units\FUnrealBuildToolTest.cs" />
+    <Compile Include="Sources\Units\FUnrealProjectTest.cs" />
+    <Compile Include="Sources\Units\FUnrealProjectFactoryTest.cs" />
+    <Compile Include="Sources\Units\FUnrealServiceProjectTest.cs" />
+    <Compile Include="Sources\Units\FUnrealServiceTest.cs" />
+    <Compile Include="Sources\Units\FUnrealService_SmallApiTest.cs" />
+    <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />
+    <Compile Include="Sources\Integrations\MiscTest.cs" />
     <Compile Include="Sources\Utils\FAssert.cs" />
     <Compile Include="Sources\Utils\FUnrealBuildToolMock.cs" />
     <Compile Include="Sources\Utils\TestUtils.cs" />
     <Compile Include="Sources\Utils\XProcessMock.cs" />
-    <Compile Include="Sources\XFilesystemTest.cs" />
-    <Compile Include="Sources\XDialogLibTest.cs" />
-    <Compile Include="Sources\XStringTest.cs" />
+    <Compile Include="Sources\Units\XFilesystemTest.cs" />
+    <Compile Include="Sources\Units\XDialogLibTest.cs" />
+    <Compile Include="Sources\Units\XStringTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

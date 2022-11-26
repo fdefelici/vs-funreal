@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class RenameSourceFileController : IXActionController
+    public class RenameSourceFileController : AXActionController
     {
         private AddSourceFileDialog _dialog;
         private FUnrealNotifier _notifier;
@@ -85,12 +85,15 @@ namespace FUnreal
 
             string newFileNameWithExt = _dialog.fileNameTbx.Text;
 
-            bool success = await _unrealService.RenameFileAsync(_absFilePath, newFileNameWithExt, _notifier);
+            var success = await _unrealService.RenameFileAsync(_absFilePath, newFileNameWithExt, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.FilePath;
+
             _dialog.Close();
         }
     }

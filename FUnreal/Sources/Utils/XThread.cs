@@ -15,9 +15,11 @@ namespace FUnreal
             bool isUIThread = ThreadHelper.CheckAccess();
             if (!isUIThread)
             {
+                XDebug.Info("Context Switch Required!");
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             }
         }
+
     }
 
 }

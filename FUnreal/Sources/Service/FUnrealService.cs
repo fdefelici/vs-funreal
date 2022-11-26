@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Shapes;
+using Community.VisualStudio.Toolkit;
 
 namespace FUnreal
 {
@@ -128,6 +129,7 @@ namespace FUnreal
         private string _sourcePath;
         private FUnrealTemplates _templates;
         private FUnrealProject _projectModel;
+        FUnrealProjectFactory _projectModuleFactory;
 
         public FUnrealService(FUnrealEngine engine, string uprjAbsPath, FUnrealTemplates templates)
         {
@@ -143,13 +145,19 @@ namespace FUnreal
             _pluginsPath = XFilesystem.PathCombine(_prjPath, "Plugins");
             _sourcePath = XFilesystem.PathCombine(_prjPath, "Source");
 
-            _projectModel = new FUnrealProject(ProjectName, uprjAbsPath); //just to avoid NullPointerException in case project model is never loaded
+            _projectModuleFactory = new FUnrealProjectFactory();
+            _projectModel = new FUnrealProject(uprjAbsPath); //just to avoid NullPointerException in case project model is never loaded
         }
 
         public FUnrealService(FUnrealEngine engine, FUnrealProject project, FUnrealTemplates templates)
              : this(engine, project.DescriptorFilePath, templates)
         {
             _projectModel = project;
+        }
+
+        public List<string> KnownEmptyFolderPaths()
+        {
+            return _projectModuleFactory.EmptyFolderPaths;
         }
 
         public FUnrealProject GetUProject()
@@ -159,13 +167,19 @@ namespace FUnreal
 
         public async Task<bool> UpdateProjectAsync(FUnrealNotifier notifier)
         {
-            FUnrealProjectFactory factory = new FUnrealProjectFactory();
-
-            var upro = await factory.CreateV4Async(_uprjFileAbsPath, notifier);
+            var upro = await _projectModuleFactory.CreateAsync(_uprjFileAbsPath, notifier);
 
             if (upro == null) return false;
 
             _projectModel = upro;
+
+            //await _projectModuleFactory.ScanEmptyFoldersAsync(_projectModel);
+            return true;
+        }
+
+        public async Task<bool> UpdateEmptyFoldersAsync()
+        {
+            await _projectModuleFactory.ScanEmptyFoldersAsync(_projectModel);
             return true;
         }
 
@@ -358,6 +372,16 @@ namespace FUnreal
                 return XFilesystem.PathCombine(_pluginsPath, plugName);
             }
             return plug.FullPath;
+        }
+
+        public string AbsProjectSourcePath()
+        {
+            return GetUProject().SourcePath;
+        }
+
+        public string AbsProjectPluginsPath()
+        {
+            return GetUProject().PluginsPath;
         }
 
         public string AbsModulePath(string modName)
@@ -584,10 +608,8 @@ namespace FUnreal
             return module.IsPrimaryGameModule;
         }
 
-       
 
-
-        public async Task<bool> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
+        public async Task<FUnrealServicePluginResult> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
         {
             string context = "plugins";
             string engine = _engineMajorVer;
@@ -653,10 +675,21 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
-            return true;
+
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //X. Update Project Model
+            string pluginPath = XFilesystem.PathCombine(_pluginsPath, pluginName);
+            var pluginAdded = _projectModuleFactory.AddPlugin(GetUProject(), pluginPath);
+
+            FUnrealServicePluginResult success = true;
+            success.DescrFilePath = pluginAdded.DescriptorFilePath;
+            return success;
         }
 
-        public async Task<bool> DeletePluginAsync(string pluginName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceSimpleResult> DeletePluginAsync(string pluginName, FUnrealNotifier notifier)
         {
             if (!ExistsPlugin(pluginName))
             {
@@ -695,17 +728,17 @@ namespace FUnreal
                 }
             }
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //X. Update Project Model
+            _projectModuleFactory.RemovePlugin(GetUProject(), plugin);
+
             return true;
         }
 
-        public async Task<bool> RenamePluginAsync(string pluginName, string pluginNewName, FUnrealNotifier notifier)
+        public async Task<FUnrealServicePluginResult> RenamePluginAsync(string pluginName, string pluginNewName, FUnrealNotifier notifier)
         {
             if (!ExistsPlugin(pluginName))
             {
@@ -755,10 +788,16 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
-            return true;
+
+            //Temporary project module update
+            var plugRenamed = _projectModuleFactory.RenamePlugin(GetUProject(), plugin, pluginNewName);
+
+            FUnrealServicePluginResult success = true;
+            success.DescrFilePath = plugRenamed.DescriptorFilePath;
+            return success;
         }
 
-        public async Task<bool> AddPluginModuleAsync(string templeName, string pluginName, string moduleName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceModuleResult> AddPluginModuleAsync(string templeName, string pluginName, string moduleName, FUnrealNotifier notifier)
         {
             string context = "modules";
             string engine = _engineMajorVer;
@@ -839,10 +878,20 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
-            return true;
+
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //X. Update Project Model
+            var moduleAdded = _projectModuleFactory.AddPluginModule(GetUProject(), plugin, moduleName);
+
+            FUnrealServiceModuleResult success = true;
+            success.BuildFilePath = moduleAdded.BuildFilePath;
+            return success;
         }
 
-        public async Task<bool> RenamePluginModuleAsync(string pluginName, string moduleName, string newModuleName, bool renameSourceFiles, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceModuleResult> RenamePluginModuleAsync(string pluginName, string moduleName, string newModuleName, bool renameSourceFiles, FUnrealNotifier notifier)
         {
             if (!ExistsPlugin(pluginName))
             {
@@ -894,11 +943,16 @@ namespace FUnreal
             //7. Regen VS Solution
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
-                    
+
+
+            var moduleRenamed = _projectModuleFactory.RenamePluginModule(project, plugin, module, newModuleName);
+
+            FUnrealServiceModuleResult success = true;
+            success.BuildFilePath = moduleRenamed.BuildFilePath;
             return true;
         }
 
-        public async Task<bool> DeletePluginModuleAsync(string pluginName, string moduleName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceSimpleResult> DeletePluginModuleAsync(string pluginName, string moduleName, FUnrealNotifier notifier)
         {
             if (!ExistsPlugin(pluginName))
             {
@@ -948,17 +1002,17 @@ namespace FUnreal
                 upluginFile.Save();
             }
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //X. Update Project Model
+            _projectModuleFactory.DeletePluginModule(project, plugin, module);
+
             return true;
         }
 
-        public async Task<bool> AddSourceClassAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceSourceClassResult> AddSourceClassAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
         {
             string context = "sources";
             string engine = _engineMajorVer;
@@ -1034,10 +1088,14 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
-            return true;
+
+            FUnrealServiceSourceClassResult success = true;
+            success.HeaderPath = headerPath;
+            success.SourcePath = sourcePath;
+            return success;
         }
 
-        public async Task<bool> DeleteSourcesAsync(List<string> sourcePaths, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceFilesResult> DeleteSourcesAsync(List<string> sourcePaths, FUnrealNotifier notifier)
         {
             notifier.Info(XDialogLib.Ctx_CheckProjectPlayout);
             if (sourcePaths.Count == 0)
@@ -1048,14 +1106,18 @@ namespace FUnreal
 
             List<string> dirs = new List<string>();
             List<string> files = new List<string>();
+
+            List<string> parentPaths = new List<string>();
             foreach(string sourcePath in sourcePaths)
             {
                 if (ExistsSourceFile(sourcePath))
                 {
+                    parentPaths.Add(XFilesystem.PathParent(sourcePath));
                     files.Add(sourcePath);
                 } 
                 else if (ExistsSourceDirectory(sourcePath))
                 {
+                    parentPaths.Add(XFilesystem.PathParent(sourcePath));
                     dirs.Add(sourcePath);
                 }
                 else
@@ -1071,8 +1133,8 @@ namespace FUnreal
             {
                 notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFile, filePath);
 
-                bool success = XFilesystem.DeleteFile(filePath);
-                if (!success)
+                bool deleted = XFilesystem.DeleteFile(filePath);
+                if (!deleted)
                 {
                     notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
                     return false;
@@ -1083,25 +1145,29 @@ namespace FUnreal
             {
                 notifier.Info(XDialogLib.Ctx_DeletingDirectories, XDialogLib.Info_DeletingFolder, dirPath);
 
-                bool success = XFilesystem.DeleteDir(dirPath);
-                if (!success)
+                bool deleted = XFilesystem.DeleteDir(dirPath);
+                if (!deleted)
                 {
                     notifier.Erro(XDialogLib.Ctx_DeletingDirectories, XDialogLib.Error_Delete);
                     return false;
                 }
             }
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
-            return true;
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //var emptyFolders = XFilesystem.SelectFolderPathsNotContainingAnyFile(parentPaths);
+
+            FUnrealServiceFilesResult success = true;
+            success.AllPaths = sourcePaths;
+            success.FilePaths = files;
+            success.DirPaths = dirs;
+            success.AllParentPaths = parentPaths;
+            return success;
         }
 
-        public async Task<bool> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceModuleResult> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
         {
             string context = "game_modules";
             string engine = _engineMajorVer;
@@ -1201,18 +1267,21 @@ namespace FUnreal
                  LoadingPhase = metaPhase
             });
             uprojectJson.Save();
-           
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
-            return true;
+
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            //X. Update Project Model
+            string modulePath = XFilesystem.PathCombine(sourcePath, moduleName);
+            var moduleAdded = _projectModuleFactory.AddGameModule(_projectModel, modulePath);
+
+            FUnrealServiceModuleResult success = true;
+            success.BuildFilePath = moduleAdded.BuildFilePath;
+            return success;
         }
 
-        public async Task<bool> RenameGameModuleAsync(string moduleName, string newModuleName, bool renameSourceFiles, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceModuleResult> RenameGameModuleAsync(string moduleName, string newModuleName, bool renameSourceFiles, FUnrealNotifier notifier)
         {
             if (!ExistsModule(moduleName))
             {
@@ -1267,10 +1336,16 @@ namespace FUnreal
             //8. Regen VS Project
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
-            return true;
+
+            //X. Update Project Module
+            var moduleRenamed = _projectModuleFactory.RenameGameModule(_projectModel, module, newModuleName);
+
+            FUnrealServiceModuleResult success = true;
+            success.BuildFilePath = moduleRenamed.BuildFilePath;
+            return success;
         }
 
-        public async Task<bool> DeleteGameModuleAsync(string moduleName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceSimpleResult> DeleteGameModuleAsync(string moduleName, FUnrealNotifier notifier)
         {
             var project = GetUProject();
             var module = project.GameModules[moduleName];
@@ -1338,19 +1413,15 @@ namespace FUnreal
             }
 
             //5. Regen VS Project
-            { 
-                notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-                XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-                if (ubtResult.IsError)
-                {
-                    notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                    return false;
-                }
-            }
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            _projectModuleFactory.DeleteGameModule(project, module);
+
             return true;
         }
 
-        public async Task<bool> AddSourceFileAsync(string absBasePath, string fileName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceFileResult> AddSourceFileAsync(string absBasePath, string fileName, FUnrealNotifier notifier)
         {
             //Eventually check if is a valid module path
 
@@ -1365,17 +1436,16 @@ namespace FUnreal
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_CreatingFile, filePath);
             XFilesystem.CreateFile(filePath);
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
-            return true;
+            //X. Regen VS Project
+            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
+
+            FUnrealServiceFileResult success = true;
+            success.FilePath = filePath;
+            return success;
         }
 
-        public async Task<bool> RenameFileAsync(string filePath, string newFileNameWithExt, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceFileResult> RenameFileAsync(string filePath, string newFileNameWithExt, FUnrealNotifier notifier)
         {
             if (!ExistsSourceFile(filePath))
             {
@@ -1494,10 +1564,13 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
-            return true;
+
+            FUnrealServiceFileResult success = true;
+            success.FilePath = filePath;
+            return success;
         }
 
-        public async Task<bool> RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
+        public async Task<FUnrealServiceFileResult> RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
         {
             if (!ExistsSourceDirectory(folderPath))
             {
@@ -1572,9 +1645,11 @@ namespace FUnreal
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
 
-            return true;
+            FUnrealServiceFileResult success = true;
+            success.FilePath = newFolderPath;
+            return success;
         }
 
-
+       
     } 
 }

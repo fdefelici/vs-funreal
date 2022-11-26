@@ -46,10 +46,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ProjectReloadHandler.cs" />
-    <Compile Include="Sources\Core\FUnrealDTE.cs" />
+    <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
+    <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
+    <Compile Include="Sources\Service\FUnrealServiceResults.cs" />
+    <Compile Include="Sources\Core\Domain\FUnrealModule.cs" />
+    <Compile Include="Sources\Core\Domain\IFUnrealModuleContainer.cs" />
+    <Compile Include="Sources\Core\Domain\FUnrealCollection.cs" />
+    <Compile Include="Sources\Core\Domain\FUnrealProject.cs" />
+    <Compile Include="Sources\Core\VS\FUnrealDTE.cs" />
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
-    <Compile Include="Sources\Core\FUnrealServiceTasks.cs" />
+    <Compile Include="Sources\Service\FUnrealServiceTasks.cs" />
     <Compile Include="Sources\Core\FUnrealTemplates.cs" />
     <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd22.cs" />
     <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd21.cs" />
@@ -81,10 +87,10 @@
       <DependentUpon>AddSourceFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
-    <Compile Include="Sources\Core\FUnrealNotifier.cs" />
-    <Compile Include="Sources\Core\FUnrealPlugin.cs" />
-    <Compile Include="Sources\Core\FUnrealUPluginFile.cs" />
-    <Compile Include="Sources\Core\FUnrealUProjectFile.cs" />
+    <Compile Include="Sources\Service\FUnrealNotifier.cs" />
+    <Compile Include="Sources\Core\Domain\FUnrealPlugin.cs" />
+    <Compile Include="Sources\Core\Files\FUnrealUPluginFile.cs" />
+    <Compile Include="Sources\Core\Files\FUnrealUProjectFile.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
     <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
@@ -103,7 +109,7 @@
       <DependentUpon>AddModuleDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
-    <Compile Include="Sources\Core\FUnrealVS.cs" />
+    <Compile Include="Sources\Core\VS\FUnrealVS.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleController.cs" />
     <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
       <DependentUpon>RenameModuleDialog.xaml</DependentUpon>
@@ -117,8 +123,8 @@
       <DependentUpon>AddPluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealBuildTool.cs" />
-    <Compile Include="Sources\Core\FUnrealService.cs" />
-    <Compile Include="Sources\UI\Common\IXActionController.cs" />
+    <Compile Include="Sources\Service\FUnrealService.cs" />
+    <Compile Include="Sources\UI\Common\AXActionController.cs" />
     <Compile Include="Sources\UI\Common\Controls\ConfirmDialog.xaml.cs">
       <DependentUpon>ConfirmDialog.xaml</DependentUpon>
     </Compile>
@@ -129,11 +135,10 @@
     <Compile Include="Sources\Utils\XProcess.cs" />
     <Compile Include="Sources\Utils\XFilesystem.cs" />
     <Compile Include="Sources\UI\Common\XActionCmd.cs" />
-    <Compile Include="VSCTSymbols.cs" />
+    <Compile Include="Sources\UI\Common\Commands\VSCTSymbols.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
     <None Include=".editorconfig" />
-    <None Include="FUnrealPackage.vsct_OLD" />
     <Content Include="Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

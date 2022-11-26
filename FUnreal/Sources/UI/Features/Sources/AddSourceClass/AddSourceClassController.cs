@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class AddSourceClassController : IXActionController
+    public class AddSourceClassController : AXActionController
     {
         private AddSourceClassDialog _dialog;
         private List<FUnrealTemplate> _templates;
@@ -38,7 +38,7 @@ namespace FUnreal
                 return;
             }
 
-            //if type is Public or Private, Free type checkbox disappear beacuse is no sense
+            //if type is Public or Private, then Custom type checkbox disappear because is no sense
             if (_absPathSelectedType == FUnrealSourceType.PUBLIC || _absPathSelectedType == FUnrealSourceType.PRIVATE)
             {
                 _dialog.ShowFreeCheckbox(false);
@@ -138,12 +138,15 @@ namespace FUnreal
 
             FUnrealSourceType sourceType = (FUnrealSourceType)classType;
 
-            bool success = await _unrealService.AddSourceClassAsync(templeName, absBasePath, className, sourceType, _notifier);
+            var success = await _unrealService.AddSourceClassAsync(templeName, absBasePath, className, sourceType, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.HeaderPath;
+
             _dialog.Close();
         }
     }

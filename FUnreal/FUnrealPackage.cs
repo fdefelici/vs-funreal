@@ -5,10 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
-using System.Diagnostics;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using Microsoft.VisualStudio.RpcContracts.Logging;
 
 namespace FUnreal
 {
@@ -31,12 +27,11 @@ namespace FUnreal
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-
             //Autoloading VSPackage if a file (.uproject) is present, seems doesn't exist....(very strage)
             //https://learn.microsoft.com/en-us/visualstudio/extensibility/how-to-use-rule-based-ui-context-for-visual-studio-extensions?view=vs-2022
-            //As a workaround, stop loading the code if it is not a Unreal Project.
+            //As a workaround, stop loading the code if it is not an Unreal Project.
             //NOTE: This workaround works only if VS IDE is launched from scratch. 
-            //      Don't work if from a VS IDE solution, it is opened another solution using Open -> Project/Solution (VSpackage is not reloaded)
+            //      Don't work if from a VS IDE solution, it is opened another solution using File -> Open -> Project/Solution (VSpackage is not reloaded)
 
             if (await FUnrealVS.IsUnrealSolutionAsync())
             {
@@ -53,18 +48,20 @@ namespace FUnreal
                 /* Configure Menu Commands */
                 ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
 
-                var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS); //object instance kept alive by unrealVS
-                unrealVS.OnUProjectLoadedAsync = projectLoadHandler.ExecuteAsync;
+                var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS);    //object instance kept alive by unrealVS
+                var emptyFolderHandler = new DetectEmptyFolderHandler(unrealService, unrealVS);//object instance kept alive by unrealVS
+
+                unrealVS.AddProjectLoadedHandler(projectLoadHandler.ExecuteAsync);
+                unrealVS.AddProjectLoadedHandler(emptyFolderHandler.ExecuteAsync);
 
                 //Bind Cmd with VSCT file (To be done after ContexMenuManager)
                 await this.RegisterCommandsAsync();
 
-
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnrealToolbox} Loaded!");
-                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} Ready ;-)");
+                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} is ready ;-)");
 
-                //Simulate Project Loaded event at startup
-                projectLoadHandler.ExecuteAsync().FireAndForget();
+                //Simulate Project Loaded event at startup to launch the discovery
+                await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget
 
                 XDebug.Info("Loaded");
             }

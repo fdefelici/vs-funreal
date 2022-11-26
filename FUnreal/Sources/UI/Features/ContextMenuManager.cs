@@ -66,7 +66,7 @@ namespace FUnreal
         //     - Searching for the right button config pass through some filtering:
         //     -- First: context filtering based on type: CTX_ITEMNODE, FOLDERNODE, PROJNODE etc... (by the fact it doesn't seems possibile to retrive the context value, it will be recomputed)
         //     -- Second: Caching timer to reuse last scenario found for all the buttons
-        public async Task<bool> IsActiveAsync(IXActionCmd cmd)
+        public async Task ConfigureCommandAsync(IXActionCmd cmd)
         {
 #if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -89,14 +89,19 @@ namespace FUnreal
                     cmd.Label = config.Label;
                     cmd.Controller = config.Controller;
                     cmd.Enabled = config.Enabled;
-                    IsActive = true;
+                    cmd.Visible = true;
+                } else
+                {
+                    cmd.Label = string.Empty;
+                    cmd.Controller = null;
+                    cmd.Enabled = false;
+                    cmd.Visible = false;
                 }
             }
 #if DEBUG
             stopwatch.Stop();
             XDebug.Info($"CtxMenu Cmd 0x{cmd.ID:X4} [sceneario: 0x{(int)_cachedScenario:X4}, cached: {cacheHit} active: {IsActive}] configured in {stopwatch.ElapsedMilliseconds} ms");
 #endif //DEBUG
-            return IsActive;
         }
 
         private async Task<S> FindScenarioForCmdAsync()
@@ -328,7 +333,7 @@ namespace FUnreal
             cmdConfigPerScenario = new Dictionary<int, XActionCmdConfig>();
 
             cmdConfigPerScenario[ID(S.SingleProject, C.Cmd11)] = new XActionCmdConfig("New Plugin...", new AddPluginController(_unrealService, _unrealVS, this));
-            cmdConfigPerScenario[ID(S.SingleProject, C.Cmd12)] = new XActionCmdConfig("New Module...", new AddGameModuleController(_unrealService, _unrealVS, this));
+            cmdConfigPerScenario[ID(S.SingleProject, C.Cmd12)] = new XActionCmdConfig("New Game Module...", new AddGameModuleController(_unrealService, _unrealVS, this));
 
             cmdConfigPerScenario[ID(S.DotProject, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleProject, C.Cmd11)];
             cmdConfigPerScenario[ID(S.DotProject, C.Cmd12)] = cmdConfigPerScenario[ID(S.SingleProject, C.Cmd12)];
@@ -366,8 +371,8 @@ namespace FUnreal
             cmdConfigPerScenario[ID(S.SinglePluginModuleFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotBuildCsPlugMod, C.Cmd12)];
 
             cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd11)];
-            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd12)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd21)];
-            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd13)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd22)];
+            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd21)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd21)];
+            cmdConfigPerScenario[ID(S.SinglePluginFolder, C.Cmd22)] = cmdConfigPerScenario[ID(S.DotPlugin, C.Cmd22)];
 
 
             cmdConfigPerScenario[ID(S.SingleGameModuleFolder, C.Cmd11)] = cmdConfigPerScenario[ID(S.SingleSourceFolder, C.Cmd11)];
@@ -419,7 +424,7 @@ namespace FUnreal
     public class XActionCmdConfig
     {
         public string Label { get; }
-        public IXActionController Controller { get; }
+        public AXActionController Controller { get; }
 
         public bool Enabled { get; }
 
@@ -429,7 +434,7 @@ namespace FUnreal
 
         }
     
-        public XActionCmdConfig(string label, IXActionController controller)
+        public XActionCmdConfig(string label, AXActionController controller)
         {
             Label = label;
             Controller = controller;

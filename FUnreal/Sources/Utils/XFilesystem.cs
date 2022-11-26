@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -136,11 +135,22 @@ namespace FUnreal
 
         public static string PathCombine(string first, params string[] parts)
         {
+            if (parts.Length == 0) return first;
+            
             string combined = first;
-
-            foreach (var part in parts)
+            int startIndex = 0;
+            if (string.IsNullOrEmpty(combined))
             {
-                combined = Path.Combine(combined, part);
+                combined = parts[0];
+                startIndex = 1;
+            }
+            
+            for(int i = startIndex; i < parts.Count(); ++i)
+            {
+                string part = parts[i];
+                //combined = Path.Combine(combined, part);  No used anymore because try to combine 'C:' with 'some' result in 'C:some' instead of 'C:\some'
+                if (string.IsNullOrEmpty(part)) continue;
+                combined = $"{combined}{PathSeparatorChar}{part}";
             }
 
             //ensure all separators are OS specific
@@ -306,10 +316,13 @@ namespace FUnreal
 
         public static string PathParent(string path, int levels = 1)
         {
+            if (string.IsNullOrEmpty(path)) return string.Empty;
+
             string result = path;
             for (int i=0; i < levels; ++i)
             {
                 result = Path.GetDirectoryName(result);
+                if (string.IsNullOrEmpty(result)) return string.Empty;
             }
             return result;
         }
@@ -368,7 +381,6 @@ namespace FUnreal
 
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;  
             var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
-
             foreach(string each in filePaths)
             {
                 if (filter(each))
@@ -499,9 +511,25 @@ namespace FUnreal
             return PathCombine(basePath, newFileNameWithExt);
         }
 
-        public static string ChangeFilePathName(string filePath, string newFileName)
+        public static string GetFilenameExtension(string filePath, bool considerMultipleDotExt = false)
         {
-            string ext = Path.GetExtension(filePath);
+            if (!considerMultipleDotExt)
+            {
+                return Path.GetExtension(filePath);
+            }
+            else
+            {
+                string fileNameWithExt = GetFileNameWithExt(filePath);
+                string fileNameNoExt = GetFilenameNoExt(filePath, considerMultipleDotExt);
+
+                string result = fileNameWithExt.Substring(fileNameNoExt.Length);
+                return result;
+            }
+        }
+
+        public static string ChangeFilePathName(string filePath, string newFileName, bool considerMultipleDotExt = false)
+        {
+            string ext = GetFilenameExtension(filePath, considerMultipleDotExt);
             string basePath = PathParent(filePath);
             return PathCombine(basePath, $"{newFileName}{ext}");
         }
@@ -532,9 +560,21 @@ namespace FUnreal
             return PathSplit(path).Count();
         }
 
-        public static bool IsChildPath(string childPath, string parentPath)
+        public static bool IsChildPath(string childPath, string parentPath, bool samePathIsValid = false)
         {
-            return childPath.Contains(parentPath);
+            var childParts = PathSplit(childPath);
+            var parentParts = PathSplit(parentPath);
+
+            int childCount = childParts.Count();
+            int parentCount = parentParts.Count();
+            if (parentCount > childCount) return false;
+            if (!samePathIsValid && parentCount == childCount) return false;
+
+            for(int i=0; i<parentParts.Count(); i++) 
+            { 
+                if (parentParts[i] != childParts[i]) return false;
+            }
+            return true;
         }
 
         public static string ChangePathBase(string fullPath, string basePath, string newBasePath)
@@ -560,6 +600,208 @@ namespace FUnreal
         {
             string parent = XFilesystem.PathParent(fullPath);
             return XFilesystem.PathCombine(parent, newDirName);
+        }
+
+        public static string GetRoot(string path)
+        {
+            return GetPartAt(path, 0);
+        }
+
+        public static string GetPartAt(string path, int index)
+        {
+            var parts = path.Split(PathSeparatorChar);
+            if (index < 0 || index >= parts.Length) return string.Empty;
+
+            return parts[index];
+        }
+
+        public static string SelectCommonBasePath(List<string> paths)
+        {
+            if (paths.Count == 0) return string.Empty;
+            if (paths.Count == 1) return paths[0];
+
+            bool found = false;
+            int level = 0;
+
+            string reference = paths[0];
+            while (!found)
+            {
+                string refPart = XFilesystem.GetPartAt(reference, level);
+                if (refPart == string.Empty)
+                {
+                    //reached the end of the reference string. Ref string is the common path
+                    break;
+                }
+                
+                foreach (var each in paths)
+                {
+                    string childPart = XFilesystem.GetPartAt(each, level);
+                    if (childPart != refPart)
+                    {
+                        level--; //compesate level++ at end of the while
+                        found = true;
+                        break;
+                    }
+                }
+                level++;
+            }
+
+            string selectedBasePath = XFilesystem.PathBase(reference, level);
+            return selectedBasePath;
+        }
+
+        public static string PathBase(string path, int count)
+        {
+            var parts = PathSplit(path);
+            if (count >= parts.Length) return path;
+
+            string result = "";
+            bool first = true;
+            for (int i = 0; i < count; i++)
+            {
+                if (first)
+                {
+                    result = parts[i];
+                    first = false;
+                }
+                else
+                {
+                    result = XFilesystem.PathCombine(result, parts[i]);
+                }
+            }
+            return result;
+        }
+        
+        /*
+        public static List<string> FindDirectories(string fullPath, bool recursive = false)
+        {
+            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            if (!Directory.Exists(fullPath)) return new List<string>();
+            return Directory.EnumerateDirectories(fullPath, "*", searchMode).ToList();
+        }
+        */
+
+        private static object FindEmptyFolderLock = new object();
+
+        public static async Task<List<string>> FindEmptyFoldersAsync(string basePath, params string[] otherBasePaths)
+        {
+            List<string> result = new List<string>();
+            var stack = new Stack<IEnumerable<string>>();
+
+            var first = new List<string>();
+            if (DirectoryExists(basePath)) first.Add(basePath);
+            foreach(var other in otherBasePaths)
+            {
+                if (DirectoryExists(other)) first.Add(other);
+            }
+
+            stack.Push(first);
+            while(stack.Any())
+            {
+                var nextDirs = stack.Pop();
+
+                await Task.Run(() =>
+                {
+                    foreach(var eachDir in nextDirs)
+                    {
+                        try { 
+                            var eachContents = Directory.EnumerateFileSystemEntries(eachDir);
+                            if (eachContents.Any())
+                            {
+                                var eachSubDirs = Directory.EnumerateDirectories(eachDir);
+                                if (eachSubDirs.Any())
+                                {
+                                    stack.Push(eachSubDirs);
+                                }
+                            }
+                            else
+                            {
+                                result.Add(eachDir);
+                            }
+
+                        } catch(Exception e)
+                        {
+                            XDebug.Erro("Failed scan empty dirs for {0}", eachDir);
+                            XDebug.Info(e.Message);
+                        }
+                    }
+                });
+            }
+            return result;
+        }
+
+        public static List<string> SelectFolderPathsNotContainingAnyFile(List<string> paths)
+        {
+            var result = new List<string>(); 
+
+            //Remove path that are parents of others
+            var filtered = new List<string>();
+            int count = paths.Count();
+            for (int i = 0; i < count; i++) //should improve algo if paths are sorted 
+            {
+                var current = paths[i];
+                bool isParent = false;
+                for(int j=0; j < count; j++)
+                {
+                    if (i == j) continue;
+
+                    var other = paths[j];
+                    if (IsParentPath(current, other))
+                    {
+                        isParent = true;
+                        break;
+                    }
+                }
+
+                if (!isParent && !filtered.Contains(current))
+                {
+                    filtered.Add(current);
+                }
+            }
+
+            //Scan for the one who contains recursive at least one file
+            foreach(var each in filtered)
+            {
+                if (!FolderHasAnyFile(each, true))
+                {
+                    result.Add(each);
+                }
+            }
+            return result;
+        }
+
+        public static bool IsParentPath(string possibleParent, string possibleChild, bool samePathIsConsideredParent = false)
+        {
+            var delta = PathSubtract(possibleChild, possibleParent);
+            if (string.IsNullOrEmpty(delta) && !samePathIsConsideredParent) return false;
+            if (delta.Length == possibleChild.Length) return false;
+            return true;
+        }
+
+        public static bool FolderHasAnyFile(string folderPath, bool recursive)
+        {
+            return FindFile(folderPath, recursive, "*.*") != null;
+        }
+
+        public static string ToPath(string[] parts, int startIndex=0)
+        {
+            string result = string.Empty;
+            if (startIndex < 0 || startIndex >= parts.Length) return result;
+
+            bool first = true;
+            for (int i = startIndex; i < parts.Length; i++)
+            {
+                if (first)
+                {
+                    result = parts[i];
+                    first = false;
+                }
+                else
+                {
+                    result = XFilesystem.PathCombine(result, parts[i]);
+                }
+            }
+            return result;
         }
     }
 }

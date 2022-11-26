@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal
 {
-    public class AddSourceFileController : IXActionController
+    public class AddSourceFileController : AXActionController
     {
         private AddSourceFileDialog _dialog;
         private FUnrealNotifier _notifier;
@@ -78,12 +78,15 @@ namespace FUnreal
             string absBasePath = _absPathSelected;
             string fileName = _dialog.fileNameTbx.Text;
 
-            bool success = await _unrealService.AddSourceFileAsync(absBasePath, fileName, _notifier);
+            var success = await _unrealService.AddSourceFileAsync(absBasePath, fileName, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.FilePath;
+
             _dialog.Close();
         }
     }

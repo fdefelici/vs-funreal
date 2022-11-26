@@ -2,7 +2,6 @@
 
 using FUnreal;
 using FUnreal.Sources.Core;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -10,7 +9,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace FUnrealTest
+namespace FUnrealTest.Integrations
 {
     [TestClass]
     public class MiscTest
@@ -147,6 +146,9 @@ namespace FUnrealTest
             string path = @"c:\part1\part2\..\part3";
             string actual = System.IO.Path.GetFullPath(path);
             Assert.AreEqual(@"c:\part1\part3", actual);
+
+            Assert.AreEqual("", System.IO.Path.GetDirectoryName("file.txt"));
+            //Assert.AreEqual("", System.IO.Path.GetDirectoryName("")); exception
         }
 
         //[TestMethod]
@@ -255,5 +257,82 @@ namespace FUnrealTest
             Assert.AreEqual(261, or);
         }
 
+        class MyObject
+        {
+            public static implicit operator MyObject(bool value)
+            {
+                MyObject mo = new MyObject();
+                mo.IsConverted = value;
+                return mo;
+            }
+
+            public static implicit operator bool(MyObject value)
+            {
+                return value.IsConverted;
+            }
+
+            public bool IsConverted { get; set; }
+        }
+
+        [TestMethod]
+        public void ConvertBoolToMyObject()
+        {
+            MyObject create()
+            {
+                return true;
+            }
+
+            var mo = create();
+
+            Assert.IsTrue(mo.IsConverted);
+            Assert.IsTrue(mo);
+        }
+
+
+        private Func<Task> MultiHandler;
+
+        int count = 0;
+        private async Task Handler1Async() 
+        { 
+            if (count == 0)
+            {
+                count = 1;
+            }
+
+            await Task.Delay(3000);
+        }
+
+        private async Task Handler2Async()
+        {
+            if (count == 1)
+            {
+                count = 2;
+            }
+            await Task.Delay(1000);
+        }
+
+
+        [TestMethod]
+        public void MultipleHAndler()
+        {
+            MultiHandler += Handler1Async;
+            MultiHandler += Handler2Async;
+
+            count = 0;
+            MultiHandler.Invoke().GetAwaiter().GetResult();
+            Assert.AreEqual(2, count);
+
+            count = 0;
+            MultiHandler.Invoke().GetAwaiter().GetResult();
+            Assert.AreEqual(2, count);
+
+            count = 0;
+            MultiHandler.Invoke().GetAwaiter().GetResult();
+            Assert.AreEqual(2, count);
+
+            count = 0;
+            MultiHandler.Invoke().GetAwaiter().GetResult();
+            Assert.AreEqual(2, count);
+        }
     }
 }

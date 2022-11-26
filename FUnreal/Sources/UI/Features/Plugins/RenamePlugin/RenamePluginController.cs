@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class RenamePluginController : IXActionController
+    public class RenamePluginController : AXActionController
     {
         private RenamePluginDialog _dialog;
         private FUnrealNotifier _notifier;
@@ -76,12 +76,15 @@ namespace FUnreal
 
             string pluginNewName = _dialog.pluginNewNameTbx.Text;
 
-            bool success = await _unrealService.RenamePluginAsync(_pluginOriginalName, pluginNewName, _notifier); //.ConfigureAwait(false);
+            var success = await _unrealService.RenamePluginAsync(_pluginOriginalName, pluginNewName, _notifier); //.ConfigureAwait(false);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = success.DescrFilePath;
+
             _dialog.Close();
         }
     }

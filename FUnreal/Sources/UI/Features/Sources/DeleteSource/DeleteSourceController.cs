@@ -3,10 +3,11 @@ using System.Windows;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text.Adornments;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace FUnreal
 {
-    public class DeleteSourceController : IXActionController
+    public class DeleteSourceController : AXActionController
     {
         private FUnrealNotifier _notifier;
         private ConfirmDialog _dialog;
@@ -63,14 +64,24 @@ namespace FUnreal
                 }
             }
 
-            //Remove folder from VS just in case where empty folders exists (in this case ubt regeneration does't update Virtual Folder / Filters)
+            //Remove all folders within Selection from VS Solution Folder just in case where empty folders exists
+            //(in this case ubt regeneration does't update Virtual Folder / Filters if selection is made only from empty folders)
             await _unrealVS.RemoveFoldersIfAnyInCurrentSelectionAsync();
 
-            bool success = await _unrealService.DeleteSourcesAsync(validSourcePaths, _notifier);
+            var success = await _unrealService.DeleteSourcesAsync(validSourcePaths, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
                 return;
+            }
+
+            if (success.AllPaths.Count == 1)
+            {
+                _unrealVS.WhenProjectReload_MarkItemForSelection = XFilesystem.PathParent(success.AllPaths[0]);
+            }
+            else if (success.AllPaths.Count > 1 && success.AllParentPaths.Count > 0)
+            {
+                _unrealVS.WhenProjectReload_MarkItemForSelection = success.AllParentPaths[0];//XFilesystem.SelectCommonBasePath(success.AllParentPaths);
             }
 
             _dialog.Close();

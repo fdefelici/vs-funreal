@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal
 {
-    public class AddFolderController : IXActionController
+    public class AddFolderController : AXActionController
     {
         private AddFolderDialog _dialog;
         private FUnrealNotifier _notifier;
@@ -95,6 +95,8 @@ namespace FUnreal
                 _dialog.ShowActionInError();
                 return;
             }
+
+            _unrealVS.WhenProjectReload_MarkItemForSelection = fullPath;
 
             _dialog.Close();
         }
