@@ -80,23 +80,27 @@ namespace FUnreal
                 cacheHit = false;
             }
 
+
+            bool found = false;
             if (_cachedScenario != S.NOT_FOUND)
             {
                 int id = ID(_cachedScenario, cmd.ID);
-                bool found = cmdConfigPerScenario.TryGetValue(id, out XActionCmdConfig config);
+                found = cmdConfigPerScenario.TryGetValue(id, out XActionCmdConfig config);
                 if (found)
                 {
                     cmd.Label = config.Label;
                     cmd.Controller = config.Controller;
                     cmd.Enabled = config.Enabled;
                     cmd.Visible = true;
-                } else
-                {
-                    cmd.Label = string.Empty;
-                    cmd.Controller = null;
-                    cmd.Enabled = false;
-                    cmd.Visible = false;
-                }
+                } 
+            }
+
+            if (!found)
+            {
+                cmd.Label = string.Empty;
+                cmd.Controller = null;
+                cmd.Enabled = false;
+                cmd.Visible = false;
             }
 #if DEBUG
             stopwatch.Stop();

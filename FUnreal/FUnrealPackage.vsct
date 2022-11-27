@@ -84,22 +84,22 @@
 
   <CommandPlacements>
     <!-- PROJECT NODE MENU -->
-    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0xFFFF">
+    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0x0000">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
     </CommandPlacement>
 
     <!-- FOLDER NODE MENU -->
-    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0xFFFF">
+    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0x0000">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE"/>
     </CommandPlacement>
 
     <!-- ITEM NODE MENU -->
-    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0xFFFF">
+    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0x0000">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
     </CommandPlacement>
 
     <!-- MULTI TYPE NODE MENU -->
-    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0xFFFF">
+    <CommandPlacement guid="guidFUnrealPackage" id="ToolboxMenuGroup" priority="0x0000">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIITEM" />
     </CommandPlacement>
     

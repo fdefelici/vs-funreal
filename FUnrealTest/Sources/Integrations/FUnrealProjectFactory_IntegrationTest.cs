@@ -36,10 +36,10 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(434, project.Plugins.Count);
             Assert.AreEqual(1417, project.AllModules.Count);
 
+            /*
             StringBuilder buffer = new StringBuilder();
             var ordered = project.AllModules.OrderBy(each => each.FullPath);
 
-            /*
             foreach(var o in ordered)
             {
                 buffer.Append(o.FullPath).Append("\n");
