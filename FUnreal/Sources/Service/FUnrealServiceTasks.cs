@@ -179,12 +179,12 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
-        public static bool Module_RenameFolder(FUnrealModule module, string newModuleName, FUnrealNotifier notifier)
+        public static async Task<bool> Module_RenameFolderAsync(FUnrealModule module, string newModuleName, FUnrealNotifier notifier)
         {
             string modulePath = module.FullPath;
 
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFolder, modulePath, newModuleName);
-            string newModulePath = XFilesystem.RenameDir(modulePath, newModuleName);
+            string newModulePath = await XFilesystem.RenameDirAsync(modulePath, newModuleName);
             if (newModulePath == null)
             {
                 notifier.Erro(XDialogLib.Ctx_UpdatingModule, XDialogLib.Error_FailureRenamingFolder);
@@ -378,38 +378,16 @@ namespace FUnreal.Sources.Core
 
         public static async Task<bool> Source_RenameFolderAsync(string folderPath, string newFolderName, FUnrealNotifier notifier)
         {
-            //return await ThreadHelper.JoinableTaskFactory.RunAsync(delegate
-            return await Task.Run( () =>
+            notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.Info_RenamingFolder, newFolderName);
+            string newPath = await XFilesystem.RenameDirAsync(folderPath, newFolderName);
+            bool result = newPath != null;
+            if (!result)
             {
-                string newPath = XFilesystem.RenameDir(folderPath, newFolderName);
-                bool result = newPath != null;
-                return result;
-            });
+                notifier.Erro(XDialogLib.Ctx_UpdatingFiles, XDialogLib.Error_FailureRenamingFolder);
+            }
+            return result;
         }
-        /*
-
-        public static void ComputeHeaderIncludePaths(FUnrealModule module, string headerFilePath, string newFileName,
-            out string curIncludePath,
-            out string newIncludePath
-            )
-        {
-            //string heaFileNameExt = XFilesystem.GetFileNameWithExt(headerFilePath);
-            bool isPublic = XFilesystem.IsChildPath(headerFilePath, module.PublicPath);
-            bool isPrivate = XFilesystem.IsChildPath(headerFilePath, module.PrivatePath);
-
-            string basePath = null;
-            if (isPublic) basePath = module.PublicPath;
-            else if (isPrivate) basePath = module.PrivatePath;
-            else basePath = module.FullPath;
-
-
-            string heaRelPath = XFilesystem.PathSubtract(headerFilePath, basePath);
-            string newHeaRelPath = XFilesystem.ChangeFilePathName(heaRelPath, newFileName);
-            curIncludePath = XFilesystem.PathToUnixStyle(heaRelPath);
-            newIncludePath = XFilesystem.PathToUnixStyle(newHeaRelPath);
-        }
-        */
-
+        
         public static string Module_ComputeHeaderIncludePath(FUnrealModule module, string headerPath)
         {
             bool isPublic = XFilesystem.IsChildPath(headerPath, module.PublicPath);
@@ -585,9 +563,15 @@ namespace FUnreal.Sources.Core
 
         public static bool Plugin_CheckIfNotLockedByOtherProcess(FUnrealPlugin plugin, FUnrealNotifier notifier)
         {
-            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.BinariesPath, true, "*.dll", out string firstFileLocked))
+            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.BinariesPath, true, "*.dll", out string binFirstFileLocked))
             {
-                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, firstFileLocked);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, binFirstFileLocked);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_MaybeLockedByUnreal);
+                return false;
+            }
+            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.ContentPath, true, "*.*", out string cntFirstFileLocked))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, cntFirstFileLocked);
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_MaybeLockedByUnreal);
                 return false;
             }

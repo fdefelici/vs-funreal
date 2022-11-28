@@ -16,6 +16,7 @@ namespace FUnreal
         public AddPluginDialog()
             : base()
         {
+
             InitializeComponent();
 
             pluginTemplCbx.IsEnabled = true;

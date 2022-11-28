@@ -36,6 +36,8 @@ namespace FUnreal
             if (await FUnrealVS.IsUnrealSolutionAsync())
             {
                 FUnrealVS unrealVS = await FUnrealVS.CreateAsync();
+                printTitle(unrealVS.Output);
+
                 FUnrealService unrealService = FUnrealService.Create(unrealVS);
                 if (unrealService == null)
                 {
@@ -44,6 +46,7 @@ namespace FUnreal
                     unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} fails. Please check {XDialogLib.Title_FUnrealToolbox} Output window!");
                     return;
                 }
+
 
                 /* Configure Menu Commands */
                 ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
@@ -64,6 +67,8 @@ namespace FUnreal
                 await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget
 
                 XDebug.Info("Loaded");
+
+
             }
             else
             {
@@ -71,5 +76,18 @@ namespace FUnreal
             }
         }
 
+        private void printTitle(FUnrealLogger output)
+        {
+            //output.ForceFocus();
+            string str = @"                                                            
+ ███████╗██╗   ██╗███╗   ██╗██████╗ ███████╗ █████╗ ██╗     
+ ██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝██╔══██╗██║     
+ █████╗  ██║   ██║██╔██╗ ██║██████╔╝█████╗  ███████║██║     
+ ██╔══╝  ██║   ██║██║╚██╗██║██╔══██╗██╔══╝  ██╔══██║██║     
+ ██║     ╚██████╔╝██║ ╚████║██║  ██║███████╗██║  ██║███████╗
+ ╚═╝      ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
+                                                           ";
+            output.PlainText(str);
+        }
     }
 }

@@ -144,6 +144,24 @@ namespace FUnrealTest
         }
 
         [TestMethod]
+        public void RemovePluginStoppedBecauseContentFileIsBusy()
+        {
+            SetUpTestCaseForProject("UPrjOnePlug");
+
+            //Simulate file lock like it was Unreal Editor running!
+            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/MyLevel.umap");
+            TestUtils.FileLock(contentFile);
+
+            bool taskResult = service.DeletePluginAsync("Plugin01", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            TestUtils.FileUnlock(contentFile);
+
+            Assert.IsFalse(taskResult);
+
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin"));
+        }
+
+        [TestMethod]
         public void RenanePluginToProjectWithOnePluginInUProjectFile()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
@@ -186,6 +204,28 @@ namespace FUnrealTest
 
             Assert.IsTrue(TestUtils.ExistsFile(TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin")));
         }
+
+        [TestMethod]
+        public void RenanePluginStoppedBecauseContentFileIsBusy()
+        {
+            SetUpTestCaseForProject("UPrjOnePlug");
+            string upluginName = "Plugin01";
+            string upluginNewName = "Plugin01Renamed";
+
+            //Simulate file lock like it was Unreal Editor running!
+            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/MyLevel.umap");
+            TestUtils.FileLock(contentFile);
+
+            bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            TestUtils.FileUnlock(contentFile);
+
+            Assert.IsFalse(taskResult);
+            Assert.IsFalse(ubt.Called);
+
+            Assert.IsTrue(TestUtils.ExistsFile(TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin")));
+        }
+
 
         [TestMethod]
         public void AddModuleBlankToExistentPlugin()

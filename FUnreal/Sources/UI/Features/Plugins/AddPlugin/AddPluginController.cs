@@ -1,5 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.CommandBars;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -60,7 +61,6 @@ namespace FUnreal
             _dialog.pluginNameTbx.Text = "NewPlugin"; //Setting Text will fire TextChange event
             _dialog.pluginNameTbx.SelectionStart = 0;
             _dialog.pluginNameTbx.SelectionLength = _dialog.pluginNameTbx.Text.Length;
-            //_lastPlugName = _dialog.pluginNameTbx.Text;
 
             return Task.CompletedTask;
         }

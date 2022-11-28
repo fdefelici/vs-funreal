@@ -169,7 +169,7 @@ namespace FUnrealTest.Integrations
 
             Stopwatch sw = Stopwatch.StartNew();
 
-            var strat = new PlaceHolderReplaceStrategy();
+            var strat = new PlaceHolderReplaceVisitor();
             strat.AddFileExtension(".txt");
             strat.AddPlaceholder("key", "value");
             strat.AddPlaceholder("xey1", "value1");

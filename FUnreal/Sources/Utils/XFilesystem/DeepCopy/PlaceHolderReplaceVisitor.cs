@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace FUnreal
 {
-    public class PlaceHolderReplaceStrategy
+    public class PlaceHolderReplaceVisitor : IDeepCopyVisitor
     {
         Dictionary<string, string> placeholder;
         private List<string> fileExts;
 
-        public PlaceHolderReplaceStrategy()
+        public PlaceHolderReplaceVisitor()
         {
             placeholder = new Dictionary<string, string>();
             fileExts = new List<string>();
@@ -17,7 +17,7 @@ namespace FUnreal
 
         public void AddFileExtension(params string[] exts)
         {
-            fileExts.AddRange(exts);    
+            fileExts.AddRange(exts);
         }
 
         public void AddPlaceholder(string key, string value)
@@ -27,12 +27,12 @@ namespace FUnreal
 
         public string HandlePath(string fsPath)
         {
-           return ReplacePlaceholder(fsPath);
+            return ReplacePlaceholder(fsPath);
         }
 
         public void HandleFileContent(string targetFile)
         {
-            if (! XFilesystem.HasExtension(targetFile, fileExts) ) return;
+            if (!XFilesystem.HasExtension(targetFile, fileExts)) return;
 
             string contents = XFilesystem.ReadFile(targetFile);
             string newContents = ReplacePlaceholder(contents);

@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using System.Diagnostics;
-using System.Xml;
 using Newtonsoft.Json.Linq;
 using FUnreal.Sources.Core;
 using System.Text.RegularExpressions;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Windows.Shapes;
-using Community.VisualStudio.Toolkit;
 
 namespace FUnreal
 {
@@ -35,7 +25,6 @@ namespace FUnreal
 
         public static readonly string[] ALL = new string[] { GAME, EDITOR, CLIENT, SERVER, PROGRAM };
     }
-
 
     public class FUnrealService
     {
@@ -590,7 +579,7 @@ namespace FUnreal
 
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, _pluginsPath);
-            PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
+            PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
             strategy.AddPlaceholder(pluginNamePH, pluginName);
 
@@ -715,7 +704,7 @@ namespace FUnreal
 
             //2. Rename Plugin Folder
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_RenamingFolder, plugin.FullPath, pluginNewName);
-            XFilesystem.RenameDir(plugin.FullPath, pluginNewName);
+            await XFilesystem.RenameDirAsync(plugin.FullPath, pluginNewName);
 
             //3. Rename plugin in .uproject (if plugin is configured there)
             FUnrealUProjectFile uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
@@ -784,7 +773,7 @@ namespace FUnreal
             var plugin = PluginByName(pluginName);
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, plugin.SourcePath);
-            PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
+            PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
 
             string fileName = moduleName;
@@ -870,7 +859,7 @@ namespace FUnreal
             if (!taskSuccess) return false;
 
             //4. Rename Module Folder
-            taskSuccess = FUnrealServiceTasks.Module_RenameFolder(module, newModuleName, notifier);
+            taskSuccess = await FUnrealServiceTasks.Module_RenameFolderAsync(module, newModuleName, notifier);
             if (!taskSuccess) return false;
 
             //5. Update module dependency in other module .Build.cs
@@ -1012,7 +1001,7 @@ namespace FUnreal
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, sourcePath);
             XFilesystem.FileCopy(tplSourcePath, sourcePath);
 
-            PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
+            PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
             strategy.AddFileExtension(".h", ".cpp");
             strategy.AddPlaceholder(moduleApiPH, moduleApi); 
             strategy.AddPlaceholder(incluPathPH, incluPath);
@@ -1146,7 +1135,7 @@ namespace FUnreal
             string sourcePath = AbsProjectSourceFolderPath();
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, sourcePath);
-            PlaceHolderReplaceStrategy strategy = new PlaceHolderReplaceStrategy();
+            PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
             strategy.AddFileExtension(".cpp", ".h", ".cs");
 
             string fileName = moduleName;
@@ -1246,7 +1235,7 @@ namespace FUnreal
             if (!taskSuccess) return false;
         
             //4. Rename Module Folder
-            taskSuccess = FUnrealServiceTasks.Module_RenameFolder(module, newModuleName, notifier);
+            taskSuccess = await FUnrealServiceTasks.Module_RenameFolderAsync(module, newModuleName, notifier);
             if (!taskSuccess) return false;
 
             //5. Update module dependency in other module .Build.cs
@@ -1512,7 +1501,7 @@ namespace FUnreal
             }
 
             bool taskSuccess;
-            //4. Replace #include directive in current module Public + Private
+            //4. Renaming source folder
             taskSuccess = await FUnrealServiceTasks.Source_RenameFolderAsync(folderPath, newFolderName, notifier);
             if (!taskSuccess) return false;
 

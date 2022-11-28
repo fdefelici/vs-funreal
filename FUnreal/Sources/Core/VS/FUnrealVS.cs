@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Internal.VisualStudio.PlatformUI;
+using System.Windows.Forms;
 
 
 namespace FUnreal
@@ -50,6 +51,11 @@ namespace FUnreal
         public void ForceFocus()
         {
             _pane.ActivateAsync().FireAndForget();
+        }
+
+        public void PlainText(string text)
+        {
+            _pane.WriteLine(text);
         }
     }
 

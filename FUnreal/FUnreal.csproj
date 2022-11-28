@@ -96,7 +96,9 @@
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\Utils\XFilesystem\DeepCopy\IDeepCopyVisitor.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
+    <Compile Include="Sources\Utils\XFilesystem\XFilesystem_Path.cs" />
     <Compile Include="Sources\Utils\XString.cs" />
     <Compile Include="Sources\Utils\XThread.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
@@ -129,11 +131,11 @@
       <DependentUpon>ConfirmDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Common\ImageSourceFromIconExt.cs" />
-    <Compile Include="Sources\Utils\PlaceHolderReplaceVisitor.cs" />
+    <Compile Include="Sources\Utils\XFilesystem\DeepCopy\PlaceHolderReplaceVisitor.cs" />
     <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
     <Compile Include="Sources\Utils\XJson.cs" />
     <Compile Include="Sources\Utils\XProcess.cs" />
-    <Compile Include="Sources\Utils\XFilesystem.cs" />
+    <Compile Include="Sources\Utils\XFilesystem\XFilesystem_IO.cs" />
     <Compile Include="Sources\UI\Common\XActionCmd.cs" />
     <Compile Include="Sources\UI\Common\Commands\VSCTSymbols.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

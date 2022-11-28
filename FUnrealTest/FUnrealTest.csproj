@@ -179,6 +179,9 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\MyLevel.umap">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFolder\Plugins\Plugin01\Source\Module01\Private\Hello\Actor01.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

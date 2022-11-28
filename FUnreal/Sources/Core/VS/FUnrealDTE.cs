@@ -322,7 +322,6 @@ namespace FUnreal
 
             lastItem.Select(vsUISelectionType.vsUISelectionTypeSelect); //vsUISelectionType.vsUISelectionTypeSetCaret: To just move the scrollbar to the item, without selection
             XDebug.Info($"Selected project subpath: {XFilesystem.ToPath(relPathAfterProjectName)}");
-            return;
         }
 
         private UIHierarchyItem GetProjectUIHierarchItem()
