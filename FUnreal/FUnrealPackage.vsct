@@ -9,8 +9,6 @@
     <Menus>
       <Menu guid="guidFUnrealPackage" id="ToolboxMenu" type="Menu" priority="0x0001">
         <Parent guid="guidFUnrealPackage" id="ToolboxMenuGroup" />
-        <!--CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag-->
         <Strings>
           <ButtonText>FUnreal Toolbox</ButtonText>
         </Strings>

@@ -183,8 +183,6 @@ namespace FUnreal
             if (upro == null) return false;
 
             _projectModel = upro;
-
-            //await _projectModuleFactory.ScanEmptyFoldersAsync(_projectModel);
             return true;
         }
 
@@ -639,7 +637,12 @@ namespace FUnreal
 
             var plugin = PluginByName(pluginName);
             string plugPath = plugin.FullPath;
-            notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, plugin.FullPath);
+
+            bool taskSuccess;
+            taskSuccess = FUnrealServiceTasks.Plugin_CheckIfNotLockedByOtherProcess(plugin, notifier);
+            if (!taskSuccess) return false;
+
+            notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, plugin.FullPath);
             if (!XFilesystem.DeleteDir(plugPath))
             {
                 notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
@@ -655,7 +658,6 @@ namespace FUnreal
                 }
             }
 
-
             //Update uproject file
             var uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
             if (uprojectJson.Plugins) {
@@ -669,7 +671,7 @@ namespace FUnreal
             }
 
             //X. Regen VS Project
-            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
 
             //X. Update Project Model
@@ -692,6 +694,10 @@ namespace FUnreal
             }
 
             var plugin = PluginByName(pluginName);
+
+            bool taskSuccess;
+            taskSuccess = FUnrealServiceTasks.Plugin_CheckIfNotLockedByOtherProcess(plugin, notifier);
+            if (!taskSuccess) return false;
 
             //1. Rename .uplugin file and replace "FriendlyName" (only if is the same as pluginName)
             string upluginFilePath = plugin.DescriptorFilePath;
@@ -721,15 +727,10 @@ namespace FUnreal
                 uprojectJson.Save();
             }
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            if (!taskSuccess) return false;
 
-            //Temporary project module update
+            //project module update
             var plugRenamed = _projectModuleFactory.RenamePlugin(GetUProject(), plugin, pluginNewName);
 
             FUnrealServicePluginResult success = true;
@@ -979,28 +980,29 @@ namespace FUnreal
                 return false;
             }
             FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
-            if (tpl == null)
+            if (tpl == null || !XFilesystem.DirectoryExists(tpl.BasePath))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string moduleApiPH = "@{TPL_MODU_API}"; //tpl.GetPlaceHolder("ModuleApi");
-            string incluPathPH = "@{TPL_SOUR_INCL}"; //tpl.GetPlaceHolder("IncluPath");
-            string classNamePH = "@{TPL_SOUR_CLASS}"; //tpl.GetPlaceHolder("ClassName");
             string headerFileME = tpl.GetMeta("header");
             string sourceFileME = tpl.GetMeta("source");
-            /*
-            if (moduleApiPH == null || incluPathPH == null || classNamePH == null)
-            {
-                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
-                return false;
-            }
-            */
-
+       
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
+            if (!XFilesystem.FileExists(tplHeaderPath) && !XFilesystem.FileExists(tplSourcePath))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
+                return false;
+            }
+
+            
+            string moduleApiPH = "@{TPL_MODU_API}"; 
+            string incluPathPH = "@{TPL_SOUR_INCL}";
+            string classNamePH = "@{TPL_SOUR_CLASS}";
             string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{module.ApiMacro} " : ""; //Final space to separate from Class Name
+            
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
             if (incluPath != "") incluPath += "/";             //Final Path separator to separate from Class Name
 

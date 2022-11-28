@@ -31,6 +31,8 @@ namespace FUnreal
         public string ResourcesPath { get; internal set; }
         public string ShadersPath { get; internal set; }
 
+        public string BinariesPath { get; internal set; }
+
         public FUnrealCollection<FUnrealModule> Modules { get; }
 
         public bool Exists
@@ -44,10 +46,11 @@ namespace FUnreal
 
             Name = XFilesystem.GetFilenameNoExt(DescriptorFilePath);
             FullPath = XFilesystem.PathParent(DescriptorFilePath);
-            SourcePath = XFilesystem.PathCombine(FullPath, "Source");
-            ContentPath = XFilesystem.PathCombine(FullPath, "Content");
+            BinariesPath  = XFilesystem.PathCombine(FullPath, "Binaries");
+            ContentPath   = XFilesystem.PathCombine(FullPath, "Content");
             ResourcesPath = XFilesystem.PathCombine(FullPath, "Resources");
-            ShadersPath = XFilesystem.PathCombine(FullPath, "Shaders");
+            ShadersPath   = XFilesystem.PathCombine(FullPath, "Shaders");
+            SourcePath    = XFilesystem.PathCombine(FullPath, "Source");
         }
 
         public override string ToString()

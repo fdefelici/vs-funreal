@@ -27,9 +27,7 @@ namespace FUnreal
         }
 
         protected override void BeforeQueryStatus(EventArgs e)
-        {
-            //Command.Enabled = true;
-            //Command.Visible = false;    
+        {   
             ThreadHelper.JoinableTaskFactory.Run(async () => await ContextMenuManager.Instance.ConfigureCommandAsync(this));
         }
 

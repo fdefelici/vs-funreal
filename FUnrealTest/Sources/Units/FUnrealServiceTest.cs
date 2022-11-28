@@ -2,6 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using FUnreal;
 using System.Collections.Generic;
+using System.Threading;
+using System.IO;
 
 namespace FUnrealTest
 {
@@ -124,6 +126,24 @@ namespace FUnrealTest
         }
 
         [TestMethod]
+        public void RemovePluginStoppedBecauseBinaryFileIsBusy()
+        {
+            SetUpTestCaseForProject("UPrjOnePlug");
+
+            //Simulate file lock like it was Unreal Editor running!
+            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/UnrealEditor-Plugin01.dll");
+            TestUtils.FileLock(plugin01Dll);
+
+            bool taskResult = service.DeletePluginAsync("Plugin01", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            TestUtils.FileUnlock(plugin01Dll);
+
+            Assert.IsFalse(taskResult);
+
+            Assert.IsTrue(TestUtils.ExistsFile(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin"));
+        }
+
+        [TestMethod]
         public void RenanePluginToProjectWithOnePluginInUProjectFile()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
@@ -144,6 +164,27 @@ namespace FUnrealTest
             string jsonExpected = TestUtils.ReadFile(uprojectFileExpected);
             string jsonActual = TestUtils.ReadFile(uprojectFile);
             Assert.AreEqual(jsonExpected, jsonActual);
+        }
+
+        [TestMethod]
+        public void RenanePluginStoppedBecauseBinaryFileIsBusy()
+        {
+            SetUpTestCaseForProject("UPrjOnePlug");
+            string upluginName = "Plugin01";
+            string upluginNewName = "Plugin01Renamed";
+
+            //Simulate file lock like it was Unreal Editor running!
+            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/UnrealEditor-Plugin01.dll");
+            TestUtils.FileLock(plugin01Dll);
+
+            bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            TestUtils.FileUnlock(plugin01Dll);
+
+            Assert.IsFalse(taskResult);
+            Assert.IsFalse(ubt.Called);
+
+            Assert.IsTrue(TestUtils.ExistsFile(TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Plugin01.uplugin")));
         }
 
         [TestMethod]

@@ -74,7 +74,7 @@ namespace FUnrealTest.Integrations
 
             var files = XFilesystem.FindFiles(uprjFilePath, true, "*.*");
             
-            Assert.AreEqual(166104, files.Count); //6 seconds con trasformazione in List
+            Assert.IsTrue(files.Count > 0); 
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace FUnrealTest.Integrations
             var plugDirs = XFilesystem.FindDirectories(pluginsPath, true);
             var sourceDirs = XFilesystem.FindDirectories(sourcePath, true);
 
-            Assert.AreEqual(15536, plugDirs.Count); //6 seconds con trasformazione in List
+            Assert.AreEqual(15536, plugDirs.Count); 
             Assert.AreEqual(6190, sourceDirs.Count);
         }
 

@@ -167,6 +167,9 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\UnrealEditor-Plugin01.pdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -239,7 +242,11 @@
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFolder\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\UnrealEditor-Plugin01.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
+    <Compile Include="Sources\Integrations\ProductionTemplatesTest.cs" />
     <Compile Include="Sources\Units\FUnrealBuildToolTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectFactoryTest.cs" />

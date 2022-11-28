@@ -46,6 +46,8 @@ namespace FUnreal
         public static string Ctx_CheckTemplate = "Checking template ...";
 
         public static string Error_PluginNotFound = "Plugin not found: {0}";
+        public static string Error_FileLockedByOtherProcess = "A file is locked by an other process: {0}";
+        public static string Error_MaybeLockedByUnreal = "Maybe Unreal Editor is running! Please stop it and retry!";
         public static string Error_PluginModuleNotFound = "Module not found: {0}::{1}";
         public static string Error_ModuleAlreadyExists = "Module already exists at: {0}";
         public static string Error_GameModuleAlreadyExists = "Module already exists: {0}";

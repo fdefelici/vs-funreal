@@ -240,5 +240,41 @@ namespace FUnrealTest
         {
            Assert.AreEqual("HelloRenamed.h", XFilesystem.ChangeFilePathName("Hello.h", "HelloRenamed"));
         }
+
+        [TestMethod]
+        public void IsFileLocked()
+        {
+            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
+            TestUtils.DeleteDir(tmpPath);
+
+            string filePath = TestUtils.MakeFile(tmpPath, @"file.txt");
+
+            var streamBusy = System.IO.File.OpenWrite(filePath);
+
+            Assert.IsTrue(XFilesystem.FileIsLocked(filePath));
+
+            streamBusy.Close();
+
+            TestUtils.DeleteDir(tmpPath);
+        }
+
+        [TestMethod]
+        public void DirHasAnyFileLocked()
+        {
+            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
+            TestUtils.DeleteDir(tmpPath);
+
+            string filePath = TestUtils.MakeFile(tmpPath, @"locked.txt");
+            TestUtils.MakeFile(tmpPath, @"free.txt");
+
+            var streamBusy = System.IO.File.OpenWrite(filePath);
+
+            Assert.IsTrue(XFilesystem.DirectoryHasAnyFileLocked(tmpPath, false, "*.txt", out string firstFileLocked));
+            Assert.AreEqual(filePath, firstFileLocked);
+
+            streamBusy.Close();
+
+            TestUtils.DeleteDir(tmpPath);
+        }
     }
 }

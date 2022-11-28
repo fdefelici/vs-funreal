@@ -803,5 +803,30 @@ namespace FUnreal
             }
             return result;
         }
+
+        public static bool FileIsLocked(string filePath)
+        {
+            try
+            {
+                var stream  = File.OpenWrite(filePath);
+                stream.Close();
+                return false;
+            } catch(Exception)
+            {
+                return true;
+            }
+        }
+
+        public static bool DirectoryHasAnyFileLocked(string dirPath, bool recursive, string searchPattern, out string firstFileLocked)
+        {
+            firstFileLocked = FindFile(dirPath, recursive, searchPattern, filePath =>
+            {
+                if (FileIsLocked(filePath)) return true;
+                else return false;
+            });
+
+            if (firstFileLocked == null) return false;
+            return true;
+        }
     }
 }

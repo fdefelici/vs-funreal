@@ -582,6 +582,17 @@ namespace FUnreal.Sources.Core
                 return false;
             }
         }
+
+        public static bool Plugin_CheckIfNotLockedByOtherProcess(FUnrealPlugin plugin, FUnrealNotifier notifier)
+        {
+            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.BinariesPath, true, "*.dll", out string firstFileLocked))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, firstFileLocked);
+                notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_MaybeLockedByUnreal);
+                return false;
+            }
+            return true;
+        }
     }
 }
 

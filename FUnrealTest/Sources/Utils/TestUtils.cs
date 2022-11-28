@@ -1,6 +1,8 @@
 using FUnreal;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace FUnrealTest
 {
@@ -107,6 +109,34 @@ namespace FUnrealTest
         {
             if (!File.Exists(module01)) return;
             File.Delete(module01);
+        }
+
+        private static Dictionary<string, FileStream> lockedFiles = new Dictionary<string, FileStream>();
+
+        public static void FileLock(string filePath)
+        {
+            lock (lockedFiles)
+            {
+                if (!File.Exists(filePath)) throw new Exception("File must exists!");
+                if (lockedFiles.ContainsKey(filePath)) return;
+                
+                var stream = File.OpenWrite(filePath);
+                lockedFiles[filePath] = stream;
+            }
+        }
+
+        public static void FileUnlock(string filePath)
+        {
+            lock (lockedFiles)
+            {
+                if (!File.Exists(filePath)) throw new Exception("File must exists!");
+                if (!lockedFiles.ContainsKey(filePath)) return;
+
+                var stream = lockedFiles[filePath];
+                stream.Close();
+
+                lockedFiles.Remove(filePath);
+            }
         }
     }
 }
