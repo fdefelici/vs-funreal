@@ -1475,11 +1475,9 @@ namespace FUnreal
             if (folderPath != module.PublicPath && folderPath != module.PrivatePath) 
             {
                 needIncludeUpdate = true;
-                //TODO: Exists File with search feature
-                XFilesystem.FindFile(folderPath, true, "*.h", filePath =>
+                hasPublicHeaderInvolved = XFilesystem.FileExists(folderPath, true, "*.h", filePath =>
                 {
-                    hasPublicHeaderInvolved = XFilesystem.IsChildPath(filePath, module.PublicPath);
-                    return hasPublicHeaderInvolved;
+                    return XFilesystem.IsChildPath(filePath, module.PublicPath);
                 });
             }
 

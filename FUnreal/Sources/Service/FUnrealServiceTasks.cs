@@ -114,7 +114,7 @@ namespace FUnreal.Sources.Core
                     {
                         Parallel.ForEach(dependentModules, eachModule =>
                         {
-                            XFilesystem.FindFiles(eachModule.FullPath, true, ".h", file =>
+                            XFilesystem.FilesForEach(eachModule.FullPath, true, ".h", file =>
                             {
                                 string text = XFilesystem.ReadFile(file);
                                 if (text.Contains(heaIncPath))
@@ -122,9 +122,7 @@ namespace FUnreal.Sources.Core
                                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingFile, file);
                                     text = text.Replace(heaIncPath, newHeaIncPath);
                                     XFilesystem.WriteFile(file, text);
-                                    return true;
                                 }
-                                return false;
                             });
                         });
                     });
@@ -133,7 +131,7 @@ namespace FUnreal.Sources.Core
                     {
                         Parallel.ForEach(dependentModules, eachModule =>
                         {
-                            XFilesystem.FindFiles(eachModule.FullPath, true, ".cpp", file =>
+                            XFilesystem.FilesForEach(eachModule.FullPath, true, ".cpp", file =>
                             {
                                 string text = XFilesystem.ReadFile(file);
                                 if (text.Contains(heaIncPath))
@@ -141,9 +139,7 @@ namespace FUnreal.Sources.Core
                                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingFile, file);
                                     text = text.Replace(heaIncPath, newHeaIncPath);
                                     XFilesystem.WriteFile(file, text);
-                                    return true;
                                 }
-                                return false;
                             });
                         });
                     });
@@ -161,7 +157,7 @@ namespace FUnreal.Sources.Core
         {
             string modulePublicPath = module.PublicPath;
 
-            var publicHeaderFiles = XFilesystem.FindFiles(modulePublicPath, true, "*.h");
+            var publicHeaderFiles = XFilesystem.FindFilesEnum(modulePublicPath, true, "*.h");
             string moduleApi = module.ApiMacro;
             string newModuleApi = $"{newModuleName.ToUpper()}_API";
 
@@ -327,10 +323,10 @@ namespace FUnreal.Sources.Core
             await Task.Run( async () =>
             {
                 string modulePath = module.FullPath;
-                List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
+                var headerPaths = await XFilesystem.FindFilesEnumAsync(modulePath, true, "*.h");
                 Parallel.ForEach(headerPaths, replaceAction);
 
-                List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
+                var sourcePaths = await XFilesystem.FindFilesEnumAsync(modulePath, true, "*.cpp");
                 Parallel.ForEach(sourcePaths, replaceAction);
             });
 
@@ -366,10 +362,10 @@ namespace FUnreal.Sources.Core
             await Task.Run(async () =>
             {
                 string modulePath = module.FullPath;
-                List<string> headerPaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.h", true);
+                var headerPaths = await XFilesystem.FindFilesEnumAsync(modulePath, true, "*.h");
                 Parallel.ForEach(headerPaths, replaceAction);
 
-                List<string> sourcePaths = await XFilesystem.DirectoryFilesAsync(modulePath, "*.cpp", true);
+                var sourcePaths = await XFilesystem.FindFilesEnumAsync(modulePath, true, "*.cpp");
                 Parallel.ForEach(sourcePaths, replaceAction);
             });
 

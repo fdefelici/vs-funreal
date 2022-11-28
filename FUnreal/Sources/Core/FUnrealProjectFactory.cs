@@ -27,7 +27,7 @@ namespace FUnreal
 
                 if (XFilesystem.DirectoryExists(pluginsPath))
                 {
-                    List<string> pluginSubPaths = XFilesystem.FindDirectories(pluginsPath, false);
+                    var pluginSubPaths = XFilesystem.FindDirectoriesEnum(pluginsPath, false);
 
                     Parallel.ForEach(pluginSubPaths, path =>
                     {
@@ -51,7 +51,7 @@ namespace FUnreal
             {
                 string modulesPath = XFilesystem.PathCombine(prjPath, "Source");
 
-                List<string> modulesSubPath = XFilesystem.FindDirectories(modulesPath, false);
+                var modulesSubPath = XFilesystem.FindDirectoriesEnum(modulesPath, false);
 
                 Parallel.ForEach(modulesSubPath, path =>
                 {

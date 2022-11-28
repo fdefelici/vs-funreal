@@ -188,16 +188,56 @@ namespace FUnreal
             return File.Exists(path);
         }
 
-
-        public static List<string> FindFiles(string path, bool recursive, Func<string, bool> filter)
+        public static bool FileExists(string path, bool recurse, string searchPattern, Func<string, bool> predicate)
         {
-            return FindFiles(path, recursive, "*.*", filter);
+            //return FindFile(path, recurse, searchPattern, predicate) != null;
+            var filePaths = FindFilesEnum(path, recurse, searchPattern);
+            return filePaths.Any(predicate);
         }
 
-        public static List<string> FindFiles(string path, bool recursive, string searchPattern)
+        public static string FindFile(string path, bool recursive, string searchPattern)
         {
-            return FindFiles(path, recursive, searchPattern, filePath => true);
+            var files = FindFilesEnum(path, recursive, searchPattern);
+            if (files.Any()) return files.ElementAt(0);
+            return null;
         }
+
+        public static string FindFile(string path, bool recursive, string searchPattern, Func<string, bool> predicate)
+        {
+            var filePaths = FindFilesEnum(path, recursive, searchPattern);
+            return filePaths.FirstOrDefault(predicate);
+        }
+
+        public static IEnumerable<string> FindFilesEnum(string path, bool recursive, string searchPattern)
+        {
+            if (!DirectoryExists(path)) return new List<string>();
+
+            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            return Directory.EnumerateFiles(path, searchPattern, searchMode);
+        }
+
+        public static IEnumerable<string> FindFilesEnum(string path, bool recursive, string searchPattern, Func<string, bool> predicate)
+        {
+            var filePaths = FindFilesEnum(path, recursive, searchPattern);
+            return filePaths.Where(each => predicate(each));
+        }
+
+        public static void FilesForEach(string path, bool recursive, string searchPattern, Action<string> action)
+        {
+            var filePaths = FindFilesEnum(path, recursive, searchPattern);
+            foreach(var each in filePaths) action(each);
+        }
+
+
+        public static async Task<IEnumerable<string>> FindFilesEnumAsync(string dirPath, bool recurse, string searchPattern)
+        {
+            return await Task.Run(() =>
+            {
+                return FindFilesEnum(dirPath, recurse, searchPattern);
+            });
+        }
+
+
 
         public static List<string> FindFilesStoppingDepth(string path, string searchPattern)
         {
@@ -210,84 +250,25 @@ namespace FUnreal
             {
                 string currentDir = dirToVisit.Dequeue();
 
-                var listFound = FindFiles(currentDir, false, searchPattern);
-                if (listFound.Count > 0)
+                var listFound = FindFilesEnum(currentDir, false, searchPattern);
+                if (listFound.Any())
                 {
                     result.AddRange(listFound);
                 }
                 else
                 {
-                    var subDirs = FindDirectories(currentDir);
-                    subDirs.ForEach(dirToVisit.Enqueue);
+                    var subDirs = FindDirectoriesEnum(currentDir);
+                    foreach(var each in subDirs) dirToVisit.Enqueue(each);
                 }
             }
             return result;
         }
 
-        public static List<string> FindFiles(string path, bool recursive, string searchPattern, Func<string, bool> filter)
-        {
-            List<string> result = new List<string>();
-            if (!DirectoryExists(path)) return result;
-
-            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
-            foreach (string each in filePaths)
-            {
-                if (filter(each))
-                {
-                    result.Add(each);
-                }
-            }
-            return result;
-        }
-
-
-        public static List<string> FindFilesAtLevel(string path, int dirLevel, string searchPattern)
-        {
-            if (dirLevel == 0) return Directory.EnumerateFiles(path, searchPattern, SearchOption.TopDirectoryOnly).ToList();
-
-            var dirsCurrLevel = Directory.EnumerateDirectories(path);
-            List<string> files = new List<string>();
-            foreach (var dir in dirsCurrLevel)
-            {
-                var found = FindFilesAtLevel(dir, dirLevel - 1, searchPattern);
-                files.AddRange(found);
-            }
-            return files;
-        }
-
-        public static string FindFile(string path, bool recursive, string searchPattern)
-        {
-            if (!DirectoryExists(path)) return null;
-
-            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
-            if (filePaths.Any()) return filePaths.ElementAt(0);
-            return null;
-        }
-
-        public static string FindFile(string path, bool recursive, string searchPattern, Func<string, bool> filter)
-        {
-            if (!DirectoryExists(path)) return null;
-
-            SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var filePaths = Directory.EnumerateFiles(path, searchPattern, searchMode);
-
-            foreach (string each in filePaths)
-            {
-                if (filter(each))
-                {
-                    return each;
-                }
-            }
-            return null;
-        }
-
-        public static List<string> FindDirectories(string fullPath, bool recursive = false)
+        public static IEnumerable<string> FindDirectoriesEnum(string fullPath, bool recursive = false)
         {
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(fullPath)) return new List<string>();
-            return Directory.EnumerateDirectories(fullPath, "*", searchMode).ToList();
+            return Directory.EnumerateDirectories(fullPath, "*", searchMode);
         }
 
         public static bool DirectoryExists(string dirPath)
@@ -339,15 +320,6 @@ namespace FUnreal
             Directory.CreateDirectory(destBasePath);
 
             File.Copy(sourceFilePath, destFilePath, true);
-        }
-
-        public static async Task<List<string>> DirectoryFilesAsync(string dirPath, string searchPattern, bool recurse)
-        {
-            return await Task.Run(() =>
-            {
-                var array = Directory.GetFiles(dirPath, searchPattern, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-                return array.ToList();
-            });
         }
 
         public static async Task<List<string>> FindEmptyFoldersAsync(string basePath, params string[] otherBasePaths)

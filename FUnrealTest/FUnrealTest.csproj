@@ -259,11 +259,12 @@
     <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\MiscTest.cs" />
     <Compile Include="Sources\Units\FUnrealServiceTasksTest.cs" />
+    <Compile Include="Sources\Units\XFilesystem_IO_Test.cs" />
     <Compile Include="Sources\Utils\FAssert.cs" />
     <Compile Include="Sources\Utils\FUnrealBuildToolMock.cs" />
     <Compile Include="Sources\Utils\TestUtils.cs" />
     <Compile Include="Sources\Utils\XProcessMock.cs" />
-    <Compile Include="Sources\Units\XFilesystemTest.cs" />
+    <Compile Include="Sources\Units\XFilesystem_Path_Test.cs" />
     <Compile Include="Sources\Units\XDialogLibTest.cs" />
     <Compile Include="Sources\Units\XStringTest.cs" />
   </ItemGroup>

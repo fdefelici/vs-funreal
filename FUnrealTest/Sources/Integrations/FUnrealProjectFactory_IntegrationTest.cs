@@ -68,14 +68,24 @@ namespace FUnrealTest.Integrations
         }
 
         [TestMethod]
-        public void LoadUE5_CountFilesPerf() 
+        public void LoadUE5_FindFilesEnumPerf() 
         {
             string uprjFilePath = @"C:\Program Files\Epic Games\UE_5.0\Engine";
 
-            var files = XFilesystem.FindFiles(uprjFilePath, true, "*.*");
-            
-            Assert.IsTrue(files.Count > 0); 
+            var files = XFilesystem.FindFilesEnum(uprjFilePath, true, "*.*");
+            Assert.IsTrue(files.Any()); 
+           
         }
+
+        [TestMethod]
+        public void LoadUE5_FindFilesEnumByFilterPerf()
+        {
+            string uprjFilePath = @"C:\Program Files\Epic Games\UE_5.0\Engine";
+
+            var files = XFilesystem.FindFilesEnum(uprjFilePath, true, "*.h", file => { string text = XFilesystem.ReadFile(file); return text!=null; });
+            Assert.IsTrue(files.Any());
+        }
+
 
         [TestMethod]
         public void LoadUE5_CountDirPerf()
@@ -85,11 +95,11 @@ namespace FUnrealTest.Integrations
             var pluginsPath = TestUtils.PathCombine(uprjFilePath, "Plugins");
             var sourcePath = TestUtils.PathCombine(uprjFilePath, "Source");
 
-            var plugDirs = XFilesystem.FindDirectories(pluginsPath, true);
-            var sourceDirs = XFilesystem.FindDirectories(sourcePath, true);
+            var plugDirs = XFilesystem.FindDirectoriesEnum(pluginsPath, true);
+            var sourceDirs = XFilesystem.FindDirectoriesEnum(sourcePath, true);
 
-            Assert.AreEqual(15536, plugDirs.Count); 
-            Assert.AreEqual(6190, sourceDirs.Count);
+            Assert.AreEqual(15536, plugDirs.Count()); 
+            Assert.AreEqual(6190, sourceDirs.Count());
         }
 
         [TestMethod]

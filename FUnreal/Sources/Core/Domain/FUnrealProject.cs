@@ -38,7 +38,7 @@ namespace FUnreal
         {
             get
             {
-                List<string> paths = XFilesystem.FindFiles(SourcePath, false, "*.Target.cs");
+                List<string> paths = XFilesystem.FindFilesEnum(SourcePath, false, "*.Target.cs").ToList();
                 return paths;
             }
         }

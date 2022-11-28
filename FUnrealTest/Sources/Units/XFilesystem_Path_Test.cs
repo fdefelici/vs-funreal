@@ -2,11 +2,12 @@
 using FUnreal;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FUnrealTest
 {
     [TestClass]
-    public class XFilesystemTest
+    public class XFilesystem_Path_Test
     {
         [TestMethod]
         public void PathCombineWithSpaces()
@@ -23,39 +24,6 @@ namespace FUnrealTest
             Assert.AreEqual("path", XFilesystem.PathSubtract("c:/base/middle/path", "c:/base/middle"));
             Assert.AreEqual("middle\\path", XFilesystem.PathSubtract("c:/base/middle/path", "c:/base/middle", true));
             Assert.AreEqual("path", XFilesystem.PathSubtract("c:/base/middle/path/", "c:/base/middle"));
-        }
-
-        [TestMethod]
-        public void JsonWrite()
-        {
-            string tmpPath = TestUtils.AbsPath("XFilesystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-            string jsonFilePath = TestUtils.PathCombine(tmpPath, "file.json");
-            string jsonStr = "{ \"First\" : 1, \"Second\" : 2 }";
-
-            XFilesystem.WriteJsonFile(jsonFilePath, JObject.Parse(jsonStr));
-
-            string jsonExpected = "{\r\n\t\"First\": 1,\r\n\t\"Second\": 2\r\n}";
-            Assert.AreEqual(jsonExpected, TestUtils.ReadFile(jsonFilePath));
-            TestUtils.DeleteDir(tmpPath);
-        }
-
-        [TestMethod]
-        public void RenameFileSameNameButDifferentCase()
-        {
-            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-            string filePath = TestUtils.PathCombine(tmpPath, "file.txt");
-            TestUtils.MakeFile(filePath);
-
-            XFilesystem.RenameFileName(filePath, "FILE");
-            var files = XFilesystem.FindFiles(tmpPath, false, "*.txt");
-            Assert.AreEqual(1, files.Count);
-            Assert.IsTrue(files[0].EndsWith("FILE.txt"));
-
-            TestUtils.DeleteDir(tmpPath);
         }
 
         [TestMethod]
@@ -204,28 +172,6 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void FindEmptyDirs()
-        {
-            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-
-            var path01 = TestUtils.MakeDir(tmpPath, @"Hello");
-            var path02 = TestUtils.MakeDir(tmpPath, @"Hello\Hello2");
-            var path03 = TestUtils.MakeDir(tmpPath, @"Hello\Hello2\Hello3");
-            var path04 = TestUtils.MakeDir(tmpPath, @"Other");
-            var path05 = TestUtils.MakeDir(tmpPath, @"Other\Other2");
-                         TestUtils.MakeFile(tmpPath, @"Other\Other2\file.txt");
-
-            var result = XFilesystem.FindEmptyFoldersAsync(tmpPath).GetAwaiter().GetResult();
-
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(path03, result[0]);
-
-            TestUtils.DeleteDir(tmpPath);
-        }
-
-        [TestMethod]
         public void PathCombine()
         {
             Assert.AreEqual(@"C:\some", XFilesystem.PathCombine("C:", "some"));
@@ -241,40 +187,5 @@ namespace FUnrealTest
            Assert.AreEqual("HelloRenamed.h", XFilesystem.ChangeFilePathName("Hello.h", "HelloRenamed"));
         }
 
-        [TestMethod]
-        public void IsFileLocked()
-        {
-            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-            string filePath = TestUtils.MakeFile(tmpPath, @"file.txt");
-
-            var streamBusy = System.IO.File.OpenWrite(filePath);
-
-            Assert.IsTrue(XFilesystem.FileIsLocked(filePath));
-
-            streamBusy.Close();
-
-            TestUtils.DeleteDir(tmpPath);
-        }
-
-        [TestMethod]
-        public void DirHasAnyFileLocked()
-        {
-            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-            string filePath = TestUtils.MakeFile(tmpPath, @"locked.txt");
-            TestUtils.MakeFile(tmpPath, @"free.txt");
-
-            var streamBusy = System.IO.File.OpenWrite(filePath);
-
-            Assert.IsTrue(XFilesystem.DirectoryHasAnyFileLocked(tmpPath, false, "*.txt", out string firstFileLocked));
-            Assert.AreEqual(filePath, firstFileLocked);
-
-            streamBusy.Close();
-
-            TestUtils.DeleteDir(tmpPath);
-        }
     }
 }
