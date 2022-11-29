@@ -34,9 +34,9 @@ namespace FUnreal
         {
             if (!XFilesystem.HasExtension(targetFile, fileExts)) return;
 
-            string contents = XFilesystem.ReadFile(targetFile);
+            string contents = XFilesystem.FileRead(targetFile);
             string newContents = ReplacePlaceholder(contents);
-            XFilesystem.WriteFile(targetFile, newContents);
+            XFilesystem.FileWrite(targetFile, newContents);
         }
 
         private string ReplacePlaceholder(string text)

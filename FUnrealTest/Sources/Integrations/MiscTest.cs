@@ -164,7 +164,7 @@ namespace FUnrealTest.Integrations
             for (int i = 0; i < fileCount; i++)
             {
                 string filePath = XFilesystem.PathCombine(sourcePath, $"File{i}.txt");
-                XFilesystem.WriteFile(filePath, "key xey1 dey2 ");
+                XFilesystem.FileWrite(filePath, "key xey1 dey2 ");
             }
 
             Stopwatch sw = Stopwatch.StartNew();
@@ -174,7 +174,7 @@ namespace FUnrealTest.Integrations
             strat.AddPlaceholder("key", "value");
             strat.AddPlaceholder("xey1", "value1");
             strat.AddPlaceholder("dey2", "value2");
-            XFilesystem.DeepCopy(tmpPath, XFilesystem.PathCombine(sourcePath, "dest"), strat);
+            XFilesystem.DirDeepCopy(tmpPath, XFilesystem.PathCombine(sourcePath, "dest"), strat);
 
             sw.Stop();
 
@@ -198,7 +198,7 @@ namespace FUnrealTest.Integrations
             for (int i = 0; i < fileCount; i++)
             {
                 string filePath = XFilesystem.PathCombine(sourcePath, $"File{i}.txt");
-                XFilesystem.WriteFile(filePath, "key xey1 dey2 ");
+                XFilesystem.FileWrite(filePath, "key xey1 dey2 ");
             }
 
             Stopwatch sw = Stopwatch.StartNew();
@@ -217,9 +217,9 @@ namespace FUnrealTest.Integrations
             // 22 seconds
             Parallel.For(0, files.Length, i =>
             {
-                var txt = XFilesystem.ReadFile(files[i]);
+                var txt = XFilesystem.FileRead(files[i]);
                 txt = txt.Replace("key", "newvalue");
-                XFilesystem.WriteFile(files[i], txt);
+                XFilesystem.FileWrite(files[i], txt);
             });
 
 

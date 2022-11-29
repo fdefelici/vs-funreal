@@ -99,12 +99,12 @@ namespace FUnreal
         public XJsonFile(string filePath)
         {
             _filePath = filePath;
-            _json = new XJson(XFilesystem.ReadJsonFile(filePath));
+            _json = new XJson(XFilesystem.JsonFileRead(filePath));
         }
 
         public void Save()
         {
-            XFilesystem.WriteJsonFile(_filePath, _json.JTokenRaw);
+            XFilesystem.JsonFileWrite(_filePath, _json.JTokenRaw);
         }
     }
 

@@ -4,7 +4,7 @@
   <!-- Placeholders 
     @{TPL_PLUG_NAME}  Plugin name
     @{TPL_MODU_NAME}  Module name
-    @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
+    @{TPL_MODU_CLASS} Module source (.h, .cpp) file name 
   -->
   <template context="plugins" name="tpl_plugin_blank" ue="4,5" path="UE5/Plugins/Blank">
     <meta has_module="true"/>
@@ -13,6 +13,31 @@
   <template context="plugins" name="tpl_plugin_contentonly" ue="4,5" path="UE5/Plugins/ContentOnly">
     <meta has_module="false"/>
     <ui label="Content Only" desc="Create a blank plugin that can only contain content."/>
+  </template>
+  
+  <template context="plugins" name="tpl_plugin_blueprintlibrary" ue="4,5" path="UE5/Plugins/BlueprintLibrary">
+    <meta has_module="true"/>
+    <ui label="Blueprint Library" desc="Create a plugin that will contain Blueprint Function Library."/>
+  </template>
+
+  <template context="plugins" name="tpl_plugin_editormode" ue="4,5" path="UE5/Plugins/EditorMode">
+    <meta has_module="true"/>
+    <ui label="Editor Mode" desc="Create a plugin that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage."/>
+  </template>
+
+  <template context="plugins" name="tpl_plugin_editorstandalonewindow" ue="4,5" path="UE5/Plugins/EditorStandaloneWindow">
+    <meta has_module="true"/>
+    <ui label="Editor Standalone Window" desc="Create a plugin that will add a button in the Window Menu that summons an empty standalone tab window when clicked."/>
+  </template>
+
+  <template context="plugins" name="tpl_plugin_editortoolbarbutton" ue="4,5" path="UE5/Plugins/EditorToolbarButton">
+    <meta has_module="true"/>
+    <ui label="Editor Toolbar Button" desc="Create a plugin that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event."/>
+  </template>
+
+  <template context="plugins" name="tpl_plugin_thirdpartylibrary" ue="4,5" path="UE5/Plugins/ThirdPartyLibrary">
+    <meta has_module="true"/>
+    <ui label="Third Party Library" desc="Create a plugin that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
   </template>
 
   <!-- PLUGIN MODULE TEMPLATES -->
@@ -25,6 +50,26 @@
     <meta type="Runtime" phase="Default"/>
   </template>
 
+  <template context="modules" name="tpl_module_blueprintlibrary" ue="4,5" path="UE5/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source">
+    <ui label="Blank" desc="Create a module that will contain Blueprint Function Library."/>
+    <meta type="Runtime" phase="PreLoadingScreen"/>
+  </template>
+
+  <template context="modules" name="tpl_module_editormode" ue="4,5" path="UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source">
+    <ui label="Editor Mode" desc="Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage."/>
+    <meta type="Editor" phase="Default"/>
+  </template>
+
+  <template context="modules" name="tpl_module_editorstandalonewindow" ue="4,5" path="UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source">
+    <ui label="Editor Standalone Window" desc="Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked."/>
+    <meta type="Editor" phase="Default"/>
+  </template>
+
+  <template context="modules" name="tpl_module_thirdpartylibrary" ue="4,5" path="UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source">
+    <ui label="Third Party Library" desc="Create a module that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
+    <meta type="Editor" phase="Default"/>
+  </template>
+  
   <!-- GAME MODULE TEMPLATES -->
   <!-- Placeholders 
     @{TPL_MODU_NAME}  Module name
@@ -32,7 +77,11 @@
   -->
   <template context="game_modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
     <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
+    
+    <!--RICORDARSI DI PORTARLA SOPRA SUI MODULE CON IL TARGET. NOTA: Non avendo una selezione su UI, conviene aggiungere sempre target="Editor" -->
     <meta type="Runtime" phase="Default" target="Game"/>
+    
+    
   </template>
 
   <!-- SOURCE TEMPLATES -->

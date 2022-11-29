@@ -25,9 +25,9 @@ namespace FUnreal
             {
                 string pluginsPath = XFilesystem.PathCombine(prjPath, "Plugins");
 
-                if (XFilesystem.DirectoryExists(pluginsPath))
+                if (XFilesystem.DirExists(pluginsPath))
                 {
-                    var pluginSubPaths = XFilesystem.FindDirectoriesEnum(pluginsPath, false);
+                    var pluginSubPaths = XFilesystem.FindDirsEnum(pluginsPath, false);
 
                     Parallel.ForEach(pluginSubPaths, path =>
                     {
@@ -51,7 +51,7 @@ namespace FUnreal
             {
                 string modulesPath = XFilesystem.PathCombine(prjPath, "Source");
 
-                var modulesSubPath = XFilesystem.FindDirectoriesEnum(modulesPath, false);
+                var modulesSubPath = XFilesystem.FindDirsEnum(modulesPath, false);
 
                 Parallel.ForEach(modulesSubPath, path =>
                 {
@@ -88,7 +88,7 @@ namespace FUnreal
                             //Parallel?!
                             string found = XFilesystem.FindFile(mod.FullPath, true, "*.cpp", file =>
                             {
-                                string text = XFilesystem.ReadFile(file);
+                                string text = XFilesystem.FileRead(file);
                                 if (text.Contains("PRIMARY_GAME_MODULE")) return true;
                                 return false;
                             });
@@ -133,7 +133,7 @@ namespace FUnreal
                 uproject.Plugins.Add(plug);
             }
 
-            if (XFilesystem.DirectoryExists(modulesSources))
+            if (XFilesystem.DirExists(modulesSources))
             {
                 List<string> modulesPathI = XFilesystem.FindFilesStoppingDepth(modulesSources, "*.Build.cs");
                 foreach (string modFile in modulesPathI)

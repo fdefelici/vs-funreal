@@ -249,6 +249,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
+    <Compile Include="Sources\Integrations\VSIXTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\ProductionTemplatesTest.cs" />
     <Compile Include="Sources\Units\FUnrealBuildToolTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectTest.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\MiscTest.cs" />
     <Compile Include="Sources\Units\FUnrealServiceTasksTest.cs" />
+    <Compile Include="Sources\Units\XFilesystemEnumerableTest.cs" />
     <Compile Include="Sources\Units\XFilesystem_IO_Test.cs" />
     <Compile Include="Sources\Utils\FAssert.cs" />
     <Compile Include="Sources\Utils\FUnrealBuildToolMock.cs" />

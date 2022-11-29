@@ -41,7 +41,7 @@ namespace FUnreal
 
             // Detect Engine Instance
             string enginePath = unrealVS.GetUnrealEnginePath(); //Try detecting UE base path from solution configuration
-            if (enginePath == null || !XFilesystem.DirectoryExists(enginePath))
+            if (enginePath == null || !XFilesystem.DirExists(enginePath))
             {
                 unrealVS.Output.Erro("Cannot detect a valid UE path: ", uprjFilePath);
                 return null;
@@ -467,7 +467,7 @@ namespace FUnreal
         public bool ExistsSourceDirectory(string sourcePath)
         {
             if (!IsSourceCodePath(sourcePath)) return false;
-            return XFilesystem.DirectoryExists(sourcePath);
+            return XFilesystem.DirExists(sourcePath);
         }
 
         public bool ExistsSourceFile(string sourcePath)
@@ -538,7 +538,7 @@ namespace FUnreal
 
         public async Task<FUnrealServicePluginResult> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
         {
-            string context = "plugins";
+            string context = FUnrealTemplateCtx.PLUGINS;
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -562,17 +562,6 @@ namespace FUnreal
                 return false;
             }
 
-            /*
-            string pluginNamePH = tpl.GetPlaceHolder("PluginName"); //Mandatory
-            if (pluginNamePH == null)
-            {
-                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
-                return false;
-            }
-
-            string moduleNamePH = tpl.GetPlaceHolder("ModuleName"); //Optional
-            */
-
             string pluginNamePH = "@{TPL_PLUG_NAME}";
             string moduleNamePH = "@{TPL_MODU_NAME}";
             string moduleFilePH = "@{TPL_MODU_CLASS}";
@@ -580,7 +569,7 @@ namespace FUnreal
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, _pluginsPath);
             PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
-            strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
+            strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin", "vcxproj"); //vcxproj from thirdpartylibrary
             strategy.AddPlaceholder(pluginNamePH, pluginName);
 
             if (moduleNameOrNull != null) 
@@ -593,7 +582,7 @@ namespace FUnreal
                 strategy.AddPlaceholder(moduleNamePH, moduleNameOrNull);
                 strategy.AddPlaceholder(moduleFilePH, fileName);
             }
-            await XFilesystem.DeepCopyAsync(tpl.BasePath, _pluginsPath, strategy);
+            await XFilesystem.DirDeepCopyAsync(tpl.BasePath, _pluginsPath, strategy);
 
             notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
             XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
@@ -632,16 +621,16 @@ namespace FUnreal
             if (!taskSuccess) return false;
 
             notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, plugin.FullPath);
-            if (!XFilesystem.DeleteDir(plugPath))
+            if (!XFilesystem.DirDelete(plugPath))
             {
                 notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
                 return false;
             }
 
-            if (XFilesystem.IsEmptyDir(_pluginsPath))
+            if (XFilesystem.DirIsEmpty(_pluginsPath))
             {
                 notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFolder, _pluginsPath);
-                if (!XFilesystem.DeleteDir(_pluginsPath))
+                if (!XFilesystem.DirDelete(_pluginsPath))
                 {
                     notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
                 }
@@ -692,15 +681,15 @@ namespace FUnreal
             string upluginFilePath = plugin.DescriptorFilePath;
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, upluginFilePath);
 
-            JObject upluginJson = XFilesystem.ReadJsonFile(upluginFilePath);
+            JObject upluginJson = XFilesystem.JsonFileRead(upluginFilePath);
             string upluginName = (string)upluginJson["FriendlyName"];
             if (pluginName.Equals(upluginName))
             {
                 upluginJson["FriendlyName"] = pluginNewName;
-                XFilesystem.WriteJsonFile(upluginFilePath, upluginJson);
+                XFilesystem.JsonFileWrite(upluginFilePath, upluginJson);
             }
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_RenamingPluginDescriptorFile, upluginFilePath, pluginNewName);
-            XFilesystem.RenameFileName(upluginFilePath, pluginNewName);
+            XFilesystem.FileRename(upluginFilePath, pluginNewName);
 
             //2. Rename Plugin Folder
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_RenamingFolder, plugin.FullPath, pluginNewName);
@@ -774,7 +763,7 @@ namespace FUnreal
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, plugin.SourcePath);
             PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
-            strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin");
+            strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin", "vcxproj"); //vcxproj from thirdpartylibrary
 
             string fileName = moduleName;
             if (!fileName.EndsWith("Module"))
@@ -788,7 +777,7 @@ namespace FUnreal
             strategy.AddPlaceholder(moduleFilePH, fileName);
 
             string sourcePath = plugin.SourcePath;
-            await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
+            await XFilesystem.DirDeepCopyAsync(tpl.BasePath, sourcePath, strategy);
 
             //Update .uplugin
             string upluginFilePath = plugin.DescriptorFilePath;
@@ -909,18 +898,18 @@ namespace FUnreal
             {
                 if (other.Name == module.Name) continue;
 
-                string buildText = XFilesystem.ReadFile(other.BuildFilePath);
+                string buildText = XFilesystem.FileRead(other.BuildFilePath);
                 if (buildText.Contains(moduleDepend))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
                     buildText = Regex.Replace(buildText, regexDepend, "");
-                    XFilesystem.WriteFile(other.BuildFilePath, buildText);
+                    XFilesystem.FileWrite(other.BuildFilePath, buildText);
                 }
             }
 
             //2. Delete module path
             notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
-            XFilesystem.DeleteDir(module.FullPath);
+            XFilesystem.DirDelete(module.FullPath);
 
             //3. Update .uplugin removing the module
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, plugin.DescriptorFilePath);
@@ -969,7 +958,7 @@ namespace FUnreal
                 return false;
             }
             FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
-            if (tpl == null || !XFilesystem.DirectoryExists(tpl.BasePath))
+            if (tpl == null || !XFilesystem.DirExists(tpl.BasePath))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
@@ -1061,7 +1050,7 @@ namespace FUnreal
             {
                 notifier.Info(XDialogLib.Ctx_DeletingFiles, XDialogLib.Info_DeletingFile, filePath);
 
-                bool deleted = XFilesystem.DeleteFile(filePath);
+                bool deleted = XFilesystem.FileDelete(filePath);
                 if (!deleted)
                 {
                     notifier.Erro(XDialogLib.Ctx_DeletingFiles, XDialogLib.Error_Delete);
@@ -1073,7 +1062,7 @@ namespace FUnreal
             {
                 notifier.Info(XDialogLib.Ctx_DeletingDirectories, XDialogLib.Info_DeletingFolder, dirPath);
 
-                bool deleted = XFilesystem.DeleteDir(dirPath);
+                bool deleted = XFilesystem.DirDelete(dirPath);
                 if (!deleted)
                 {
                     notifier.Erro(XDialogLib.Ctx_DeletingDirectories, XDialogLib.Error_Delete);
@@ -1136,7 +1125,7 @@ namespace FUnreal
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, sourcePath);
             PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
-            strategy.AddFileExtension(".cpp", ".h", ".cs");
+            strategy.AddFileExtension(".cpp", ".h", ".cs", "vcxproj"); //vcxproj from thirdpartylibrary
 
             string fileName = moduleName;
             if (!fileName.EndsWith("Module"))
@@ -1149,7 +1138,7 @@ namespace FUnreal
             strategy.AddPlaceholder(moduleNamePH, moduleName);
             strategy.AddPlaceholder(moduleFilePH, fileName);
 
-            await XFilesystem.DeepCopyAsync(tpl.BasePath, sourcePath, strategy);
+            await XFilesystem.DirDeepCopyAsync(tpl.BasePath, sourcePath, strategy);
 
             //Update Project [TARGET].Target.cs file
             string targetName;
@@ -1284,12 +1273,12 @@ namespace FUnreal
                 {
                     if (other.Name == module.Name) continue;
 
-                    string buildText = XFilesystem.ReadFile(other.BuildFilePath);
+                    string buildText = XFilesystem.FileRead(other.BuildFilePath);
                     if (buildText.Contains(moduleDepend))
                     {
                         notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
                         buildText = Regex.Replace(buildText, regexDepend, "");
-                        XFilesystem.WriteFile(other.BuildFilePath, buildText);
+                        XFilesystem.FileWrite(other.BuildFilePath, buildText);
                     }
                 }
             }
@@ -1297,7 +1286,7 @@ namespace FUnreal
             //2. Delete module path
             { 
                 notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
-                XFilesystem.DeleteDir(module.FullPath);
+                XFilesystem.DirDelete(module.FullPath);
             }
 
             //3. Update .uproject removing the module
@@ -1319,12 +1308,12 @@ namespace FUnreal
                 regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
                 foreach (var csFile in project.TargetFiles)
                 {
-                    string buildText = XFilesystem.ReadFile(csFile);
+                    string buildText = XFilesystem.FileRead(csFile);
                     if (buildText.Contains(moduleDepend))
                     {
                         notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
                         buildText = Regex.Replace(buildText, regexDepend, "");
-                        XFilesystem.WriteFile(csFile, buildText);
+                        XFilesystem.FileWrite(csFile, buildText);
                     }
                 }
             }
@@ -1351,7 +1340,7 @@ namespace FUnreal
             }
 
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_CreatingFile, filePath);
-            XFilesystem.CreateFile(filePath);
+            XFilesystem.FileCreate(filePath);
 
             //X. Regen VS Project
             bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
@@ -1408,12 +1397,12 @@ namespace FUnreal
                 string fileNameNoExt = XFilesystem.GetFilenameNoExt(filePath);
                 string newFileNameNoExt = XFilesystem.GetFilenameNoExt(newFileNameWithExt);
                 string incGenRegex = $@"(?<=#include\s+""){fileNameNoExt}(?=\.generated\.h"")";
-                string fileContent = XFilesystem.ReadFile(filePath);
+                string fileContent = XFilesystem.FileRead(filePath);
                 if (Regex.IsMatch(fileContent, incGenRegex))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, filePath);
                     fileContent = Regex.Replace(fileContent, incGenRegex, newFileNameNoExt);
-                    XFilesystem.WriteFile(filePath, fileContent);
+                    XFilesystem.FileWrite(filePath, fileContent);
                 }
 
                 string oldIncludePath = FUnrealServiceTasks.Module_ComputeHeaderIncludePath(fileModule, filePath);
@@ -1423,7 +1412,7 @@ namespace FUnreal
 
             //For any kind of file (.h included) rename the file
             notifier.Info(XDialogLib.Ctx_RenamingFiles, XDialogLib.Info_RenamingFileToNewName, filePath, newFileNameWithExt);
-            string filePathRenamed = XFilesystem.RenameFileNameWithExt(filePath, newFileNameWithExt);
+            string filePathRenamed = XFilesystem.FileRenameWithExt(filePath, newFileNameWithExt);
             if (filePathRenamed == null)
             {
                 notifier.Erro(XDialogLib.Ctx_RenamingFiles, XDialogLib.Error_FileRenameFailed);

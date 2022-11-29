@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Telemetry;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,119 +12,145 @@ namespace FUnreal
     //XFilesystem APIs which involve IO
     public partial class XFilesystem
     {
-        public static bool DeepCopy(string sourcePath, string targetPath)
+        private const string LONG_PATH_PREFIX = @"\\?\";
+        public static string ToLongPath(string path)
         {
-            return DeepCopy(sourcePath, targetPath, new NullDeepCopyVisitor());
+            if (path.StartsWith(LONG_PATH_PREFIX)) return path;
+            return $"{LONG_PATH_PREFIX}{path}";
         }
 
-        public static async Task<bool> DeepCopyAsync(string sourcePath, string targetPath)
+        public static string ToNormalPath(string path)
         {
-            return await DeepCopyAsync(sourcePath, targetPath, new NullDeepCopyVisitor());
+            if (path == null) return null;
+            if (!path.StartsWith(LONG_PATH_PREFIX)) return path;
+            return path.Substring(LONG_PATH_PREFIX.Length);
         }
 
-        public static bool DeepCopy(string sourcePath, string targetPath, IDeepCopyVisitor visitor)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirDeepCopy(string sourcePath, string targetPath)
         {
-            if (!Directory.Exists(sourcePath)) return false;
-            Directory.CreateDirectory(targetPath); //Make sure target directory exists in case sourcePath contains only files
+            return DirDeepCopy(sourcePath, targetPath, new NullDeepCopyVisitor());
+        }
 
+        /// <remarks>Protected againts Long Path</remarks>
+        public static async Task<bool> DirDeepCopyAsync(string sourcePath, string targetPath)
+        {
+            return await DirDeepCopyAsync(sourcePath, targetPath, new NullDeepCopyVisitor());
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirDeepCopy(string sourcePath, string targetPath, IDeepCopyVisitor visitor)
+        {
+            if (!DirExists(sourcePath)) return false;
+            //Make sure target directory exists in case sourcePath contains only files
+            if (!DirCreate(targetPath)) return false;
+           
             try
             {
                 //Now Create all of the directories
-                foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                var dirs = FindDirsEnum(sourcePath, true);
+                foreach (string dirPath in dirs)
                 {
                     string targetDir = dirPath.Replace(sourcePath, targetPath);
                     targetDir = visitor.HandlePath(targetDir);
 
-                    Directory.CreateDirectory(targetDir);
+                    if (!DirCreate(targetDir)) return false;
                 }
-
-                List<string> files = new List<string>();
+     
+                var files = FindFilesEnum(sourcePath, true, "*.*");
                 //Copy all the files & Replaces any files with the same name
-                foreach (string filePath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                foreach (string filePath in files)
                 {
                     string targetFile = filePath.Replace(sourcePath, targetPath);
                     targetFile = visitor.HandlePath(targetFile);
 
-                    File.Copy(filePath, targetFile, true);
+                    //File.Copy(ToLongPath(filePath), ToLongPath(targetFile), true);
+                    if (!FileCopy(filePath, targetFile)) return false;
                     visitor.HandleFileContent(targetFile);
                 }
             }
-            catch (Exception) { return false; }
+            catch (Exception e) 
+            {
+                XDebug.Erro(e.Message);
+                XDebug.Erro(e.StackTrace);
+                return false; 
+            }
             return true;
         }
 
-        public static async Task<bool> DeepCopyAsync(string sourcePath, string targetPath, IDeepCopyVisitor visitor)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static async Task<bool> DirDeepCopyAsync(string sourcePath, string targetPath, IDeepCopyVisitor visitor)
         {
             return await Task.Run(() =>
             {
-                return DeepCopy(sourcePath, targetPath, visitor);
+                return DirDeepCopy(sourcePath, targetPath, visitor);
             });
         }
 
-        public static string ReadFile(string file)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static string FileRead(string file)
         {
-            return File.ReadAllText(file);
-        }
-
-        public static void WriteFile(string file, string contents)
-        {
-            string basePath = Path.GetDirectoryName(file);
-            Directory.CreateDirectory(basePath);
-            File.WriteAllText(file, contents);
-        }
-
-        public static bool DeleteDir(string basePath)
-        {
-            if (!Directory.Exists(basePath)) return false;
             try
             {
-                Directory.Delete(basePath, true);
+                string lp = ToLongPath(file);   
+                return File.ReadAllText(lp);
+            } catch(Exception)
+            {
+                return null;
+            }
+
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool FileWrite(string file, string contents)
+        {   
+            file = ToLongPath(file);
+            string basePath = PathParent(file);
+
+            if (!DirCreate(basePath)) return false;
+
+            try
+            {
+                File.WriteAllText(file, contents);
+            } catch (Exception) 
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirDelete(string basePath)
+        {
+            if (!DirExists(basePath)) return false;
+            try
+            {
+                string lp = ToLongPath(basePath);
+                Directory.Delete(lp, true);
             }
             catch (Exception) { return false; }
             return true;
         }
 
-        public static bool IsEmptyDir(string basePath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirIsEmpty(string basePath)
         {
-            if (!Directory.Exists(basePath)) return false;
-            if (Directory.GetFiles(basePath).Length != 0) return false;
-            if (Directory.GetDirectories(basePath).Length != 0) return false;
-            return true;
+            if (!DirExists(basePath)) return false;
+            return !Directory.EnumerateFileSystemEntries(ToLongPath(basePath)).Any();
         }
 
-        public static JObject ReadJsonFile(string filePath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static string FileRename(string filePath, string newFileNameNoExt)
         {
-            return JObject.Parse(ReadFile(filePath));
-        }
-
-        public static void WriteJsonFile(string filePath, JToken json)
-        {
-            string basePath = Path.GetDirectoryName(filePath);
-            Directory.CreateDirectory(basePath);
-
-            StreamWriter sw = new StreamWriter(filePath);
-            var wr = new JsonTextWriter(sw);
-            wr.Formatting = Formatting.Indented;
-            wr.IndentChar = '\t';
-            wr.Indentation = 1;
-
-            json.WriteTo(wr);
-
-            sw.Flush();
-            wr.Close();
-        }
-
-        public static string RenameFileName(string filePath, string newFileNameNoExt)
-        {
-            string basePath = Path.GetDirectoryName(filePath);
-            string fileExt = Path.GetExtension(filePath);
+            string basePath = PathParent(filePath);
+            string fileExt = GetFilenameExtension(filePath);
             string newPath = PathCombine(basePath, newFileNameNoExt + fileExt);
 
             try
             {
                 //NOTE: File.Move doesn't seem to suffer of the issue related to Directory.Move
                 //      So can use Move, instead of Copy + Delete
-                File.Move(filePath, newPath);
+                File.Move(ToLongPath(filePath), ToLongPath(newPath));
             }
             catch (Exception)
             {
@@ -132,25 +159,32 @@ namespace FUnreal
             return newPath;
         }
 
-        public static string RenameFileNameWithExt(string filePath, string newFileNameWithExt)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static string FileRenameWithExt(string filePath, string newFileNameWithExt)
         {
-            string basePath = Path.GetDirectoryName(filePath);
+            string basePath = PathParent(filePath);
             string newPath = PathCombine(basePath, newFileNameWithExt);
+
+            if (!FileExists(filePath)) return null;
+            if (FileExists(newPath)) return null;
 
             try
             {
-                File.Move(filePath, newPath);
+                File.Move(ToLongPath(filePath), ToLongPath(newPath));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                XDebug.Erro(e.Message);
+                XDebug.Erro(e.StackTrace);
                 return null;
             }
             return newPath;
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static async Task<string> RenameDirAsync(string sourcePath, string dirName)
         {
-            string basePath = Path.GetDirectoryName(sourcePath);
+            string basePath = PathParent(sourcePath);
             string destPath = PathCombine(basePath, dirName);
 
             //NOTE: If a file was opened with Notepad++ and trying to move the folder 
@@ -170,65 +204,65 @@ namespace FUnreal
             return destPath;
             */
 
-            bool succeded = await DeepCopyAsync(sourcePath, destPath);
+            bool succeded = await DirDeepCopyAsync(sourcePath, destPath);
             if (!succeded)
             {
-                DeleteDir(destPath); //Cleanup partial copy
+                DirDelete(destPath); //Cleanup partial copy
                 return null;
             }
 
-            succeded = DeleteDir(sourcePath);
+            succeded = DirDelete(sourcePath);
             if (!succeded) return null;
 
             return destPath;
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static bool FileExists(string path)
         {
-            return File.Exists(path);
+            string lp = ToLongPath(path);
+            return File.Exists(lp);
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static bool FileExists(string path, bool recurse, string searchPattern, Func<string, bool> predicate)
         {
-            //return FindFile(path, recurse, searchPattern, predicate) != null;
             var filePaths = FindFilesEnum(path, recurse, searchPattern);
             return filePaths.Any(predicate);
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static string FindFile(string path, bool recursive, string searchPattern)
         {
             var files = FindFilesEnum(path, recursive, searchPattern);
-            if (files.Any()) return files.ElementAt(0);
+            if (files.Any()) return ToNormalPath(files.ElementAt(0));
             return null;
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static string FindFile(string path, bool recursive, string searchPattern, Func<string, bool> predicate)
         {
             var filePaths = FindFilesEnum(path, recursive, searchPattern);
-            return filePaths.FirstOrDefault(predicate);
+            return ToNormalPath(filePaths.FirstOrDefault(predicate));
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static IEnumerable<string> FindFilesEnum(string path, bool recursive, string searchPattern)
         {
-            if (!DirectoryExists(path)) return new List<string>();
-
+            if (!DirExists(path)) return new List<string>();
+            string lp = ToLongPath(path);
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            return Directory.EnumerateFiles(path, searchPattern, searchMode);
+            return XFilesystemEnumerable.AdaptToNormal(Directory.EnumerateFiles(lp, searchPattern, searchMode));
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static IEnumerable<string> FindFilesEnum(string path, bool recursive, string searchPattern, Func<string, bool> predicate)
         {
             var filePaths = FindFilesEnum(path, recursive, searchPattern);
             return filePaths.Where(each => predicate(each));
         }
 
-        public static void FilesForEach(string path, bool recursive, string searchPattern, Action<string> action)
-        {
-            var filePaths = FindFilesEnum(path, recursive, searchPattern);
-            foreach(var each in filePaths) action(each);
-        }
-
-
+        /// <remarks>Protected againts Long Path</remarks>
         public static async Task<IEnumerable<string>> FindFilesEnumAsync(string dirPath, bool recurse, string searchPattern)
         {
             return await Task.Run(() =>
@@ -237,8 +271,7 @@ namespace FUnreal
             });
         }
 
-
-
+        /// <remarks>Protected againts Long Path</remarks>
         public static List<string> FindFilesStoppingDepth(string path, string searchPattern)
         {
             List<string> result = new List<string>();
@@ -257,32 +290,38 @@ namespace FUnreal
                 }
                 else
                 {
-                    var subDirs = FindDirectoriesEnum(currentDir);
+                    var subDirs = FindDirsEnum(currentDir);
                     foreach(var each in subDirs) dirToVisit.Enqueue(each);
                 }
             }
             return result;
         }
 
-        public static IEnumerable<string> FindDirectoriesEnum(string fullPath, bool recursive = false)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static IEnumerable<string> FindDirsEnum(string fullPath, bool recursive = false)
         {
             SearchOption searchMode = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            if (!Directory.Exists(fullPath)) return new List<string>();
-            return Directory.EnumerateDirectories(fullPath, "*", searchMode);
+            if (!DirExists(fullPath)) return new List<string>();
+            string lp = ToLongPath(fullPath);
+            return XFilesystemEnumerable.AdaptToNormal(Directory.EnumerateDirectories(lp, "*", searchMode));
         }
 
-        public static bool DirectoryExists(string dirPath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirExists(string dirPath)
         {
-            return Directory.Exists(dirPath);
+            var lp = ToLongPath(dirPath);
+            return Directory.Exists(lp);
         }
 
-        public static bool DeleteFile(string filePath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool FileDelete(string filePath)
         {
-            if (!File.Exists(filePath)) return false;
+            if (!FileExists(filePath)) return false;
 
             try
-            {
-                File.Delete(filePath);
+            {   
+                string lp = ToLongPath(filePath);
+                File.Delete(lp);
             }
             catch (Exception)
             {
@@ -292,13 +331,16 @@ namespace FUnreal
             return true;
         }
 
-        public static bool CreateDir(string fullPath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirCreate(string fullPath)
         {
-            if (DirectoryExists(fullPath)) return true;
+            string lp = ToLongPath(fullPath);
+
+            if (DirExists(lp)) return true;
 
             try
             {
-                Directory.CreateDirectory(fullPath);
+                Directory.CreateDirectory(lp);
                 return true;
             }
             catch (Exception)
@@ -307,31 +349,44 @@ namespace FUnreal
             }
         }
 
-        public static void CreateFile(string filePath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool FileCreate(string filePath)
         {
-            XFilesystem.WriteFile(filePath, "");
+            return FileWrite(filePath, "");
         }
 
-        public static void FileCopy(string sourceFilePath, string destFilePath)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool FileCopy(string sourceFilePath, string destFilePath)
         {
-            if (!FileExists(sourceFilePath)) return;
+            if (!FileExists(sourceFilePath)) return false;
 
             string destBasePath = PathParent(destFilePath);
-            Directory.CreateDirectory(destBasePath);
+            if (!DirCreate(destBasePath)) return false;
 
-            File.Copy(sourceFilePath, destFilePath, true);
+            try
+            {
+                File.Copy(ToLongPath(sourceFilePath), ToLongPath(destFilePath), true);
+            } catch(Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
         public static async Task<List<string>> FindEmptyFoldersAsync(string basePath, params string[] otherBasePaths)
         {
             List<string> result = new List<string>();
             var stack = new Stack<IEnumerable<string>>();
 
             var first = new List<string>();
-            if (DirectoryExists(basePath)) first.Add(basePath);
+            if (DirExists(basePath))
+            {   
+                first.Add(ToLongPath(basePath));
+            }
             foreach (var other in otherBasePaths)
             {
-                if (DirectoryExists(other)) first.Add(other);
+                if (DirExists(other)) first.Add(ToLongPath(other));
             }
 
             stack.Push(first);
@@ -348,15 +403,15 @@ namespace FUnreal
                             var eachContents = Directory.EnumerateFileSystemEntries(eachDir);
                             if (eachContents.Any())
                             {
-                                var eachSubDirs = Directory.EnumerateDirectories(eachDir);
+                                var eachSubDirs = XFilesystemEnumerable.AdaptToLong(Directory.EnumerateDirectories(eachDir));
                                 if (eachSubDirs.Any())
-                                {
+                                {   
                                     stack.Push(eachSubDirs);
                                 }
                             }
                             else
                             {
-                                result.Add(eachDir);
+                                result.Add(XFilesystem.ToNormalPath(eachDir));
                             }
 
                         }
@@ -371,51 +426,26 @@ namespace FUnreal
             return result;
         }
 
-        public static List<string> SelectFolderPathsNotContainingAnyFile(List<string> paths)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static void FilesForEach(string path, bool recursive, string searchPattern, Action<string> action)
         {
-            var result = new List<string>();
-
-            //Remove path that are parents of others
-            var filtered = new List<string>();
-            int count = paths.Count();
-            for (int i = 0; i < count; i++) //should improve algo if paths are sorted 
-            {
-                var current = paths[i];
-                bool isParent = false;
-                for (int j = 0; j < count; j++)
-                {
-                    if (i == j) continue;
-
-                    var other = paths[j];
-                    if (IsParentPath(current, other))
-                    {
-                        isParent = true;
-                        break;
-                    }
-                }
-
-                if (!isParent && !filtered.Contains(current))
-                {
-                    filtered.Add(current);
-                }
-            }
-
-            //Scan for the one who contains recursive at least one file
-            foreach (var each in filtered)
-            {
-                if (!FolderHasAnyFile(each, true))
-                {
-                    result.Add(each);
-                }
-            }
-            return result;
+            var filePaths = FindFilesEnum(path, recursive, searchPattern);
+            foreach (var each in filePaths) action(each);
         }
 
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirContainsAnyFile(string folderPath, bool recursive)
+        {
+            return FindFile(folderPath, recursive, "*.*") != null;
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
         public static bool FileIsLocked(string filePath)
         {
             try
             {
-                var stream = File.OpenWrite(filePath);
+                string lp = ToLongPath(filePath);
+                var stream = File.OpenWrite(lp);
                 stream.Close();
                 return false;
             }
@@ -425,7 +455,8 @@ namespace FUnreal
             }
         }
 
-        public static bool DirectoryHasAnyFileLocked(string dirPath, bool recursive, string searchPattern, out string firstFileLocked)
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool DirContainsAnyFileLocked(string dirPath, bool recursive, string searchPattern, out string firstFileLocked)
         {
             firstFileLocked = FindFile(dirPath, recursive, searchPattern, filePath =>
             {
@@ -434,6 +465,43 @@ namespace FUnreal
             });
 
             if (firstFileLocked == null) return false;
+            return true;
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
+        public static JObject JsonFileRead(string filePath)
+        {
+            var text = FileRead(filePath);
+            if (text == null) return null;
+            return JObject.Parse(text);
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
+        public static bool JsonFileWrite(string filePath, JToken json)
+        {
+            string basePath = PathParent(filePath);
+            if (!DirCreate(basePath)) return false;
+
+            string lp = ToLongPath(filePath);
+
+            try
+            {
+                StreamWriter sw = new StreamWriter(lp);
+                var wr = new JsonTextWriter(sw);
+                wr.Formatting = Formatting.Indented;
+                wr.IndentChar = '\t';
+                wr.Indentation = 1;
+
+                json.WriteTo(wr);
+
+                sw.Flush();
+                wr.Close();
+            } catch (Exception ex) {
+                XDebug.Erro(ex.Message);
+                XDebug.Erro(ex.StackTrace);
+                return false;
+            }
+
             return true;
         }
     }

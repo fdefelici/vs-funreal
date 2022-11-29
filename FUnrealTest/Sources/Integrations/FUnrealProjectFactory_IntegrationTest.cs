@@ -82,7 +82,7 @@ namespace FUnrealTest.Integrations
         {
             string uprjFilePath = @"C:\Program Files\Epic Games\UE_5.0\Engine";
 
-            var files = XFilesystem.FindFilesEnum(uprjFilePath, true, "*.h", file => { string text = XFilesystem.ReadFile(file); return text!=null; });
+            var files = XFilesystem.FindFilesEnum(uprjFilePath, true, "*.h", file => { string text = XFilesystem.FileRead(file); return text!=null; });
             Assert.IsTrue(files.Any());
         }
 
@@ -95,8 +95,8 @@ namespace FUnrealTest.Integrations
             var pluginsPath = TestUtils.PathCombine(uprjFilePath, "Plugins");
             var sourcePath = TestUtils.PathCombine(uprjFilePath, "Source");
 
-            var plugDirs = XFilesystem.FindDirectoriesEnum(pluginsPath, true);
-            var sourceDirs = XFilesystem.FindDirectoriesEnum(sourcePath, true);
+            var plugDirs = XFilesystem.FindDirsEnum(pluginsPath, true);
+            var sourceDirs = XFilesystem.FindDirsEnum(sourcePath, true);
 
             Assert.AreEqual(15536, plugDirs.Count()); 
             Assert.AreEqual(6190, sourceDirs.Count());

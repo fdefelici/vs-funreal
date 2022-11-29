@@ -103,7 +103,6 @@ namespace FUnreal
             }
         }
 
-
         public static string PathParent(string path, int levels = 1)
         {
             if (string.IsNullOrEmpty(path)) return string.Empty;
@@ -292,7 +291,6 @@ namespace FUnreal
             }
             return result;
         }
-        
 
         public static bool IsParentPath(string possibleParent, string possibleChild, bool samePathIsConsideredParent = false)
         {
@@ -300,11 +298,6 @@ namespace FUnreal
             if (string.IsNullOrEmpty(delta) && !samePathIsConsideredParent) return false;
             if (delta.Length == possibleChild.Length) return false;
             return true;
-        }
-
-        public static bool FolderHasAnyFile(string folderPath, bool recursive)
-        {
-            return FindFile(folderPath, recursive, "*.*") != null;
         }
 
         public static string ToPath(string[] parts, int startIndex=0)

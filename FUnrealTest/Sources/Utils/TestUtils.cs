@@ -23,31 +23,25 @@ namespace FUnrealTest
         public static string MakeDir(string dirPath, params string[] parts)
         {
             string path = PathCombine(dirPath, parts);
-            return Directory.CreateDirectory(path).FullName;
+            if (!XFilesystem.DirCreate(path)) throw new Exception("Cannot create directory");
+            return path;
         }
 
         public static void WriteFile(string filePath, string contents)
         {
-            string basePath = Path.GetDirectoryName(filePath);
-            MakeDir(basePath);
-            File.WriteAllText(filePath, contents);
+            XFilesystem.FileWrite(filePath, contents);
         }
 
         public static void DeleteDir(string basePath, params string[] parts)
         {
             string path = XFilesystem.PathCombine(basePath, parts);
-
-            if (!Directory.Exists(path)) return;
-            Directory.Delete(path, true);
+            XFilesystem.DirDelete(path);
         }
 
         public static string MakeFile(string dirPath, params string[] parts)
         {
             string filePath = PathCombine(dirPath, parts);
-
-            string basePath = Path.GetDirectoryName(filePath);
-            MakeDir(basePath);
-            WriteFile(filePath, "");
+            if (!XFilesystem.FileCreate(filePath)) return null;
             return filePath;
         }
 
@@ -75,7 +69,7 @@ namespace FUnrealTest
         public static bool ExistsFile(string first, params string[] parts)
         {
             string filePath = XFilesystem.PathCombine(first, parts);
-            return File.Exists(filePath);
+            return XFilesystem.FileExists(filePath);
         }
 
         public static string ReadFile(string first, params string[] parts)
@@ -92,7 +86,7 @@ namespace FUnrealTest
 
         public static string RenameFile(string filePath, string name)
         {
-            return XFilesystem.RenameFileName(filePath, name);
+            return XFilesystem.FileRename(filePath, name);
         }
 
         internal static string RenameFolder(string sourcePath, string dirName)
@@ -105,10 +99,9 @@ namespace FUnrealTest
             return destPath;
         }
 
-        internal static void DeleteFile(string module01)
+        internal static void DeleteFile(string file)
         {
-            if (!File.Exists(module01)) return;
-            File.Delete(module01);
+            XFilesystem.FileDelete(file);
         }
 
         private static Dictionary<string, FileStream> lockedFiles = new Dictionary<string, FileStream>();
@@ -117,10 +110,10 @@ namespace FUnrealTest
         {
             lock (lockedFiles)
             {
-                if (!File.Exists(filePath)) throw new Exception("File must exists!");
+                if (!ExistsFile(filePath)) throw new Exception("File must exists!");
                 if (lockedFiles.ContainsKey(filePath)) return;
-                
-                var stream = File.OpenWrite(filePath);
+
+                var stream = File.OpenWrite(XFilesystem.ToLongPath(filePath));
                 lockedFiles[filePath] = stream;
             }
         }
@@ -129,7 +122,7 @@ namespace FUnrealTest
         {
             lock (lockedFiles)
             {
-                if (!File.Exists(filePath)) throw new Exception("File must exists!");
+                if (!ExistsFile(filePath)) throw new Exception("File must exists!");
                 if (!lockedFiles.ContainsKey(filePath)) return;
 
                 var stream = lockedFiles[filePath];

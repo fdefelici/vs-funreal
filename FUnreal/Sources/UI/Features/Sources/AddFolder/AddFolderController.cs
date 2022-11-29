@@ -88,7 +88,7 @@ namespace FUnreal
             }
 
             string fullPath = XFilesystem.PathCombine(absBasePath, inputPath);
-            success = XFilesystem.CreateDir(fullPath);
+            success = XFilesystem.DirCreate(fullPath);
             if (!success)
             {
                 _notifier.Erro("Creating path ...", "Failed creating folder on filesystem {0}", fullPath);

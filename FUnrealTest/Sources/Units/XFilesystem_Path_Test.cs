@@ -123,38 +123,6 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void SelectFolderPathsNotContainingAnyFile()
-        {
-            string tmpPath = TestUtils.AbsPath("XFileSystemTest");
-            TestUtils.DeleteDir(tmpPath);
-
-
-            var path01 = TestUtils.MakeDir(tmpPath, @"Hello");
-            var path02 = TestUtils.MakeDir(tmpPath, @"Hello\Hello2");
-            var path03 = TestUtils.MakeDir(tmpPath, @"Hello\Hello2\Hello3");
-            var path04 = TestUtils.MakeDir(tmpPath, @"Other");
-            var path05 = TestUtils.MakeDir(tmpPath, @"Other\Other2");
-                         TestUtils.MakeFile(tmpPath,@"Other\Other2\file.txt");
-
-            var paths = new List<string>()
-            {
-                path01,
-                path02,
-                path03, path03, //duplicated path on purpose
-                path04,
-                path05,
-            };
-
-
-            var result = XFilesystem.SelectFolderPathsNotContainingAnyFile(paths);
-
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(path03, result[0]);
-
-            TestUtils.DeleteDir(tmpPath);
-        }
-
-        [TestMethod]
         public void IsParentPath()
         {
 

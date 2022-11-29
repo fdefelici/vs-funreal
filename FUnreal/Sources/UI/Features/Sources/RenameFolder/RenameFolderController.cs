@@ -28,7 +28,7 @@ namespace FUnreal
         {
             var item = await _unrealVS.GetSelectedItemAsync();
             _absPathSelected = item.FullPath;
-            if (!XFilesystem.DirectoryExists(_absPathSelected))
+            if (!XFilesystem.DirExists(_absPathSelected))
             {
                 await XDialogLib.ShowErrorDialogAsync(XDialogLib.ErrorMsg_PathNotExists, _absPathSelected);
                 return;
@@ -63,7 +63,7 @@ namespace FUnreal
             { 
                 _dialog.addButton.IsEnabled = false;
             }
-            else if (XFilesystem.DirectoryExists(newFolderPath) || await _unrealVS.ExistsFolderInSelectedFolderParentAsync(inputPath))
+            else if (XFilesystem.DirExists(newFolderPath) || await _unrealVS.ExistsFolderInSelectedFolderParentAsync(inputPath))
             //else if (await _unrealVS.ExistsSubpathFromSelectedFolderAsync(parts)) //To allow creating VS Virtual Folder / Filter in case of existent folder on Filsystem
             {
                 _dialog.addButton.IsEnabled = false;

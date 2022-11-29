@@ -15,7 +15,7 @@ namespace FUnreal.Sources.Core
             notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingModuleTargetFile, module.BuildFilePath);
             {
                 string moduleFilePath = module.BuildFilePath;
-                string csText = XFilesystem.ReadFile(moduleFilePath);
+                string csText = XFilesystem.FileRead(moduleFilePath);
 
                 string classRegex = @"(?<=class\s+?)SEARCH(?=[\s\S]*?\{)";
                 classRegex = classRegex.Replace("SEARCH", module.Name);
@@ -24,8 +24,8 @@ namespace FUnreal.Sources.Core
                 string ctorRegex = $@"(?<=public\s*?){module.Name}(?=\s*?\()";
                 csText = Regex.Replace(csText, ctorRegex, newModuleName);
 
-                XFilesystem.WriteFile(moduleFilePath, csText);
-                XFilesystem.RenameFileName(moduleFilePath, $"{newModuleName}.Build");
+                XFilesystem.FileWrite(moduleFilePath, csText);
+                XFilesystem.FileRename(moduleFilePath, $"{newModuleName}.Build");
             }
 
             return true;
@@ -61,7 +61,7 @@ namespace FUnreal.Sources.Core
 
                 //2.1 update .cpp
                 notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingFile, cppFilePath);
-                string cppText = XFilesystem.ReadFile(cppFilePath);
+                string cppText = XFilesystem.FileRead(cppFilePath);
 
               
                 if (IsPrimaryGameModule)
@@ -85,17 +85,17 @@ namespace FUnreal.Sources.Core
                     //#include "**/<FileName>.h" 
                     cppText = cppText.Replace(heaIncPath, newHeaRelPath);
                 }
-                XFilesystem.WriteFile(cppFilePath, cppText);
+                XFilesystem.FileWrite(cppFilePath, cppText);
 
 
                 if (renameSourceFiles)
                 {
                     //2.2 Renaming .cpp and .h
                     notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFile, cppFilePath, $"{newFileName}.cpp");
-                    XFilesystem.RenameFileName(cppFilePath, newFileName);
+                    XFilesystem.FileRename(cppFilePath, newFileName);
 
                     notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_RenamingFile, heaFilePath, $"{newFileName}.h");
-                    XFilesystem.RenameFileName(heaFilePath, newFileName);
+                    XFilesystem.FileRename(heaFilePath, newFileName);
 
                     //2.3 scan dependent modules sources to replace #include directive
                     var dependentModules = new List<FUnrealModule>();
@@ -104,7 +104,7 @@ namespace FUnreal.Sources.Core
                     {
                         if (other == module) continue;
                         string csFile = other.BuildFilePath;
-                        string buildText = XFilesystem.ReadFile(csFile);
+                        string buildText = XFilesystem.FileRead(csFile);
                         string dependency = $"\"{moduleName}\"";
                         string newDependency = $"\"{newModuleName}\"";
                         if (buildText.Contains(dependency)) dependentModules.Add(other);
@@ -116,12 +116,12 @@ namespace FUnreal.Sources.Core
                         {
                             XFilesystem.FilesForEach(eachModule.FullPath, true, ".h", file =>
                             {
-                                string text = XFilesystem.ReadFile(file);
+                                string text = XFilesystem.FileRead(file);
                                 if (text.Contains(heaIncPath))
                                 {
                                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingFile, file);
                                     text = text.Replace(heaIncPath, newHeaIncPath);
-                                    XFilesystem.WriteFile(file, text);
+                                    XFilesystem.FileWrite(file, text);
                                 }
                             });
                         });
@@ -133,12 +133,12 @@ namespace FUnreal.Sources.Core
                         {
                             XFilesystem.FilesForEach(eachModule.FullPath, true, ".cpp", file =>
                             {
-                                string text = XFilesystem.ReadFile(file);
+                                string text = XFilesystem.FileRead(file);
                                 if (text.Contains(heaIncPath))
                                 {
                                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingFile, file);
                                     text = text.Replace(heaIncPath, newHeaIncPath);
-                                    XFilesystem.WriteFile(file, text);
+                                    XFilesystem.FileWrite(file, text);
                                 }
                             });
                         });
@@ -164,12 +164,12 @@ namespace FUnreal.Sources.Core
             //Parallel?
             foreach (var file in publicHeaderFiles)
             {
-                string text = XFilesystem.ReadFile(file);
+                string text = XFilesystem.FileRead(file);
                 if (text.Contains(moduleApi))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModule, XDialogLib.Info_UpdatingApiMacroInFile, file);
                     text = text.Replace(moduleApi, newModuleApi);
-                    XFilesystem.WriteFile(file, text);
+                    XFilesystem.FileWrite(file, text);
                 }
             }
             return true;
@@ -199,14 +199,14 @@ namespace FUnreal.Sources.Core
                 if (other == module) continue;
 
                 string csFile = other.BuildFilePath;
-                string buildText = XFilesystem.ReadFile(csFile);
+                string buildText = XFilesystem.FileRead(csFile);
                 string dependency = $"\"{moduleName}\"";
                 string newDependency = $"\"{newModuleName}\"";
                 if (buildText.Contains(dependency))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
                     buildText = buildText.Replace(dependency, newDependency);
-                    XFilesystem.WriteFile(csFile, buildText);
+                    XFilesystem.FileWrite(csFile, buildText);
                 }
             }
             return true;
@@ -233,14 +233,14 @@ namespace FUnreal.Sources.Core
             string moduleName = module.Name;
             foreach (var csFile in project.TargetFiles)
             {
-                string buildText = XFilesystem.ReadFile(csFile);
+                string buildText = XFilesystem.FileRead(csFile);
                 string dependency = $"\"{moduleName}\"";
                 string newDependency = $"\"{newModuleName}\"";
                 if (buildText.Contains(dependency))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
                     buildText = buildText.Replace(dependency, newDependency);
-                    XFilesystem.WriteFile(csFile, buildText);
+                    XFilesystem.FileWrite(csFile, buildText);
                 }
             }
             return true;
@@ -283,7 +283,7 @@ namespace FUnreal.Sources.Core
                 if (other == module) continue;
 
                 string csFile = other.BuildFilePath;
-                string buildText = XFilesystem.ReadFile(csFile);
+                string buildText = XFilesystem.FileRead(csFile);
                 string dependency = $"\"{module.Name}\"";
                 if (buildText.Contains(dependency))
                 {
@@ -310,13 +310,13 @@ namespace FUnreal.Sources.Core
             string incRegex = $@"(?<=#include\s+(?:""|<)){incOldPath}(?=(?:/\w+)+\.h(?:""|>))";
             Action<string> replaceAction = (path) =>
             {
-                string text = XFilesystem.ReadFile(path);
+                string text = XFilesystem.FileRead(path);
 
                 if (Regex.IsMatch(text, incRegex))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
                     text = Regex.Replace(text, incRegex, incNewPath);
-                    XFilesystem.WriteFile(path, text);
+                    XFilesystem.FileWrite(path, text);
                 }
             };
 
@@ -349,13 +349,13 @@ namespace FUnreal.Sources.Core
             string incRegex = $@"(?<=#include\s+(?:""|<)){incOldPath}(?=(?:""|>))";
             Action<string> replaceAction = (path) =>
             {
-                string text = XFilesystem.ReadFile(path);
+                string text = XFilesystem.FileRead(path);
 
                 if (Regex.IsMatch(text, incRegex))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingFiles, XDialogLib.info_UpdatingFile, path);
                     text = Regex.Replace(text, incRegex, incNewPath);
-                    XFilesystem.WriteFile(path, text);
+                    XFilesystem.FileWrite(path, text);
                 }
             };
 
@@ -480,7 +480,7 @@ namespace FUnreal.Sources.Core
                     //FullScan
                     cppPath = XFilesystem.FindFile(modulePath, true, "*.cpp", file =>
                     {
-                        string text = XFilesystem.ReadFile(file);
+                        string text = XFilesystem.FileRead(file);
 
                         string gameOrPlugModRx  = $@"(?<=(?:IMPLEMENT_MODULE|IMPLEMENT_GAME_MODULE)\s*\([\s\S]+?,\s*){moduleName}(?=\s*?\))";
                         string primaryGameModRx = $@"(?<=IMPLEMENT_PRIMARY_GAME_MODULE\s*\([\s\S]+?,\s*){moduleName}(?=\s*?,[\s\S]+?\))";
@@ -536,7 +536,7 @@ namespace FUnreal.Sources.Core
             {
                 notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
                 {
-                    string csText = XFilesystem.ReadFile(targetFilePath);
+                    string csText = XFilesystem.FileRead(targetFilePath);
 
                     //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
                     string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
@@ -545,7 +545,7 @@ namespace FUnreal.Sources.Core
                     {
                         string moduleList = match.Groups[1].Value;
                         csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
-                        XFilesystem.WriteFile(targetFilePath, csText);
+                        XFilesystem.FileWrite(targetFilePath, csText);
                     }
                 }
                 return true;
@@ -559,13 +559,13 @@ namespace FUnreal.Sources.Core
 
         public static bool Plugin_CheckIfNotLockedByOtherProcess(FUnrealPlugin plugin, FUnrealNotifier notifier)
         {
-            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.BinariesPath, true, "*.dll", out string binFirstFileLocked))
+            if (XFilesystem.DirContainsAnyFileLocked(plugin.BinariesPath, true, "*.dll", out string binFirstFileLocked))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, binFirstFileLocked);
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_MaybeLockedByUnreal);
                 return false;
             }
-            if (XFilesystem.DirectoryHasAnyFileLocked(plugin.ContentPath, true, "*.*", out string cntFirstFileLocked))
+            if (XFilesystem.DirContainsAnyFileLocked(plugin.ContentPath, true, "*.*", out string cntFirstFileLocked))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_FileLockedByOtherProcess, cntFirstFileLocked);
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_MaybeLockedByUnreal);
