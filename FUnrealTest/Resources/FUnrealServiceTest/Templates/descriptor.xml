@@ -22,7 +22,7 @@
   -->
   <template context="modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
     <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
-    <meta type="Runtime" phase="Default"/>
+    <meta type="Runtime" phase="Default" target="Game"/>
   </template>
 
   <!-- GAME MODULE TEMPLATES -->
@@ -30,10 +30,7 @@
     @{TPL_MODU_NAME}  Module name
     @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
   -->
-  <template context="game_modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
-    <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
-    <meta type="Runtime" phase="Default" target="Game"/>
-  </template>
+  <!-- By now Game Modules have same templates of Plugin Modules-->
 
   <!-- SOURCE TEMPLATES -->
   <!-- Placeholders 

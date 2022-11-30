@@ -179,6 +179,27 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin01\Plugin01.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\UPrjTwoPlug.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_RenamePlugin01\Plugins\Plugin01Renamed\Plugin01Renamed.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_RenamePlugin01\Plugins\Plugin02\Plugin02.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_RenamePlugin01\UPrjTwoPlug.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_DeletePlugin01\Plugins\Plugin02\Plugin02.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_DeletePlugin01\UPrjTwoPlug.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\MyLevel.umap">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -248,6 +269,21 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\UnrealEditor-Plugin01.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin02\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_RenamePlugin01\Plugins\Plugin01Renamed\Source\Module01\Module01.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_RenamePlugin01\Plugins\Plugin02\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_DeletePlugin01\Plugins\Plugin02\Source\Module02\Module02.Build.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
     <Compile Include="Sources\Integrations\VSIXTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\ProductionTemplatesTest.cs" />
@@ -269,6 +305,9 @@
     <Compile Include="Sources\Units\XFilesystem_Path_Test.cs" />
     <Compile Include="Sources\Units\XDialogLibTest.cs" />
     <Compile Include="Sources\Units\XStringTest.cs" />
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin02\Plugin02.uplugin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

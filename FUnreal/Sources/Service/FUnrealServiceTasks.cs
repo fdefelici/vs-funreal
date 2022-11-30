@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE90;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -572,6 +573,98 @@ namespace FUnreal.Sources.Core
                 return false;
             }
             return true;
+        }
+
+        public static List<FUnrealPlugin> Plugin_DependentPlugins(FUnrealPlugin plugin, FUnrealCollection<FUnrealPlugin> allPlugins, FUnrealNotifier notifier)
+        {
+            notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, plugin.Name);
+            var result = new List<FUnrealPlugin>();
+            foreach (var other in allPlugins)
+            {
+                if (other == plugin) continue;
+
+                string descrFile = other.DescriptorFilePath;
+                var descrJson = new FUnrealUPluginJsonFile(descrFile);
+                var plugingJson = descrJson.Plugins[plugin.Name];
+                if (plugingJson)
+                {
+                    result.Add(other);
+                }
+            }
+            return result;
+        }
+
+        public static async Task<bool> Plugin_RenameDependencyAsync(FUnrealPlugin plugin, FUnrealCollection<FUnrealPlugin> allPlugins, string pluginNewName, FUnrealNotifier notifier)
+        {
+            await Task.Run(() =>
+            {
+                var dependentPlugins = Plugin_DependentPlugins(plugin, allPlugins, notifier);
+                string pluginName = plugin.Name;
+
+                foreach (var other in dependentPlugins)
+                {
+                    var descrJson = new FUnrealUPluginJsonFile(other.DescriptorFilePath);
+                    var plugingJson = descrJson.Plugins[pluginName];
+                    if (plugingJson)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, other.DescriptorFilePath);
+                        plugingJson.Name = pluginNewName;
+                        descrJson.Save();
+                    }
+                }
+            });
+            return true;
+        }
+
+        public static async Task<bool> Plugin_DeleteDependencyAsync(FUnrealPlugin plugin, FUnrealCollection<FUnrealPlugin> allPlugins, FUnrealNotifier notifier)
+        {
+            await Task.Run(() =>
+            {
+                var dependentPlugins = Plugin_DependentPlugins(plugin, allPlugins, notifier);
+                string pluginName = plugin.Name;
+
+                foreach (var other in dependentPlugins)
+                {
+                    var descrJson = new FUnrealUPluginJsonFile(other.DescriptorFilePath);
+                    var plugingJson = descrJson.Plugins[pluginName];
+                    if (plugingJson)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, other.DescriptorFilePath);
+                        plugingJson.Remove();
+                        descrJson.Plugins.RemoveIfEmpty();
+                        descrJson.Save();
+                    }
+                }
+            });
+            return true;
+        }
+
+
+        public static async Task<bool> Plugin_DeleteModuleDependencyAsync(FUnrealPlugin plugin, FUnrealCollection<FUnrealModule> allModules, FUnrealNotifier notifier)
+        {
+            //NOTE: This method doesn't take advantage to reduce the scope of module dependency search based on dependency between Plugin,
+            //      because in Games UE Project, Plugins developed are active by default. So a plugin module can depend to another one, without
+            //      the need to declare dependency between plugins
+
+            //TODO: Eventually improving performance, avoiding to open Build.cs file twice when checking dependency and one for deleting dependency
+            return await Task.Run(() =>
+            {
+                foreach (var plugModule in plugin.Modules)
+                {
+                    string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
+                    regexDepend = regexDepend.Replace("SEARCH", plugModule.Name);
+
+                    var moduleDependency = Module_DependentModules(plugModule, allModules, notifier);
+                    foreach(var depeModule in moduleDependency)
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, depeModule.BuildFilePath);
+                        string buildText = XFilesystem.FileRead(depeModule.BuildFilePath);
+                        buildText = Regex.Replace(buildText, regexDepend, "");
+                        XFilesystem.FileWrite(depeModule.BuildFilePath, buildText);
+                    }
+                }
+                return true;
+            });
         }
     }
 }

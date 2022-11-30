@@ -1,0 +1,23 @@
+﻿{
+	"FileVersion": 3,
+	"EngineAssociation": "5.0",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "UPrjTwoPlug",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Plugin01",
+			"Enabled": true
+		},
+		{
+			"Name": "Plugin02",
+			"Enabled": true
+		}
+	]
+}

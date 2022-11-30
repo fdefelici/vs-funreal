@@ -85,6 +85,7 @@ namespace FUnreal
         internal static string Error_FileRenameFailed = "File rename failed!";
         internal static string Info_RenamingFileToNewName = "Renaming file {0} to {1}";
         internal static string Info_CheckingModuleDependency = "Checking dependency to module {0} ...";
+        internal static string Info_CheckingPluginDependency = "Checking dependency to plugin {0} ...";
         internal static string Info_DependentModule = "Dependent module {0}";
         internal static string info_UpdatingFile = "Updating file {0} ...";
         internal static string Title_FUnreal = "FUnreal";

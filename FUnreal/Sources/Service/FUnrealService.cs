@@ -648,6 +648,14 @@ namespace FUnreal
                     uprojectJson.Save();
                 }
             }
+            
+            // Remove plugin modules in dependent .Build.cs (if configured there)
+            taskSuccess = await FUnrealServiceTasks.Plugin_DeleteModuleDependencyAsync(plugin, GetUProject().AllModules, notifier);
+            
+            // Remove plugin in dependent .uplugin (if configured there)
+            taskSuccess = await FUnrealServiceTasks.Plugin_DeleteDependencyAsync(plugin, GetUProject().Plugins, notifier);
+            if (!taskSuccess) return false;
+
 
             //X. Regen VS Project
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
@@ -678,7 +686,7 @@ namespace FUnreal
             taskSuccess = FUnrealServiceTasks.Plugin_CheckIfNotLockedByOtherProcess(plugin, notifier);
             if (!taskSuccess) return false;
 
-            //1. Rename .uplugin file and replace "FriendlyName" (only if is the same as pluginName)
+            //1. Rename .uplugin file and replace "FriendlyName" (only if is the same as pluginName) //TODO: Could override the name in anycase..
             string upluginFilePath = plugin.DescriptorFilePath;
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, upluginFilePath);
 
@@ -706,6 +714,11 @@ namespace FUnreal
                 uprojectJson.Save();
             }
 
+            //4. Rename plugin in other dependents .uplugin (if plugin is configured there)
+            taskSuccess = await FUnrealServiceTasks.Plugin_RenameDependencyAsync(plugin, GetUProject().Plugins, pluginNewName, notifier);
+            if (!taskSuccess) return false;
+
+            //5. Regen VS Solution
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
 
@@ -889,8 +902,8 @@ namespace FUnreal
 
             var project = GetUProject();
 
+            //TODO: Duplication reuse method refactored in FUNrealServiceTasks
             //1. Remove dependency from other modules .Build.cs
-            //notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency);
             string moduleDepend = $"\"{moduleName}\"";
             //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
             string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
@@ -921,9 +934,10 @@ namespace FUnreal
                 moduleJson.Remove();
                 upluginFile.Save();
             }
-
+            
+            bool taskSuccess;
             //X. Regen VS Project
-            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
 
             //X. Update Project Model

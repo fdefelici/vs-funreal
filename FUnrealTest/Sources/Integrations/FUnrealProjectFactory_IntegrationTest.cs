@@ -162,5 +162,25 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(10, emptyDirs.Count);
         }
 
+        [TestMethod]
+        public void tryes()
+        {
+            string uprjFilePath = @"C:\Program Files\Epic Games\UE_5.0\Engine\Engine.uproject";
+
+            FUnrealProjectFactory factory = new FUnrealProjectFactory();
+            FUnrealProject project = factory.CreateAsync(uprjFilePath, new FUnrealNotifier()).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            
+            foreach(var plug in project.Plugins)
+            {
+                string text = XFilesystem.FileRead(plug.DescriptorFilePath);
+                if (text.Contains("Plugins"))
+                {
+                    Console.WriteLine(plug.DescriptorFilePath);
+                }
+            }
+            
+        }
+
     }
 }

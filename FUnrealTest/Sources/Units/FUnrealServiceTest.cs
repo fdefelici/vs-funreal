@@ -185,6 +185,68 @@ namespace FUnrealTest
         }
 
         [TestMethod]
+        public void RenanePluginWithAnotherPluginDependingOnIt()
+        {
+            SetUpTestCaseForProject("UPrjTwoPlug");
+            string upluginName = "Plugin01";
+            string upluginNewName = "Plugin01Renamed";
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjTwoPlug_RenamePlugin01");
+
+            bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            string exp, act;
+            
+            exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin01Renamed/Plugin01Renamed.uplugin");
+            act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin01Renamed/Plugin01Renamed.uplugin");
+            FAssert.AreEqualNN(exp, act);
+
+            exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin02/Plugin02.uplugin");
+            act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin02/Plugin02.uplugin");
+            FAssert.AreEqualNN(exp, act);
+
+            exp = TestUtils.ReadFile(expectedPath, "UPrjTwoPlug.uproject");
+            act = TestUtils.ReadFile(uprojectPath, "UPrjTwoPlug.uproject");
+            FAssert.AreEqualNN(exp, act);
+        }
+
+        [TestMethod]
+        public void DeletePluginWithAnotherPluginDependingOnIt()
+        {
+            SetUpTestCaseForProject("UPrjTwoPlug");
+            string upluginName = "Plugin01";
+
+            string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjTwoPlug_DeletePlugin01");
+
+            bool taskResult = service.DeletePluginAsync(upluginName, new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsTrue(taskResult);
+            Assert.IsTrue(ubt.Called);
+            Assert.AreEqual(uprojectFile, ubt.UProjectFilePath);
+
+            Assert.IsFalse(TestUtils.ExistsDir(expectedPath, "Plugins/Plugin01"));
+
+            string exp, act;
+
+            exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin02/Plugin02.uplugin");
+            act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin02/Plugin02.uplugin");
+            FAssert.AreEqualNN(exp, act);
+
+            exp = TestUtils.ReadFile(expectedPath, "Plugins/Plugin02/Source/Module02/Module02.Build.cs");
+            act = TestUtils.ReadFile(uprojectPath, "Plugins/Plugin02/Source/Module02/Module02.Build.cs");
+            FAssert.AreEqualNN(exp, act);
+
+            exp = TestUtils.ReadFile(expectedPath, "UPrjTwoPlug.uproject");
+            act = TestUtils.ReadFile(uprojectPath, "UPrjTwoPlug.uproject");
+            FAssert.AreEqualNN(exp, act);
+        }
+
+
+        [TestMethod]
         public void RenanePluginStoppedBecauseBinaryFileIsBusy()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
@@ -571,7 +633,7 @@ namespace FUnrealTest
             Assert.AreEqual(fileCsExp, fileCs);
 
             string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs");
-            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs"); //module name added here because is 'Runtime'
+            string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs"); //module name added here because target is "Game"
             Assert.AreEqual(fileTargetExp, fileTarget);
 
             fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameEditor.Target.cs");

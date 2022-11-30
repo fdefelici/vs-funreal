@@ -70,14 +70,14 @@ namespace FUnreal
         {
 #if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
-#endif //DEBUG
-
-            bool IsActive = false;
             bool cacheHit = true;
+#endif //DEBUG
             if (!_timer.IsInTime())
             {
                 _cachedScenario = await FindScenarioForCmdAsync();
+#if DEBUG
                 cacheHit = false;
+#endif //DEBUG
             }
 
 
@@ -104,7 +104,7 @@ namespace FUnreal
             }
 #if DEBUG
             stopwatch.Stop();
-            XDebug.Info($"CtxMenu Cmd 0x{cmd.ID:X4} [sceneario: 0x{(int)_cachedScenario:X4}, cached: {cacheHit} active: {IsActive}] configured in {stopwatch.ElapsedMilliseconds} ms");
+            XDebug.Info($"CtxMenu Cmd 0x{cmd.ID:X4} [sceneario: 0x{(int)_cachedScenario:X4}, cached: {cacheHit} active: {cmd.Visible}] configured in {stopwatch.ElapsedMilliseconds} ms");
 #endif //DEBUG
         }
 

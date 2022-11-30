@@ -24,7 +24,7 @@ and offers the following features:
 * Create/Rename/Delete `plugins` choosing from *Unreal Plugin Templates*
 * Create/Rename/Delete `modules` (for plugin modules and game modules) choosing from *Unreal Templates*
 * `Invoke UBT automatically` to keep in sync UE project and VS Solution
-* `Keep the consistency` of the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (for more details read [here](./docs/DETAILS.md)).
+* `Keep the consistency` of the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed.
 
 
 # Activation
@@ -43,9 +43,7 @@ Once active, `FUnreal` context menu is available in **Solution Explorer** view o
 
 After executing the selected operation, `FUnreal` will run **Unreal Build Tool**, so you should receive at end the usual VS dialog advising that the project has been modified externally and need to be reloaded.
 
----Dove trovare FUnreal menu
-
 That's it! Enjoy :+1:
 
 # Changelog
-History of changes [here](./docs/CHANGELOG.md).
+History of changes [here](./CHANGELOG.md).
