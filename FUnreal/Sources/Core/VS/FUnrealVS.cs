@@ -115,7 +115,7 @@ namespace FUnreal
 
             VS.Events.SolutionEvents.OnAfterLoadProject += OnAfterLoadProjectHandler;
 
-            OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnrealToolbox);
+            OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnreal);
             Output = new FUnrealLogger(pane);
 
             _unrealDTE = await FUnrealDTE.CreateInstanceAsync();

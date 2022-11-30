@@ -10,7 +10,7 @@
       <Menu guid="guidFUnrealPackage" id="ToolboxMenu" type="Menu" priority="0x0001">
         <Parent guid="guidFUnrealPackage" id="ToolboxMenuGroup" />
         <Strings>
-          <ButtonText>FUnreal Toolbox</ButtonText>
+          <ButtonText>FUnreal</ButtonText>
         </Strings>
       </Menu>
       

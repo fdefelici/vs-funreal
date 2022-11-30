@@ -13,7 +13,7 @@ namespace FUnreal
         public static AddFolderDialog CreateInRenameMode()
         {
             var view = new AddFolderDialog();
-            view.Title = "FUnreal Toolbox: Rename Folder";
+            view.Title = "FUnreal: Rename Folder";
             view.addButton.Content = "Rename";
             view.pathLbl.Content = "Folder Name";
             view.OnInputValidation = XDialogLib.TextBox_FolderName_InputValidation;

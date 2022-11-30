@@ -39,7 +39,7 @@ namespace FUnreal
                 unrealVS.Output.Erro($"{unrealService.ProjectName} scan failed! {_errorMsg}");
                 unrealVS.Output.ForceFocus();
 
-                string callToAct = $"Please fix the issue and regenerate VS Solution with UBT, before continuing to use {XDialogLib.Title_FUnrealToolbox}!";
+                string callToAct = $"Please fix the issue and regenerate VS Solution with UBT, before continuing to use {XDialogLib.Title_FUnreal}!";
                 unrealVS.Output.Warn(callToAct);
                 await VS.MessageBox.ShowErrorAsync($"Wrong UE project layout detected! {callToAct}", _errorMsg);
                 return;

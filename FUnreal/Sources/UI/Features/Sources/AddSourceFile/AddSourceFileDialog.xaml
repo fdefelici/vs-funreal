@@ -10,7 +10,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox: Add Source File"
+        Title="FUnreal: Add Source File"
         MinHeight="0"
         MinWidth="600"
         SizeToContent="WidthAndHeight"
@@ -59,7 +59,7 @@
         <Label     Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldNameClass}">File Name:</Label>
         <TextBox   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="fileNameTbx" 
                    TextChanged="classNameTbxChanged" PreviewTextInput="inputText_Validation" DataObject.Pasting="pasteText_Validation" />
-        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="filePathTbl" Margin="0,5,0,5">File Path</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="filePathTbl" Margin="0,5,0,5" TextWrapping="Wrap">File Path</TextBlock>
 
         <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         <StackPanel Grid.Row="4" Grid.Column="2"

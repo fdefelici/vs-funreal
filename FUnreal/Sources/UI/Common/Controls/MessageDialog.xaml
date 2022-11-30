@@ -11,7 +11,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox"
+        Title="FUnreal"
         MinHeight="0"
         MinWidth="300"
         SizeToContent="WidthAndHeight"

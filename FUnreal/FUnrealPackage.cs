@@ -41,9 +41,9 @@ namespace FUnreal
                 FUnrealService unrealService = FUnrealService.Create(unrealVS);
                 if (unrealService == null)
                 {
-                    unrealVS.Output.Erro($"{XDialogLib.Title_FUnrealToolbox} failed to load!");
+                    unrealVS.Output.Erro($"{XDialogLib.Title_FUnreal} failed to load!");
                     unrealVS.Output.ForceFocus();
-                    unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} fails. Please check {XDialogLib.Title_FUnrealToolbox} Output window!");
+                    unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} fails. Please check {XDialogLib.Title_FUnreal} Output window!");
                     return;
                 }
 
@@ -60,8 +60,8 @@ namespace FUnreal
                 //Bind Cmd with VSCT file (To be done after ContexMenuManager)
                 await this.RegisterCommandsAsync();
 
-                unrealVS.Output.Info($"{XDialogLib.Title_FUnrealToolbox} Loaded!");
-                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnrealToolbox} is ready ;-)");
+                unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
+                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
 
                 //Simulate Project Loaded event at startup to launch the discovery
                 await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget

@@ -10,7 +10,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox: Rename Module"
+        Title="FUnreal: Rename Module"
         MinHeight="0"
         MinWidth="600"
         SizeToContent="WidthAndHeight"
@@ -61,7 +61,7 @@
 
         <Label     Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldNameClass}">Plugin:</Label>
         <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginNameTbx" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginPathTbl" Margin="0,5,0,10">Current\Plugin\Path</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="pluginPathTbl" Margin="0,5,0,10" TextWrapping="Wrap">Current\Plugin\Path</TextBlock>
      
         <Label     Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Module:</Label>
         <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNewNameTbx" 
@@ -69,11 +69,11 @@
                    PreviewTextInput="moduleNewNameTbx_Validation"
                    DataObject.Pasting="pasteText_Validation"
                    />
-        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNewPathTbl" Margin="0,5,0,10"> New\Module\Path</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNewPathTbl" Margin="0,5,0,10" TextWrapping="Wrap"> New\Module\Path</TextBlock>
 
         <Label      Grid.Row="4" Grid.Column="0" Style="{StaticResource FieldNameClass}">Rename sources:</Label>
         <CheckBox   Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Name="renameFilesCbx" Checked="renameFilesCbx_Changed" VerticalAlignment="Center"/>
-        <TextBlock  Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,10">Rename module .h/.cpp files and update includes on dependent sources (no class rename)</TextBlock>
+        <TextBlock  Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,10" TextWrapping="Wrap">Rename module .h/.cpp files and update includes on dependent sources (no class rename)</TextBlock>
 
         <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         <StackPanel Grid.Row="7" Grid.Column="2"

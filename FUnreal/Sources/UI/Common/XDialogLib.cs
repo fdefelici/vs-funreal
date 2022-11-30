@@ -87,7 +87,7 @@ namespace FUnreal
         internal static string Info_CheckingModuleDependency = "Checking dependency to module {0} ...";
         internal static string Info_DependentModule = "Dependent module {0}";
         internal static string info_UpdatingFile = "Updating file {0} ...";
-        internal static string Title_FUnrealToolbox = "FUnreal Toolbox";
+        internal static string Title_FUnreal = "FUnreal";
         internal static string NothingToDelete = "Nothing to delete on filesystem.";
         internal static string Error_WrongTargetName = "Wrong Target Name {0}";
         public const string Input_ClassName_ValidationRegex = "^[a-zA-Z][a-zA-Z0-9_]*$";

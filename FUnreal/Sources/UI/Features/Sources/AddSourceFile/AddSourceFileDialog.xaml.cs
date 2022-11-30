@@ -12,7 +12,7 @@ namespace FUnreal
         public static AddSourceFileDialog CreateInRenameMode()
         {
             var view = new AddSourceFileDialog();
-            view.Title = "FUnreal Toolbox: Rename Source File";
+            view.Title = "FUnreal: Rename Source File";
             view.addButton.Content = "Rename";
             return view;
         }

@@ -10,7 +10,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox: Rename Module"
+        Title="FUnreal: Rename Module"
         MinHeight="0"
         MinWidth="600"
         SizeToContent="WidthAndHeight"
@@ -64,11 +64,11 @@
                    PreviewTextInput="inputText_Validation"
                    DataObject.Pasting="pasteText_Validation"
                    />
-        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNewPathTbl" Margin="0,5,0,10"> New\Module\Path</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="moduleNewPathTbl" Margin="0,5,0,10" TextWrapping="Wrap" > New\Module\Path</TextBlock>
 
         <Label      Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldNameClass}">Update C++ file:</Label>
         <CheckBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Name="renameFilesCbx" Checked="renameFilesCbx_Changed" VerticalAlignment="Center"/>
-        <TextBlock  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,10">Rename module .h/.cpp files and class name (but references won't be updated in other files)</TextBlock>
+        <TextBlock  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,10" TextWrapping="Wrap">Rename module .h/.cpp files and update includes on dependent sources (no class rename)</TextBlock>
 
         <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Name="errorMsgLbl" Style="{StaticResource ErrorMsg}">Error Message Example</Label>
         

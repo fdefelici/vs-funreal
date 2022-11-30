@@ -11,7 +11,7 @@ namespace FUnrealTest.Integrations
     public class ProductionTemplateTest
     {
         [TestMethod]
-        public void Simple()
+        public void CheckSourcesTemplate()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.xml");
 
@@ -48,6 +48,47 @@ namespace FUnrealTest.Integrations
             {
                 var label = list[i];
                 var tpl = classTpls[i];
+                test(label, tpl);
+            }
+        }
+
+        [TestMethod]
+        public void CheckModules()
+        {
+            string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.xml");
+
+            var tpls = FUnrealTemplates.Load(prodTpls);
+
+            //Assert.AreEqual(0, tpls.Count);
+
+            var ctxTpls = tpls.GetTemplates(FUnrealTemplateCtx.MODULES, "5");
+
+            Action<string, FUnrealTemplate> test = (label, tpl) =>
+            {
+                string wikiName = label.Replace(" ", "");
+
+                Assert.AreEqual(label, tpl.Label);
+                Assert.IsNotNull(tpl.Description);
+                
+                Assert.AreEqual($"tpl_module_{wikiName.ToLower()}", tpl.Name);
+                Assert.IsTrue(tpl.BasePath.EndsWith($@"\UE5\Plugins\{wikiName}\@{{TPL_PLUG_NAME}}\Source"));
+                Assert.IsNotNull(tpl.GetMeta("type"));
+                Assert.IsNotNull(tpl.GetMeta("phase"));
+                Assert.IsNotNull(tpl.GetMeta("target"));
+            };
+
+            var list = new List<string>()
+            {
+                "Blank", "Blueprint Library", "Editor Mode", "Editor Standalone Window",
+                "Editor Toolbar Button", "Third Party Library"
+            };
+
+            Assert.AreEqual(list.Count, ctxTpls.Count);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var label = list[i];
+                var tpl = ctxTpls[i];
                 test(label, tpl);
             }
         }

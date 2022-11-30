@@ -33,7 +33,7 @@ namespace FUnreal
             string timestamp = DateTime.Now.ToString(@"yyyy-MM-dd hh:mm:ss");
             string content = XString.Format(format, args);
 
-            string message = $"[{timestamp}][{XDialogLib.Title_FUnrealToolbox}][{type}] {content}";
+            string message = $"[{timestamp}][{XDialogLib.Title_FUnreal}][{type}] {content}";
             Debug.Print(message);
         }
 

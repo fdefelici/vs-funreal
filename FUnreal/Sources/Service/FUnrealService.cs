@@ -13,6 +13,7 @@ namespace FUnreal
         public const string PLUGINS = "plugins";
         public const string MODULES = "modules";
         public const string SOURCES = "sources";
+        public const string GAME_MODULES = "game_modules";
     }
 
     public struct FUnrealTargets
@@ -1086,7 +1087,7 @@ namespace FUnreal
 
         public async Task<FUnrealServiceModuleResult> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
         {
-            string context = "game_modules";
+            string context = FUnrealTemplateCtx.MODULES; //FUnrealTemplateCtx.GAME_MODULES;  //BY NOW SAME AS "modules" plus the meta "Target"
             string engine = _engineMajorVer;
             string name = templeName;
 

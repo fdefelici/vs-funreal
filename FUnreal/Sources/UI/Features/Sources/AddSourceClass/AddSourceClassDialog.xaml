@@ -10,7 +10,7 @@
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
 
-        Title="FUnreal Toolbox: Add Source"
+        Title="FUnreal: Add Source"
         MinHeight="0"
         MinWidth="600"
         SizeToContent="WidthAndHeight"
