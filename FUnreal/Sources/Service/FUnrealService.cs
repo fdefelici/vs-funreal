@@ -585,14 +585,6 @@ namespace FUnreal
             }
             await XFilesystem.DirDeepCopyAsync(tpl.BasePath, _pluginsPath, strategy);
 
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
-
             //X. Regen VS Project
             bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;

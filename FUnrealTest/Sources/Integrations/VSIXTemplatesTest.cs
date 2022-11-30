@@ -28,11 +28,11 @@ namespace FUnrealTest.Integrations
         [TestMethod]
         public void Simple()
         {
-            string vsixPath = @"C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\1.0";
+            string vsixPath = @"C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\0.0.1";
 
             string tplPath = TestUtils.PathCombine(vsixPath, @"Templates\UE5\Plugins\ThirdPartyLibrary");
 
-            string filePath = @"\\?\C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\1.0\Templates\UE5\Plugins\ThirdPartyLibrary\@{TPL_PLUG_NAME}\Source\ThirdParty\@{TPL_MODU_NAME}Library\ExampleLibrary\ExampleLibrary.xcodeproj\project.pbxproj";
+            string filePath = @"\\?\C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\0.0.1\Templates\UE5\Plugins\ThirdPartyLibrary\@{TPL_PLUG_NAME}\Source\ThirdParty\@{TPL_MODU_NAME}Library\ExampleLibrary\ExampleLibrary.xcodeproj\project.pbxproj";
             
             Assert.IsTrue(File.Exists(filePath));
 

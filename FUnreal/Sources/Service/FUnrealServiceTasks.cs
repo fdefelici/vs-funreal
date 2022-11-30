@@ -275,7 +275,7 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
-        public static List<FUnrealModule> Module_DependentModules(FUnrealModule module, FUnrealCollection<FUnrealModule> allModules, FUnrealNotifier notifier)
+        public static List<FUnrealModule> Module_DependentModules(FUnrealModule module, IEnumerable<FUnrealModule> allModules, FUnrealNotifier notifier)
         {
             notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, module.Name);
             var result = new List<FUnrealModule>();
@@ -284,7 +284,7 @@ namespace FUnreal.Sources.Core
                 if (other == module) continue;
 
                 string csFile = other.BuildFilePath;
-                string buildText = XFilesystem.FileRead(csFile);
+                string buildText = XFilesystem.FileRead(csFile); //TODO: protect against NULL
                 string dependency = $"\"{module.Name}\"";
                 if (buildText.Contains(dependency))
                 {
@@ -494,7 +494,7 @@ namespace FUnreal.Sources.Core
                 }
             }
 
-            if (moduleCppFound) //Try to locate related header (TODO: could read #include directive eventually).
+            if (moduleCppFound) //Try to locate related header (TODO: could read #include directive eventually. But which one read?! At least file name shold be the same).
             {
                 //By now search symmetrical file respect to cpp
                 bool isCppUnderPrivate = XFilesystem.IsChildPath(cppPath, module.PrivatePath);
@@ -577,7 +577,7 @@ namespace FUnreal.Sources.Core
 
         public static List<FUnrealPlugin> Plugin_DependentPlugins(FUnrealPlugin plugin, FUnrealCollection<FUnrealPlugin> allPlugins, FUnrealNotifier notifier)
         {
-            notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, plugin.Name);
+            notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingPluginDependency, plugin.Name);
             var result = new List<FUnrealPlugin>();
             foreach (var other in allPlugins)
             {
@@ -645,20 +645,26 @@ namespace FUnreal.Sources.Core
             //NOTE: This method doesn't take advantage to reduce the scope of module dependency search based on dependency between Plugin,
             //      because in Games UE Project, Plugins developed are active by default. So a plugin module can depend to another one, without
             //      the need to declare dependency between plugins
+            //      In this scenario, when building the project will give this warning:
+            //          UnrealBuildTool : warning : Warning: Plugin 'NLOpt' does not list plugin 'NewPlugin12' as a dependency, but module 'NLOptMod01' depends on 'NewPlugin12'.
 
             //TODO: Eventually improving performance, avoiding to open Build.cs file twice when checking dependency and one for deleting dependency
             return await Task.Run(() =>
             {
+                //Excluding plugin modules from the collection, to avoid iterating on more exists .Build.cs file (in Module_DependentModules)
+                //if plugin has been already deleted.
+                var otherModules = allModules.Except(plugin.Modules); 
+
                 foreach (var plugModule in plugin.Modules)
                 {
                     string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
                     regexDepend = regexDepend.Replace("SEARCH", plugModule.Name);
 
-                    var moduleDependency = Module_DependentModules(plugModule, allModules, notifier);
+                    var moduleDependency = Module_DependentModules(plugModule, otherModules, notifier);
                     foreach(var depeModule in moduleDependency)
                     {
                         notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, depeModule.BuildFilePath);
-                        string buildText = XFilesystem.FileRead(depeModule.BuildFilePath);
+                        string buildText = XFilesystem.FileRead(depeModule.BuildFilePath); //TODO: Protect against null
                         buildText = Regex.Replace(buildText, regexDepend, "");
                         XFilesystem.FileWrite(depeModule.BuildFilePath, buildText);
                     }

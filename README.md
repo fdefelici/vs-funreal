@@ -14,7 +14,7 @@ Futhermore `FUnreal` will try to keep consistency in your project, updating UE d
 
 # Features
 `FUnreal` currently supports:
-* UE: 4.x and 5.x games project
+* UE: 4.x and 5.x Game C++ Projects
 * IDE: Visual Studio 2022 (aka v17.x)
 * OS: Windows
 
@@ -26,6 +26,7 @@ and offers the following features:
 * `Invoke UBT automatically` to keep in sync UE project and VS Solution
 * `Keep the consistency` of the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (for more details read [here](./docs/DETAILS.md)).
 
+> NOTE: While using `FUnreal` extension, it is still possible to create plugins and C++ classes from Unreal Editor or doing operations on the project directly on filesystem. The important thing is that UBT is successfully launched at end.
 
 # Activation
 `FUnreal` starts automatically when detects an UE Project, even if the actual activation dependends on Visual Studio extension loading chain. So before looking for the context menu, you can be aware if `FUnreal` is loaded properly in two ways:
@@ -39,11 +40,11 @@ Once active, `FUnreal` context menu is available in **Solution Explorer** view o
 * `Game Project` and `.uproject` file
 * `Plugin directory` and `.uplugin` file
 * `Module directory` and `.Build.cs` file (for both plugin modules and game modules)
-* Any `folder` or `file` within a Module directory
+* Any `folder` or `file` within a Module directory (or multiple selection of them)
+
+> You should find `FUnreal` menu at the very first position of context menu .
 
 After executing the selected operation, `FUnreal` will run **Unreal Build Tool**, so you should receive at end the usual VS dialog advising that the project has been modified externally and need to be reloaded.
-
----Dove trovare FUnreal menu
 
 That's it! Enjoy :+1:
 

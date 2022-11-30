@@ -1,11 +1,4 @@
-﻿using Microsoft.VisualStudio.TextManager.Interop;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Documents;
-
-namespace FUnreal
+﻿namespace FUnreal
 {
     public class FUnrealModule : IFunrealCollectionItem
     {
