@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FUnreal
 {
@@ -107,6 +108,11 @@ namespace FUnreal
                 dict[name] = value;
                 list.Insert(listPost, value);
             }
+        }
+
+        public IEnumerable<T> Except(T item)
+        {
+            return this.Except(new List<T>() { item });
         }
     }
 }

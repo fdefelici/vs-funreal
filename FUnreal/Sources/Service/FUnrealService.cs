@@ -894,24 +894,10 @@ namespace FUnreal
 
             var project = GetUProject();
 
-            //TODO: Duplication reuse method refactored in FUNrealServiceTasks
+            bool taskSuccess;
             //1. Remove dependency from other modules .Build.cs
-            string moduleDepend = $"\"{moduleName}\"";
-            //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
-            string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
-            regexDepend = regexDepend.Replace("SEARCH", moduleName);
-            foreach(var other in project.AllModules) //plugin.Modules
-            {
-                if (other.Name == module.Name) continue;
-
-                string buildText = XFilesystem.FileRead(other.BuildFilePath);
-                if (buildText.Contains(moduleDepend))
-                {
-                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
-                    buildText = Regex.Replace(buildText, regexDepend, "");
-                    XFilesystem.FileWrite(other.BuildFilePath, buildText);
-                }
-            }
+            taskSuccess = FUnrealServiceTasks.Module_DeleteDependencyInOtherModules(module, project.AllModules, notifier);
+            if (!taskSuccess) return false;
 
             //2. Delete module path
             notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
@@ -927,7 +913,7 @@ namespace FUnreal
                 upluginFile.Save();
             }
             
-            bool taskSuccess;
+            
             //X. Regen VS Project
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
@@ -1260,26 +1246,11 @@ namespace FUnreal
             }
             //TODO: Should stop in case moduleName is Primary Module. (by now just prevented by UI button disabled)
 
+            bool taskSuccess;
 
-            //1. Remove dependency from other modules .Build.cs
-            { 
-                string moduleDepend = $"\"{moduleName}\"";
-                //string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""\s*";
-                string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
-                regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
-                foreach (var other in project.GameModules)
-                {
-                    if (other.Name == module.Name) continue;
-
-                    string buildText = XFilesystem.FileRead(other.BuildFilePath);
-                    if (buildText.Contains(moduleDepend))
-                    {
-                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, other.BuildFilePath);
-                        buildText = Regex.Replace(buildText, regexDepend, "");
-                        XFilesystem.FileWrite(other.BuildFilePath, buildText);
-                    }
-                }
-            }
+            //1. Remove dependency from other game modules .Build.cs
+            taskSuccess = FUnrealServiceTasks.Module_DeleteDependencyInOtherModules(module, project.GameModules, notifier);
+            if (!taskSuccess) return false;
 
             //2. Delete module path
             { 
@@ -1320,7 +1291,7 @@ namespace FUnreal
             }
 
             //5. Regen VS Project
-            bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
+            taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
 
             _projectModuleFactory.DeleteGameModule(project, module);

@@ -192,6 +192,24 @@ namespace FUnreal.Sources.Core
 
         public static bool Module_UpdateDependencyInOtherModules(FUnrealModule module, string newModuleName, FUnrealCollection<FUnrealModule> allModules, FUnrealNotifier notifier)
         {
+            var others = allModules.Except(module);
+
+            //Parallel?
+            foreach (var other in others)
+            {
+                var csFile = new FUnrealBuildFile(other.BuildFilePath);
+                if (csFile.HasDependency(module.Name))
+                {
+                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
+                    csFile.RenameDependency(module.Name, newModuleName);
+                    csFile.Save();
+                }
+            }
+            return true;
+        }
+
+        public static bool Module_DeleteDependencyInOtherModules(FUnrealModule module, IEnumerable<FUnrealModule> allModules, FUnrealNotifier notifier)
+        {
             string moduleName = module.Name;
 
             //TODO: Create Except method that takes 1 element
@@ -204,7 +222,7 @@ namespace FUnreal.Sources.Core
                 if (csFile.HasDependency(moduleName))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
-                    csFile.RenameDependency(moduleName, newModuleName);
+                    csFile.RemoveDependency(moduleName);
                     csFile.Save();
                 }
             }
@@ -281,14 +299,19 @@ namespace FUnreal.Sources.Core
         {
             notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CheckingModuleDependency, module.Name);
             var result = new List<FUnrealModule>();
-            foreach (var other in allModules)
-            {
-                if (other == module) continue;
 
-                string csFile = other.BuildFilePath;
-                string buildText = XFilesystem.FileRead(csFile); //TODO: protect against NULL
-                string dependency = $"\"{module.Name}\"";
-                if (buildText.Contains(dependency))
+            var others = allModules.Except(new List<FUnrealModule>() { module });
+
+            foreach (var other in others)
+            {
+                var csFile = new FUnrealBuildFile(other.BuildFilePath);
+                if (!csFile.IsOpened)
+                {
+                    notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_CannotOpenFile, other.BuildFilePath);
+                    continue;
+                }
+
+                if (csFile.HasDependency(module.Name))
                 {
                     notifier.Info(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Info_DependentModule, other.Name);
                     result.Add(other);
@@ -650,7 +673,6 @@ namespace FUnreal.Sources.Core
             return true;
         }
 
-
         public static async Task<bool> Plugin_DeleteModuleDependencyAsync(FUnrealPlugin plugin, FUnrealCollection<FUnrealModule> allModules, FUnrealNotifier notifier)
         {
             //NOTE: This method doesn't take advantage to reduce the scope of module dependency search based on dependency between Plugin,
@@ -669,19 +691,7 @@ namespace FUnreal.Sources.Core
                 foreach (var plugModule in plugin.Modules)
                 {
                     var moduleDependency = Module_DependentModules(plugModule, otherModules, notifier);
-                    foreach(var depeModule in moduleDependency)
-                    {
-                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, depeModule.BuildFilePath);
-                        var csFile = new FUnrealBuildFile(depeModule.BuildFilePath);
-                        if (!csFile.IsOpened)
-                        {
-                            notifier.Warn(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CannotOpenFile, depeModule.BuildFilePath);
-                            continue;
-                        }
-
-                        csFile.RemoveDependency(plugModule.Name);
-                        csFile.Save();
-                    }
+                    Module_DeleteDependencyInOtherModules(plugModule, moduleDependency, notifier);
                 }
                 return true;
             });
