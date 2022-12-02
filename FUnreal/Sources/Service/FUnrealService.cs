@@ -845,7 +845,7 @@ namespace FUnreal
             taskSuccess = FUnrealServiceTasks.Module_UpdateAndRenameBuildCs(module, newModuleName, notifier);
             if (!taskSuccess) return false;
 
-            //2. Rename module .cpp and class and update #include directive in dependendent modules sources
+            //2. Rename module .cpp and update #include directive in dependendent modules sources
             taskSuccess = await FUnrealServiceTasks.Module_UpdateAndRenameSourcesAsync(module, newModuleName, renameSourceFiles, project.AllModules, notifier);
             if (!taskSuccess) return false;
 
@@ -1317,21 +1317,6 @@ namespace FUnreal
                         csFile.Save();
                     }
                 }
-                /*
-                string moduleDepend = $"\"{moduleName}\"";
-                string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH"""; //NOTE: Regex repeated in different parts
-                regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
-                foreach (var csFile in project.TargetFiles)
-                {
-                    string buildText = XFilesystem.FileRead(csFile);
-                    if (buildText.Contains(moduleDepend))
-                    {
-                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
-                        buildText = Regex.Replace(buildText, regexDepend, "");
-                        XFilesystem.FileWrite(csFile, buildText);
-                    }
-                }
-                */
             }
 
             //5. Regen VS Project

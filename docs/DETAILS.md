@@ -22,7 +22,7 @@ CRUD operation on a plugin module could produce updates to:
 * Module .cpp (that contains macro: IMPLEMENT_MODULE) and .h (retrieved as a symmetric path to the .cpp)
 * \<MODULE\>_API macro (updated only for Public headers)
 * Other modules sources (see [Source File](#source-file) section) dependent from the current module
-* .Build.cs (and .Build.cs of other modules depending on it) 
+* .Build.cs (and .Build.cs of other modules depending on it, handling patterns: *{PublicDependencyModuleNames, PrivateDependencyModuleNames, DynamicallyLoadedModuleNames}.{Add, AddRange}*) 
 * .uplugin
 
 ## Game Module
@@ -31,8 +31,8 @@ CRUD operation on a game module could produce updates to:
 * Module .cpp (that contains macro: IMPLEMENT_MODULE, IMPLEMENT_GAME_MODULE, IMPLEMENT_PRIMARY_GAME_MODULE) and .h (retrieved as a symmetric path to the .cpp)
 * \<MODULE\>_API macro (updated only for Public headers) 
 * Other game module sources (see [Source File](#source-file) section) dependent from the current module 
-* .Build.cs (and .Build.cs of other game modules depending on it) 
-* .Target.cs (handling both pattern: *ExtraModuleNames.Add*, *ExtraModuleNames.AddRange*)
+* .Build.cs (and .Build.cs of other game modules depending on it, handling patterns: *{PublicDependencyModuleNames, PrivateDependencyModuleNames, DynamicallyLoadedModuleNames}.{Add, AddRange}*) 
+* .Target.cs (handling patterns: *ExtraModuleNames.{Add, AddRange}*)
 * .uproject
 
 ## Source Folder

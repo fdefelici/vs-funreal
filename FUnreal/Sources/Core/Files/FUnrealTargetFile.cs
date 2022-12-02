@@ -7,68 +7,35 @@ using System.Threading.Tasks;
 
 namespace FUnreal
 {
-    public class FUnrealTargetFile
+    public class FUnrealTargetFile : FUnrealCSharpFile
     {
-        private string _filePath;
-
-        public string Text { get; private set; }
-        public bool IsOpened { get; private set; }
-
         public FUnrealTargetFile(string filePath) 
-        {
-            _filePath = filePath;   
-            Text = XFilesystem.FileRead(filePath);
-            IsOpened = Text != null;
-        }
-
-        public bool Save()
-        {
-            return XFilesystem.FileWrite(_filePath, Text);
-        }
+            : base(filePath) 
+        { }
 
         public bool HasExtraModule(string moduleName) 
         {
-            string moduleDepend = $"\"{moduleName}\"";
-            return Text.Contains(moduleDepend);
-        }
-
-        public void RemoveExtraModule(string moduleName)
-        {
-            if (!HasExtraModule(moduleName)) return;
-
-            //ExtraModuleNames.Add scenario
-            string regexAddApi_Strict =  $@"^\s*ExtraModuleNames\s*.Add\(\s*""{moduleName}""\s*\)\s*;\s*$(\r\n|\r|\n)";
-            string regexAddApi_General = $@"\s*ExtraModuleNames\s*.Add\(\s*""{moduleName}""\s*\)\s*;";
-            string regexAddRange_Api = $@"(?<!,\s*)\s*""{moduleName}""\s*,|,{{0,1}}\s*""{moduleName}""";
-
-            string selectedRegex = null;
-            RegexOptions options;
-            if (Regex.IsMatch(Text, regexAddApi_Strict, RegexOptions.Multiline))
-            {
-                selectedRegex = regexAddApi_Strict;
-                options = RegexOptions.Multiline;
-            }
-            else if (Regex.IsMatch(Text, regexAddApi_General, RegexOptions.Multiline))
-            {
-                selectedRegex = regexAddApi_General;
-                options = RegexOptions.Multiline;
-            }
-            else //Try AddRange
-            {
-                selectedRegex = regexAddRange_Api;
-                options = RegexOptions.None;
-            }
-
-            Text = Regex.Replace(Text, selectedRegex, string.Empty, options);
+            return base.ContainsStringLiteral(moduleName);
         }
 
         public void RenameExtraModule(string moduleName, string newModuleName)
         {
-            string dependency = $"\"{moduleName}\"";
-            string newDependency = $"\"{newModuleName}\"";
-            Text = Text.Replace(dependency, newDependency);
+            base.ReplaceStringLiteral(moduleName, newModuleName);
         }
 
+
+        public void RemoveExtraModule(string moduleName)
+        {
+            //Add Scenario
+            if (!HasExtraModule(moduleName)) return;
+            RemoveAddStatementForStringLiteral("ExtraModuleNames", moduleName);
+
+            //AddRange Scenario
+            if (!HasExtraModule(moduleName)) return;
+            RemoveStringLiteralFromArray(moduleName);
+        }
+
+       
         public void AddExtraModule(string moduleName)
         {
             //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")

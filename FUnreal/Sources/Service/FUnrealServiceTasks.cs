@@ -194,20 +194,18 @@ namespace FUnreal.Sources.Core
         {
             string moduleName = module.Name;
 
-            //Parallel?
-            foreach (var other in allModules)
-            {
-                if (other == module) continue;
+            //TODO: Create Except method that takes 1 element
+            var others = allModules.Except(new List<FUnrealModule>() { module });
 
-                string csFile = other.BuildFilePath;
-                string buildText = XFilesystem.FileRead(csFile);
-                string dependency = $"\"{moduleName}\"";
-                string newDependency = $"\"{newModuleName}\"";
-                if (buildText.Contains(dependency))
+            //Parallel?
+            foreach (var other in others)
+            {
+                var csFile = new FUnrealBuildFile(other.BuildFilePath);
+                if (csFile.HasDependency(moduleName))
                 {
                     notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, other.BuildFilePath);
-                    buildText = buildText.Replace(dependency, newDependency);
-                    XFilesystem.FileWrite(csFile, buildText);
+                    csFile.RenameDependency(moduleName, newModuleName);
+                    csFile.Save();
                 }
             }
             return true;
@@ -248,22 +246,6 @@ namespace FUnreal.Sources.Core
                     csFile.Save();
                 }
             }
-
-            /*
-            string moduleName = module.Name;
-            foreach (var csFile in project.TargetFiles)
-            {
-                string buildText = XFilesystem.FileRead(csFile);
-                string dependency = $"\"{moduleName}\"";
-                string newDependency = $"\"{newModuleName}\"";
-                if (buildText.Contains(dependency))
-                {
-                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFile);
-                    buildText = buildText.Replace(dependency, newDependency);
-                    XFilesystem.FileWrite(csFile, buildText);
-                }
-            }
-            */
             return true;
         }
 
@@ -686,16 +668,19 @@ namespace FUnreal.Sources.Core
 
                 foreach (var plugModule in plugin.Modules)
                 {
-                    string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH""";
-                    regexDepend = regexDepend.Replace("SEARCH", plugModule.Name);
-
                     var moduleDependency = Module_DependentModules(plugModule, otherModules, notifier);
                     foreach(var depeModule in moduleDependency)
                     {
                         notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CleaningDependencyFromFile, depeModule.BuildFilePath);
-                        string buildText = XFilesystem.FileRead(depeModule.BuildFilePath); //TODO: Protect against null
-                        buildText = Regex.Replace(buildText, regexDepend, "");
-                        XFilesystem.FileWrite(depeModule.BuildFilePath, buildText);
+                        var csFile = new FUnrealBuildFile(depeModule.BuildFilePath);
+                        if (!csFile.IsOpened)
+                        {
+                            notifier.Warn(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_CannotOpenFile, depeModule.BuildFilePath);
+                            continue;
+                        }
+
+                        csFile.RemoveDependency(plugModule.Name);
+                        csFile.Save();
                     }
                 }
                 return true;
