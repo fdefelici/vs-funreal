@@ -10,8 +10,9 @@ namespace FUnreal
     {
         public static readonly char PathSeparatorChar = Path.DirectorySeparatorChar;
         public static readonly string PathSeparatorStr = $"{PathSeparatorChar}";
+        public static readonly string NewLineStr = Environment.NewLine;
 
-        public static bool HasExtension(string file, params string[] exts)
+    public static bool HasExtension(string file, params string[] exts)
         {
             return HasExtension(file, exts.ToList<string>());
         }

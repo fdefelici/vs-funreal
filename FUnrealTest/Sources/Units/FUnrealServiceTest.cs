@@ -107,7 +107,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RemovePluginToProjectWithOnePluginInUProjectFile()
+        public void DeletePluginToProjectWithOnePluginInUProjectFile()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
 
@@ -126,7 +126,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RemovePluginStoppedBecauseBinaryFileIsBusy()
+        public void DeletePluginStoppedBecauseBinaryFileIsBusy()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
 
@@ -144,7 +144,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RemovePluginStoppedBecauseContentFileIsBusy()
+        public void DeletePluginStoppedBecauseContentFileIsBusy()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
 
@@ -162,7 +162,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RenanePluginToProjectWithOnePluginInUProjectFile()
+        public void RnamePluginToProjectWithOnePluginInUProjectFile()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
             string upluginName = "Plugin01";
@@ -185,7 +185,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RenanePluginWithAnotherPluginDependingOnIt()
+        public void RnamePluginWithAnotherPluginDependingOnIt()
         {
             SetUpTestCaseForProject("UPrjTwoPlug");
             string upluginName = "Plugin01";
@@ -247,7 +247,7 @@ namespace FUnrealTest
 
 
         [TestMethod]
-        public void RenanePluginStoppedBecauseBinaryFileIsBusy()
+        public void RnamePluginStoppedBecauseBinaryFileIsBusy()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
             string upluginName = "Plugin01";
@@ -268,7 +268,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void RenanePluginStoppedBecauseContentFileIsBusy()
+        public void RnamePluginStoppedBecauseContentFileIsBusy()
         {
             SetUpTestCaseForProject("UPrjOnePlug");
             string upluginName = "Plugin01";
@@ -632,11 +632,11 @@ namespace FUnrealTest
             string fileCs    = TestUtils.ReadFile(uprojectPath, "Source/MyMod/MyMod.Build.cs");
             Assert.AreEqual(fileCsExp, fileCs);
 
-            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs");
+            string fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGame.Target.cs"); //managed with api: ExtraModuleName.Add
             string fileTarget    = TestUtils.ReadFile(uprojectPath, "Source/UPrjGame.Target.cs"); //module name added here because target is "Game"
             Assert.AreEqual(fileTargetExp, fileTarget);
 
-            fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameEditor.Target.cs");
+            fileTargetExp = TestUtils.ReadFile(expectedPath, "Source/UPrjGameEditor.Target.cs"); //managed with api: ExtraModuleName.AddRange
             fileTarget = TestUtils.ReadFile(uprojectPath, "Source/UPrjGameEditor.Target.cs");  //module name added here by default
             Assert.AreEqual(fileTargetExp, fileTarget);
 

@@ -13,6 +13,9 @@ namespace FUnreal
     public partial class XFilesystem
     {
         private const string LONG_PATH_PREFIX = @"\\?\";
+
+
+
         public static string ToLongPath(string path)
         {
             if (path.StartsWith(LONG_PATH_PREFIX)) return path;

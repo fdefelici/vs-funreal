@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
     <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
     <Compile Include="Sources\Service\FUnrealServiceResults.cs" />

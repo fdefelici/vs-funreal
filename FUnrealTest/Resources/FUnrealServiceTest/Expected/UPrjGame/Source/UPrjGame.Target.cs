@@ -9,6 +9,7 @@ public class UPrjGameTarget : TargetRules
     {
         Type = TargetType.Game;
         DefaultBuildSettings = BuildSettingsVersion.V2;
-        ExtraModuleNames.AddRange(new string[] { "UPrjGame", "MyMod" });
+        ExtraModuleNames.Add("UPrjGame");
+        ExtraModuleNames.Add("MyMod");
     }
 }

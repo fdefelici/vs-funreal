@@ -1110,15 +1110,6 @@ namespace FUnreal
                 return false;
             }
 
-            /*
-            string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
-            if (moduleNamePH == null)
-            {
-                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
-                return false;
-            }
-            */
-
             string metaType = tpl.GetMeta("type");
             string metaPhase = tpl.GetMeta("phase");
             string metaTarget = tpl.GetMeta("target");
@@ -1310,6 +1301,23 @@ namespace FUnreal
 
             //4. Remove module in all project [TARGET].Target.cs 
             {
+                foreach (var csFilePath in project.TargetFiles)
+                {
+                    var csFile = new FUnrealTargetFile(csFilePath);
+                    if (!csFile.IsOpened)
+                    {
+                        notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_CannotOpenFile, csFilePath);
+                        continue;
+                    }
+
+                    if (csFile.HasExtraModule(moduleName))
+                    {
+                        notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFilePath);
+                        csFile.RemoveExtraModule(moduleName);
+                        csFile.Save();
+                    }
+                }
+                /*
                 string moduleDepend = $"\"{moduleName}\"";
                 string regexDepend = @"(?<!,\s*)\s*""SEARCH""\s*,|,{0,1}\s*""SEARCH"""; //NOTE: Regex repeated in different parts
                 regexDepend = regexDepend.Replace("SEARCH", moduleName); //replace to keep "clean" the regex because contains graphs {0,1}
@@ -1323,6 +1331,7 @@ namespace FUnreal
                         XFilesystem.FileWrite(csFile, buildText);
                     }
                 }
+                */
             }
 
             //5. Regen VS Project

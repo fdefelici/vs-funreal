@@ -32,7 +32,7 @@ CRUD operation on a game module could produce updates to:
 * \<MODULE\>_API macro (updated only for Public headers) 
 * Other game module sources (see [Source File](#source-file) section) dependent from the current module 
 * .Build.cs (and .Build.cs of other game modules depending on it) 
-* .Target.cs (in particular for creation operation *ExtraModuleNames.AddRange* pattern is used.)
+* .Target.cs (handling both pattern: *ExtraModuleNames.Add*, *ExtraModuleNames.AddRange*)
 * .uproject
 
 ## Source Folder

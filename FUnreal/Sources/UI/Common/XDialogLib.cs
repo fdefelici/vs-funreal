@@ -58,6 +58,7 @@ namespace FUnreal
         internal static string Ctx_ConfiguringTemplate = "Configuring template ...";
         internal static string Info_TemplateCopyingFiles = "Copying template files to {0} ...";
         internal static string Info_CreatingFile = "Creating file {0} ...";
+        internal static string Info_CannotOpenFile = "Cannot open file {0} ...";
         internal static string Info_UpdatingModuleTargetFile = "Updating module target file {0} ...";
         internal static string Warn_ProjectTargetFileNotFound = "Project target file not found: {0}";
         internal static string Info_UpdatingProjectTargetFile = "Updating project target file {0} ...";

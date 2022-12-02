@@ -309,6 +309,7 @@
     <Compile Include="Sources\Units\FUnrealProjectTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectFactoryTest.cs" />
     <Compile Include="Sources\Units\FUnrealServiceProjectTest.cs" />
+    <Compile Include="Sources\Units\FUnrealTargetFileTest.cs" />
     <Compile Include="Sources\Units\FUnrealServiceTest.cs" />
     <Compile Include="Sources\Units\FUnrealService_SmallApiTest.cs" />
     <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />

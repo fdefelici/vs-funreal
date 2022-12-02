@@ -232,6 +232,25 @@ namespace FUnreal.Sources.Core
         public static bool Project_RenameModuleInTargets(FUnrealProject project, FUnrealModule module, string newModuleName, FUnrealNotifier notifier)
         {
             string moduleName = module.Name;
+            foreach (var csFilePath in project.TargetFiles)
+            {
+                var csFile = new FUnrealTargetFile(csFilePath);
+                if (!csFile.IsOpened)
+                {
+                    notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_CannotOpenFile, csFilePath);
+                    continue;
+                }
+
+                if (csFile.HasExtraModule(moduleName))
+                {
+                    notifier.Info(XDialogLib.Ctx_UpdatingModuleDependency, XDialogLib.Info_UpdatingDependencyFromFile, csFilePath);
+                    csFile.RenameExtraModule(moduleName, newModuleName);
+                    csFile.Save();
+                }
+            }
+
+            /*
+            string moduleName = module.Name;
             foreach (var csFile in project.TargetFiles)
             {
                 string buildText = XFilesystem.FileRead(csFile);
@@ -244,6 +263,7 @@ namespace FUnreal.Sources.Core
                     XFilesystem.FileWrite(csFile, buildText);
                 }
             }
+            */
             return true;
         }
 
@@ -533,29 +553,38 @@ namespace FUnreal.Sources.Core
             string targetFileName = $"{project.Name}{targetName}.Target.cs";
             string targetFilePath = XFilesystem.PathCombine(project.SourcePath, targetFileName);
 
-            if (XFilesystem.FileExists(targetFilePath))
-            {
-                notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
-                {
-                    string csText = XFilesystem.FileRead(targetFilePath);
-
-                    //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
-                    string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
-                    var match = Regex.Match(csText, regex);
-                    if (match.Success && match.Groups.Count == 2)
-                    {
-                        string moduleList = match.Groups[1].Value;
-                        csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
-                        XFilesystem.FileWrite(targetFilePath, csText);
-                    }
-                }
-                return true;
-            }
-            else
+            if (!XFilesystem.FileExists(targetFilePath))
             {
                 notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
                 return false;
             }
+
+            notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingModuleTargetFile, targetFilePath);
+            {
+                var csFile = new FUnrealTargetFile(targetFilePath);
+                if (!csFile.IsOpened)
+                {
+                    notifier.Warn(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_CannotOpenFile, targetFilePath);
+                    return false;
+                }
+
+                csFile.AddExtraModule(moduleName);
+                csFile.Save();
+                /*
+                string csText = XFilesystem.FileRead(targetFilePath);
+
+                //Capture Group1 for all module names such as: ("Mod1", "Mod2") and replacing with ("Mod1", "Mod2", "ModuleName")
+                string regex = @"ExtraModuleNames\s*\.AddRange\s*\(\s*new\s*string\[\]\s*\{\s*(\"".+\"")\s*\}\s*\)\s*;";
+                var match = Regex.Match(csText, regex);
+                if (match.Success && match.Groups.Count == 2)
+                {
+                    string moduleList = match.Groups[1].Value;
+                    csText = csText.Replace(moduleList, $"{moduleList}, \"{moduleName}\"");
+                    XFilesystem.FileWrite(targetFilePath, csText);
+                }
+                */
+            }
+            return true;
         }
 
         public static bool Plugin_CheckIfNotLockedByOtherProcess(FUnrealPlugin plugin, FUnrealNotifier notifier)
