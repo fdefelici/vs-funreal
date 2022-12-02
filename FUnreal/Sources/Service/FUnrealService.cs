@@ -592,7 +592,7 @@ namespace FUnreal
             //X. Update Project Model
             string pluginPath = XFilesystem.PathCombine(_pluginsPath, pluginName);
             var pluginAdded = _projectModuleFactory.AddPlugin(GetUProject(), pluginPath);
-
+            //TODO: In case template is malvormed (example, missing .uplugin, pluginAdded can be null)
             FUnrealServicePluginResult success = true;
             success.DescrFilePath = pluginAdded.DescriptorFilePath;
             return success;

@@ -43,7 +43,7 @@ const FVector2D Icon40x40(40.0f, 40.0f);
 TSharedRef< FSlateStyleSet > F@{TPL_MODU_NAME}Style::Create()
 {
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("@{TPL_MODU_NAME}Style"));
-	Style->SetContentRoot(IPluginManager::Get().FindPlugin("@{TPL_MODU_NAME}")->GetBaseDir() / TEXT("Resources"));
+	Style->SetContentRoot(IPluginManager::Get().FindPlugin("@{TPL_PLUG_NAME}")->GetBaseDir() / TEXT("Resources"));
 
 	Style->Set("@{TPL_MODU_NAME}.OpenPluginWindow", new IMAGE_BRUSH(TEXT("ButtonIcon_40x"), Icon40x40));
 

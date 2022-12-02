@@ -41,7 +41,7 @@ const FVector2D Icon20x20(20.0f, 20.0f);
 TSharedRef< FSlateStyleSet > F@{TPL_MODU_NAME}Style::Create()
 {
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("@{TPL_MODU_NAME}Style"));
-	Style->SetContentRoot(IPluginManager::Get().FindPlugin("@{TPL_MODU_NAME}")->GetBaseDir() / TEXT("Resources"));
+	Style->SetContentRoot(IPluginManager::Get().FindPlugin("@{TPL_PLUG_NAME}")->GetBaseDir() / TEXT("Resources"));
 
 	Style->Set("@{TPL_MODU_NAME}.PluginAction", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon"), Icon20x20));
 	return Style;

@@ -1,6 +1,6 @@
 # FUnreal 'under the hood'
 
-While executing operations, `FUnreal` tryies to keep UE Project consistent - following UE standard and best practices - doing all the heavy lift for your. 
+While executing operations, `FUnreal` tryies to keep UE Project consistent - following UE standards and best practices - doing all the heavy lift for your. 
 
 Here a the detail of the project items that will be checked and potentially updated when doing operation on the following elements:
 * [Plugin](#plugin)
@@ -13,7 +13,7 @@ Here a the detail of the project items that will be checked and potentially upda
 CRUD operation on a plugin could produce updates to:
 * Plugin Directory
 * .uplugin (and .uplugin of other plugins depending on it) 
-* .Build.cs of other modules depending from module of current plugin
+* .Build.cs of other modules depending from the modules of the current plugin
 * .uproject
 
 ## Plugin Module
@@ -21,7 +21,7 @@ CRUD operation on a plugin module could produce updates to:
 * Module Directory
 * Module .cpp (that contains macro: IMPLEMENT_MODULE) and .h (retrieved as a symmetric path to the .cpp)
 * \<MODULE\>_API macro (updated only for Public headers)
-* Other module sources (see [Source File](#source-file) section) dependent from the current module
+* Other modules sources (see [Source File](#source-file) section) dependent from the current module
 * .Build.cs (and .Build.cs of other modules depending on it) 
 * .uplugin
 
@@ -30,9 +30,9 @@ CRUD operation on a game module could produce updates to:
 * Module Directory
 * Module .cpp (that contains macro: IMPLEMENT_MODULE, IMPLEMENT_GAME_MODULE, IMPLEMENT_PRIMARY_GAME_MODULE) and .h (retrieved as a symmetric path to the .cpp)
 * \<MODULE\>_API macro (updated only for Public headers) 
-* Other game module sources (see [Source File](#source-file) section) dependent from the current module
+* Other game module sources (see [Source File](#source-file) section) dependent from the current module 
 * .Build.cs (and .Build.cs of other game modules depending on it) 
-* .Target.cs
+* .Target.cs (in particular for creation operation *ExtraModuleNames.AddRange* pattern is used.)
 * .uproject
 
 ## Source Folder

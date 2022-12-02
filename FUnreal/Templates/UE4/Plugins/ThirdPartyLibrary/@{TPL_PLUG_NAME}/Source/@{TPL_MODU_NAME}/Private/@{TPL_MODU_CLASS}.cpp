@@ -13,7 +13,7 @@ void F@{TPL_MODU_CLASS}::StartupModule()
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 
 	// Get the base directory of this plugin
-	FString BaseDir = IPluginManager::Get().FindPlugin("@{TPL_MODU_NAME}")->GetBaseDir();
+	FString BaseDir = IPluginManager::Get().FindPlugin("@{TPL_PLUG_NAME}")->GetBaseDir();
 
 	// Add on the relative location of the third party dll and load it
 	FString LibraryPath;
