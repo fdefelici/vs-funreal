@@ -4,28 +4,20 @@
     "identity": {
         "internalName": "vs-funreal"
     },
-    "overview": "..\\README.md",
+    "overview": "overview.md",
     "priceCategory": "free",
     "publisher": "fdefelici",
     "private": false,
     "qna": true,
     "repo": "https://github.com/fdefelici/vs-funreal",
     "assetFiles": [
-        {
-            "pathOnDisk": "..\\docs\\images\\intro.png",
-            "targetPath": "docs\\images\\intro.png"
-        },
-        {
-            "pathOnDisk": "..\\docs\\images\\notify.png",
-            "targetPath": "docs\\images\\notify.png"
-        },
-        {
-            "pathOnDisk": "..\\CHANGELOG.md",
-            "targetPath": "CHANGELOG.md"
-        },
-        {
-            "pathOnDisk": "..\\DETAILS.md",
-            "targetPath": "DETAILS.md"
-        }
+      {
+        "pathOnDisk": "..\\docs\\images\\intro.png",
+        "targetPath": "docs/images/intro.png"
+      },
+      {
+        "pathOnDisk": "..\\docs\\images\\notify.png",
+        "targetPath": "docs/images/notify.png"
+      }
     ]
 }

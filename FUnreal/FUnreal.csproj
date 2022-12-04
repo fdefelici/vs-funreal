@@ -144,6 +144,9 @@
     <Compile Include="Sources\UI\Common\Commands\VSCTSymbols.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
+    <Content Include="icon.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -525,12 +528,6 @@
     <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.xcworkspace\contents.xcworkspacedata">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary\ExampleLibrary.xcodeproj\project.pbxproj">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -564,12 +561,6 @@
     <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.xcworkspace\contents.xcworkspacedata">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary\ExampleLibrary.xcodeproj\project.pbxproj">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -581,7 +572,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="overview.md" />
     <None Include="publishmanifest.json" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
