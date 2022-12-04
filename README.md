@@ -25,7 +25,7 @@ and offers the following features:
 * Create/Rename/Delete `plugins` choosing from *Unreal Plugin Templates*
 * Create/Rename/Delete `modules` (for plugin modules and game modules) choosing from *Unreal Templates*
 * `Keep in Sync` UE Project and VS Solution (invoking UBT automatically)
-* `Keep consistent` the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (for more details read [here](./docs/DETAILS.md)).
+* `Keep consistent` the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (look at [this section](#details) for more details).
 
 > NOTE: While using `FUnreal` extension, it is still possible to create plugins and C++ classes from Unreal Editor or doing operations on the project directly on filesystem. The important thing is that UBT has been run succesfully and VS Solution has been reloaded.
 
@@ -48,6 +48,9 @@ Once active, `FUnreal` context menu is available in the **Solution Explorer** vi
 After performing the selected operation, `FUnreal` will run **Unreal Build Tool**, so you should receive at end the usual VS dialog advising that the project has been modified externally and need to be reloaded.
 
 That's all! Enjoy :+1:
+
+# Details
+Read [here](./docs/DETAILS.md) for an insights on what `FUnreal` do for you under the hood.
 
 # Changelog
 History of changes [here](./docs/CHANGELOG.md).
