@@ -1,6 +1,6 @@
 # FUnreal Changelog
 
-## v0.0.1: December 4, 2022 
+## v0.0.4: December 4, 2022 
 ### Features
 * Create/Rename/Delete files and folders (even empty folders will be visibles and manageables)
 * Create C++ classes choosing from *Unreal Common Classes*
