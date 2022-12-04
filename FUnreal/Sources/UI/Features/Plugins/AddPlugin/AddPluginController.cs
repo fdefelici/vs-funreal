@@ -82,7 +82,7 @@ namespace FUnreal
                     _dialog.moduleNameTbx.IsEnabled = false;
                     _dialog.addButton.IsEnabled = false;
                     _dialog.ShowError(XDialogLib.ErrorMsg_PluginAlreadyExists);
-                    //TODO: Eventually improve checking Plugin Name on UE project...
+                    //TODO: Eventually improve checking Plugin Name also on UE project...
                 }
                 else
                 {

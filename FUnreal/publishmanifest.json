@@ -4,7 +4,7 @@
     "identity": {
         "internalName": "vs-funreal"
     },
-    "overview": "overview.md",
+    "overview": "..\\README.md",
     "priceCategory": "free",
     "publisher": "fdefelici",
     "private": false,
@@ -22,6 +22,10 @@
         {
             "pathOnDisk": "..\\CHANGELOG.md",
             "targetPath": "CHANGELOG.md"
+        },
+        {
+            "pathOnDisk": "..\\DETAILS.md",
+            "targetPath": "DETAILS.md"
         }
     ]
 }

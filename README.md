@@ -11,7 +11,7 @@ Basically if you've got to the point where you write all your code in one file j
 
 The main concept is an handy context menu in the **Solution Explorer** view to reach - *just a right-click away* - a bunch of useful operations without the need to launch an *Unreal Engine Editor* instance (as for creating plugins or common classes) or alternately working on the filesystem side (adding, renaming or deleting files) and then launching *Unreal Build Tool*.
 
-Futhermore `FUnreal` will try to keep consistent your project, updating UE descriptor files and sources depending on the scenario.
+Futhermore `FUnreal` will try to maintain consistent your project, updating UE descriptor files and sources depending on the scenario, so that you can keep the focus on writing code.
 
 # Features
 `FUnreal` currently supports:
