@@ -47,6 +47,8 @@ Once active, `FUnreal` context menu is available in the **Solution Explorer** vi
 
 After performing the selected operation, `FUnreal` will run **Unreal Build Tool**, so you should receive at end the usual VS dialog advising that the project has been modified externally and need to be reloaded.
 
+> Take a look at [video page samples](docs/VIDEOS.md) to see `FUnreal` in action!
+
 That's all! Enjoy :+1:
 
 # Details
