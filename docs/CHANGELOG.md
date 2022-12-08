@@ -1,4 +1,8 @@
 # FUnreal Changelog
+## v0.0.5: December 8, 2022 
+
+### Improvements
+* Make UE version detection from .uproject more permissive to take into account for custom ue version.
 
 ## v0.0.4: December 4, 2022 
 ### Features

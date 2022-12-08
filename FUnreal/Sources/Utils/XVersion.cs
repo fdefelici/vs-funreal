@@ -1,13 +1,34 @@
 ﻿using System;
+using System.Text;
 
 namespace FUnreal
 {
     public class XVersion
     {
+        // Expected format: MAJOR.MINOR(.PATCH-LABEL)
+        // where:
+        // - MAJOR => int (mandatory)
+        // - MINOR => int (mandatory)
+        // - PATCH => int (optional)
+        // - LABEL => string (optional) Separated by '-'
         public static XVersion FromSemVer(string semVerStr)
         {
-            string[] parts = semVerStr.Split('.');
-            if (parts.Length != 2) return null;
+            int labelSeparatorIndex = semVerStr.IndexOf('-');
+            string semVerPart;
+            string labelPart;
+
+            if (labelSeparatorIndex == -1)
+            {
+                semVerPart = semVerStr;
+                labelPart = string.Empty;
+            } else
+            {
+                semVerPart = semVerStr.Substring(0, labelSeparatorIndex);
+                labelPart = semVerStr.Substring(labelSeparatorIndex + 1);
+            }
+
+            string[] parts = semVerPart.Split('.');
+            if (parts.Length < 2) return null;
 
             if (!int.TryParse(parts[0], out int major))
             {
@@ -18,21 +39,56 @@ namespace FUnreal
             {
                 return null;
             }
-            return new XVersion(major, minor);
+
+            int patch = -1;
+            if (parts.Length >= 3)
+            {
+                if (!int.TryParse(parts[2], out int patchParse))
+                {
+                    return null;
+                }
+                patch = patchParse;
+            }
+
+
+            return new XVersion(major, minor, patch, labelPart);
         }
 
         public XVersion(int major, int minor)
+            : this(major, minor, -1, string.Empty)
+        { }
+
+        public XVersion(int major, int minor, int patch, string label)
         {
             Major = major;
             Minor = minor;
+            Patch = patch;
+            Label = label;
         }
 
         public int Major { get; }
         public int Minor { get; }
+        public int Patch { get; }
+        public string Label { get; }
 
         public string AsString()
         {
-            return $"{Major}.{Minor}";
+            StringBuilder result = new StringBuilder();
+            result.Append(Major);
+            result.Append(".");
+            result.Append(Minor);
+            if (Patch != -1)
+            {
+                result.Append(".");
+                result.Append(Patch);
+            }
+            if (!string.IsNullOrEmpty(Label))
+            {
+                result.Append("-");
+                result.Append(Label);
+            }
+
+            return result.ToString();
         }
     }
 }

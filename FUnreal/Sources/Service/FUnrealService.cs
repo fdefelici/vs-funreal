@@ -58,6 +58,7 @@ namespace FUnreal
             }
 
             string ubtBin;
+            //NOTE: Eventually I could get rid off version check and find UBT executable by a filesystem scan instead.
             if (version.Major == 4)
             {
                 //Example UE4: C:\Program Files\Epic Games\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe
