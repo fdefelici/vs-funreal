@@ -14,10 +14,6 @@
       {
         "pathOnDisk": "..\\docs\\images\\intro.png",
         "targetPath": "docs/images/intro.png"
-      },
-      {
-        "pathOnDisk": "..\\docs\\images\\notify.png",
-        "targetPath": "docs/images/notify.png"
       }
     ]
 }
