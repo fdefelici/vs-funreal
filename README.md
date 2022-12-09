@@ -4,7 +4,7 @@
 
 `FUnreal` is an extension for **Visual Studio** with the aim of improve workflow of **Unreal Engine** **C++ developers**.
 
-Basically if you've got to the point where you write all your code in one file just because the hassle of adding new files to the project (here I am :raised_hand:), this extension if for you :wink:.
+Basically if you've got to the point where you write all your code in one file just because the hassle of adding new files to the project (here I am :raised_hand:), this extension is for you :wink:.
 
 ![FUnreal context menu example](./docs/images/intro.png)
 *Just a taste of FUnreal in action*
@@ -52,7 +52,7 @@ After performing the selected operation, `FUnreal` will run **Unreal Build Tool*
 That's all! Enjoy :+1:
 
 # Details
-Read [here](./docs/DETAILS.md) for an insights on what `FUnreal` do for you under the hood.
+Read [here](./docs/DETAILS.md) for an insights on what `FUnreal` does for you under the hood.
 
 # Changelog
 History of changes [here](./docs/CHANGELOG.md).
