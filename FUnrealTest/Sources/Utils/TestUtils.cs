@@ -12,7 +12,31 @@ namespace FUnrealTest
 
         public static string AbsPath(params string[] parts)
         {
-            return PathCombine(BinBasePath, parts);
+            string first = parts[0];
+            string[] splitted = first.Split('/');
+            int levels = 0;
+            for (int i = 0; i < splitted.Length; i++)
+            {
+                if (splitted[i] == "..")
+                {
+                    levels++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
+
+            string secondPart = PathCombine("", parts);
+            secondPart = XFilesystem.PathChild(secondPart, levels); //remove ../
+
+            string firstPart = BinBasePath;
+            firstPart = XFilesystem.PathParent(firstPart, levels); //remove folder due to ../
+
+
+            return PathCombine(firstPart, secondPart);
         }
 
         public static string PathCombine(string first, params string[] parts)
