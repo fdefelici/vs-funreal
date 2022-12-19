@@ -1,4 +1,7 @@
 # FUnreal Changelog
+## v0.0.7: December 19, 2022 
+* Clean released vsix package
+
 ## v0.0.6: December 19, 2022 
 ### Improvements
 * Add UObject to class templates
