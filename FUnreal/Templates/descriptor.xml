@@ -50,11 +50,11 @@
 
   <template context="plugins" name="tpl_plugin_thirdpartylibrary" ue="4" path="UE4/Plugins/ThirdPartyLibrary">
     <meta has_module="true"/>
-    <ui label="Third Party Library" desc="Create a plugin that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
+    <ui label="Third Party Library" desc="Create a plugin that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself."/>
   </template>
   <template context="plugins" name="tpl_plugin_thirdpartylibrary" ue="5" path="UE5/Plugins/ThirdPartyLibrary">
     <meta has_module="true"/>
-    <ui label="Third Party Library" desc="Create a plugin that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
+    <ui label="Third Party Library" desc="Create a plugin that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself."/>
   </template>
 
   <!-- PLUGIN MODULE TEMPLATES -->
@@ -96,11 +96,11 @@
   </template>
 
   <template context="modules" name="tpl_module_thirdpartylibrary" ue="4" path="UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source">
-    <ui label="Third Party Library" desc="Create a module that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
+    <ui label="Third Party Library" desc="Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself."/>
     <meta type="Editor" phase="Default" target="Editor"/>
   </template>
   <template context="modules" name="tpl_module_thirdpartylibrary" ue="5" path="UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source">
-    <ui label="Third Party Library" desc="Create a module that uses an included third party library. Thi can be used as an example of ho to include, load and use a third party library yourself."/>
+    <ui label="Third Party Library" desc="Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself."/>
     <meta type="Editor" phase="Default" target="Editor"/>
   </template>
   

@@ -1,6 +1,11 @@
 # FUnreal Changelog
-## v0.0.5: December 8, 2022 
+## v0.0.6: December 19, 2022 
+### Improvements
+* Add UObject to class templates
+### Bug Fix
+* Template not found when creating a class from Unreal Interface template
 
+## v0.0.5: December 8, 2022 
 ### Improvements
 * Make UE version detection from .uproject more permissive to take into account for custom ue version.
 
