@@ -32,6 +32,11 @@ namespace FUnrealTest.Integrations
                 Assert.IsTrue(tpl.BasePath.EndsWith(@"\UE5\Sources\Classes"));
                 Assert.AreEqual($"{wikiName}.h", tpl.GetMeta("header"));
                 Assert.AreEqual($"{wikiName}.cpp", tpl.GetMeta("source"));
+
+                string heaFullPath = TestUtils.PathCombine(tpl.BasePath, tpl.GetMeta("header"));
+                string cppFullPath = TestUtils.PathCombine(tpl.BasePath, tpl.GetMeta("source"));
+                Assert.IsTrue(TestUtils.ExistsFile(heaFullPath), heaFullPath);
+                Assert.IsTrue(TestUtils.ExistsFile(cppFullPath), cppFullPath);
             };
 
             var list = new List<string>() 

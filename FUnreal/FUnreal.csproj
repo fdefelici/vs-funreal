@@ -419,10 +419,10 @@
     <Content Include="Templates\UE5\Sources\Classes\BlueprintFunctionLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Interface.cpp">
+    <Content Include="Templates\UE5\Sources\Classes\UnrealInterface.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Interface.h">
+    <Content Include="Templates\UE5\Sources\Classes\UnrealInterface.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\UE5\Sources\Classes\SlateWidgetStyle.cpp">
