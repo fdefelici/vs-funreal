@@ -383,94 +383,100 @@
     <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Character.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\Character.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Character.h">
+    <Content Include="Templates\UEC\Sources\Classes\Character.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Empty.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\UObject.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Empty.h">
+    <Content Include="Templates\UEC\Sources\Classes\UObject.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\GameModeBase.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\Empty.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\GameModeBase.h">
+    <Content Include="Templates\UEC\Sources\Classes\Empty.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\HUD.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\GameModeBase.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\HUD.h">
+    <Content Include="Templates\UEC\Sources\Classes\GameModeBase.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\GameStateBase.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\HUD.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\GameStateBase.h">
+    <Content Include="Templates\UEC\Sources\Classes\HUD.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\BlueprintFunctionLibrary.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\GameStateBase.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\BlueprintFunctionLibrary.h">
+    <Content Include="Templates\UEC\Sources\Classes\GameStateBase.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\UnrealInterface.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\BlueprintFunctionLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\UnrealInterface.h">
+    <Content Include="Templates\UEC\Sources\Classes\BlueprintFunctionLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SlateWidgetStyle.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\UnrealInterface.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SlateWidgetStyle.h">
+    <Content Include="Templates\UEC\Sources\Classes\UnrealInterface.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerState.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\SlateWidgetStyle.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerState.h">
+    <Content Include="Templates\UEC\Sources\Classes\SlateWidgetStyle.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SlateWidget.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerState.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SlateWidget.h">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerState.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\WorldSettings.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\SlateWidget.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\WorldSettings.h">
+    <Content Include="Templates\UEC\Sources\Classes\SlateWidget.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerController.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\WorldSettings.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerController.h">
+    <Content Include="Templates\UEC\Sources\Classes\WorldSettings.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerCameraManager.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerController.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\PlayerCameraManager.h">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerController.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SceneComponent.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerCameraManager.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\SceneComponent.h">
+    <Content Include="Templates\UEC\Sources\Classes\PlayerCameraManager.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Pawn.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\SceneComponent.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Pawn.h">
+    <Content Include="Templates\UEC\Sources\Classes\SceneComponent.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Sources\Classes\Pawn.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Sources\Classes\Pawn.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
@@ -501,16 +507,16 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include=".editorconfig" />
-    <Content Include="Templates\UE5\Sources\Classes\Actor.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\Actor.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\Actor.h">
+    <Content Include="Templates\UEC\Sources\Classes\Actor.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\ActorComponent.cpp">
+    <Content Include="Templates\UEC\Sources\Classes\ActorComponent.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Sources\Classes\ActorComponent.h">
+    <Content Include="Templates\UEC\Sources\Classes\ActorComponent.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
