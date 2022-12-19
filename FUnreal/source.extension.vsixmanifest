@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="FUnreal.743850cc-b00b-4f5d-9117-4f84df24f8ab" Version="0.0.5" Language="en-US" Publisher="Federico De Felici" />
+        <Identity Id="FUnreal.743850cc-b00b-4f5d-9117-4f84df24f8ab" Version="0.0.7" Language="en-US" Publisher="Federico De Felici" />
         <DisplayName>FUnreal</DisplayName>
         <Description xml:space="preserve">Visual Studio extension for smoothing the workflow of Unreal Engine C++ developers</Description>
         <MoreInfo>https://github.com/fdefelici/vs-funreal</MoreInfo>
         <License>LICENSE.txt</License>
-        <ReleaseNotes>https://github.com/fdefelici/vs-funreal/CHANGELOG.md</ReleaseNotes>
+        <ReleaseNotes>https://github.com/fdefelici/vs-funreal/docs/CHANGELOG.md</ReleaseNotes>
         <Icon>icon.png</Icon>
         <Tags>Unreal Engine,UE,C++,Productivity</Tags>
     </Metadata>
