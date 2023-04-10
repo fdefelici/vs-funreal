@@ -29,7 +29,7 @@ namespace FUnreal
 
     public class FUnrealService
     {
-        public static FUnrealService Create(FUnrealVS unrealVS)
+        public static FUnrealService Create(IFUnrealVS unrealVS)
         {
             string uprjFilePath = unrealVS.GetUProjectFilePath();
             if (!XFilesystem.FileExists(uprjFilePath))
@@ -41,13 +41,14 @@ namespace FUnreal
             unrealVS.Output.Info("UE Project descriptor found at {0}", uprjFilePath);
 
             // Detect Engine Instance
-            string enginePath = unrealVS.GetUnrealEnginePath(); //Try detecting UE base path from solution configuration
+            string enginePath = unrealVS.GetUnrealEnginePath(); //Try detecting UE "Engine" folder abs path from solution configuration  (<UE_ROOT>/Engine)
             if (enginePath == null || !XFilesystem.DirExists(enginePath))
             {
-                unrealVS.Output.Erro("Cannot detect a valid UE path: ", uprjFilePath);
+                unrealVS.Output.Erro("Cannot detect a valid UE path for: ", uprjFilePath);
                 return null;
             }
 
+            /* Version lookup on .uproject file abandoned in favor of <UE_ROOT>/Engine/Build/Build.version
             var uprojectFile = new FUnrealUProjectFile(uprjFilePath);
             string versionStr = uprojectFile.EngineAssociation;
             var version = XVersion.FromSemVer(versionStr);
@@ -56,6 +57,15 @@ namespace FUnreal
                 unrealVS.Output.Erro("Cannot detect UE version from .uproject file!");
                 return null;
             }
+            */
+            var buildVersionFilePath = XFilesystem.PathCombine(enginePath, "Build/Build.version");
+            if (!XFilesystem.FileExists(buildVersionFilePath))
+            {
+                unrealVS.Output.Erro("Cannot detect UE version from Build.version file [file not found]: ", buildVersionFilePath);
+                return null;
+            }
+            var buildVersionFile = new FUnrealBuildVersionFile(buildVersionFilePath);
+            var version = new XVersion(buildVersionFile.MajorVersion, buildVersionFile.MinorVersion, buildVersionFile.PatchVersion);
 
             string ubtBin;
             //NOTE: Eventually I could get rid off version check and find UBT executable by a filesystem scan instead.
@@ -83,7 +93,8 @@ namespace FUnreal
 
 
             // Load Templates
-            string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            //string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string vsixDllPath = unrealVS.GetVSixDllPath();
             string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
             string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
             string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.xml");
@@ -120,7 +131,7 @@ namespace FUnreal
             return new FUnrealService(engine, uprjFilePath, templates);
         }
 
-        private FUnrealEngine _engine;
+        public FUnrealEngine Engine { get; private set; }
         private IFUnrealBuildTool _engineUbt;
         private string _engineMajorVer;
 
@@ -135,7 +146,7 @@ namespace FUnreal
 
         public FUnrealService(FUnrealEngine engine, string uprjAbsPath, FUnrealTemplates templates)
         {
-            _engine = engine;
+            Engine = engine;
             _engineUbt = engine.UnrealBuildTool;
             _engineMajorVer = engine.Version.Major.ToString();
 
