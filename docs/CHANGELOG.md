@@ -1,4 +1,7 @@
 # FUnreal Changelog
+## v0.0.8: April 4, 2023 
+* Change UE version detection strategy to work with UE official and custom builds
+
 ## v0.0.7: December 19, 2022 
 * Clean released vsix package
 

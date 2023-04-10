@@ -27,7 +27,7 @@ and offers the following features:
 * `Keep in Sync` UE Project and VS Solution (invoking UBT automatically)
 * `Keep consistent` the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (look at [this section](#details) for more details).
 
-> NOTE: While using `FUnreal` extension, it is still possible to create plugins and C++ classes from Unreal Editor or doing operations on the project directly on filesystem. The important thing is that UBT has been run succesfully and VS Solution has been reloaded.
+> NOTE: While using `FUnreal` extension, it is still possible to create plugins and C++ classes from Unreal Editor, from other IDE plugins or doing operations on the project directly on filesystem. The important thing is that UBT has been run succesfully and VS Solution has been reloaded.
 
 # Activation
 `FUnreal` starts automatically when detects an UE Project, even if the actual activation dependends on Visual Studio extension loading chain (so you couldn't see the context menu right away just after opening VS). Anyway, you can be aware when `FUnreal` have been loaded in two ways:

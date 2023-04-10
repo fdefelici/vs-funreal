@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace FUnreal
 {
@@ -55,7 +57,11 @@ namespace FUnreal
         }
 
         public XVersion(int major, int minor)
-            : this(major, minor, -1, string.Empty)
+            : this(major, minor, -1)
+        { }
+
+        public XVersion(int major, int minor, int patch)
+           : this(major, minor, patch, string.Empty)
         { }
 
         public XVersion(int major, int minor, int patch, string label)
@@ -89,6 +95,24 @@ namespace FUnreal
             }
 
             return result.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is XVersion)) return false;
+
+            XVersion other = obj as XVersion;
+
+            if (other.Major != Major) return false;
+            if (other.Minor != Minor) return false;
+            if (other.Patch != Patch) return false;
+            if (other.Label != Label) return false;
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return Major + Minor + Patch + Label.GetHashCode();
         }
     }
 }

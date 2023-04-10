@@ -11,7 +11,28 @@ using System.Windows.Forms;
 namespace FUnreal
 {
 
-    public class FUnrealLogger
+    public interface IFUnrealVS
+    {
+        string GetUnrealEnginePath();
+        string GetUProjectFilePath();
+
+        IFUnrealLogger Output { get; }
+
+        string GetVSixDllPath ();
+    }
+
+    public interface IFUnrealLogger
+    {
+        void Info(string format, params string[] args);
+        void Warn(string format, params string[] args);
+        void Erro(string format, params string[] args);
+
+        void ForceFocus();
+        void PlainText(string str);
+    }
+
+
+    public class FUnrealLogger : IFUnrealLogger
     {
 
         private const string INFO = "INFO";
@@ -59,7 +80,7 @@ namespace FUnreal
         }
     }
 
-    public class FUnrealVS
+    public class FUnrealVS : IFUnrealVS
     {
         public static async Task<bool> IsUnrealSolutionAsync()
         {
@@ -100,7 +121,7 @@ namespace FUnreal
         }
         
 
-        public FUnrealLogger Output { get; private set; }
+        public IFUnrealLogger Output { get; private set; }
 
         private FUnrealDTE _unrealDTE;
 
@@ -350,7 +371,10 @@ namespace FUnreal
             return await _unrealDTE.RemoveFoldersFromSelectionAsync();  
         }
 
-       
+        public string GetVSixDllPath()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().Location;
+        }
     }
 
     /* 

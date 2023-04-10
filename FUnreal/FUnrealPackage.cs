@@ -76,7 +76,7 @@ namespace FUnreal
             }
         }
 
-        private void printTitle(FUnrealLogger output)
+        private void printTitle(IFUnrealLogger output)
         {
             //output.ForceFocus();
             string str = @"                                                            
