@@ -66,14 +66,19 @@ namespace FUnreal
             }
             var buildVersionFile = new FUnrealBuildVersionFile(buildVersionFilePath);
             var version = new XVersion(buildVersionFile.MajorVersion, buildVersionFile.MinorVersion, buildVersionFile.PatchVersion);
+            if (version.Major < 4)
+            {
+                unrealVS.Output.Erro("Cannot detect UE 4 or 5 version from Build.version. Current version detected is: ", version.AsString());
+                return null;
+            }
 
-            string ubtBin;
+            string ubtBin = string.Empty;
             //NOTE: Eventually I could get rid off version check and find UBT executable by a filesystem scan instead.
             if (version.Major == 4)
             {
                 //Example UE4: C:\Program Files\Epic Games\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe
                 ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool.exe");
-            } else //5+
+            } else if (version.Major >= 5) //5+
             {
                 //Example UE5: C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe
                 ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
