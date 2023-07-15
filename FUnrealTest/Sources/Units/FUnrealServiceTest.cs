@@ -27,14 +27,24 @@ namespace FUnrealTest
         string uprojectFile;
         FUnrealBuildToolMock ubt;
         FUnrealService service;
-        private void SetUpTestCaseForProject(string projectName)
+        private void SetUpTestCaseForProject(string projectName, bool SetupInvalidTemplatePath = false)
         {
             uprojectName = projectName;
             uprojectPath = TestUtils.PathCombine(tmpPath, "Projects", uprojectName);
             uprojectFile = TestUtils.PathCombine(uprojectPath, $"{uprojectName}.uproject");
-            string templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.xml");
             ubt = new FUnrealBuildToolMock();
             FUnrealEngine eng = new FUnrealEngine(new XVersion(5, 0), "engine/5.0", ubt);
+
+
+            string templatePath = null; 
+            if (SetupInvalidTemplatePath) 
+            { 
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor-invalid-path.xml");
+            } else
+            {
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.xml");
+            }
+
             FUnrealTemplates tpls = FUnrealTemplates.Load(templatePath);
 
             service = new FUnrealService(eng, uprojectFile, tpls);
@@ -323,6 +333,19 @@ namespace FUnrealTest
             Assert.IsTrue(filePlu.Contains("\"Name\": \"MyMod\""));
             Assert.IsTrue(filePlu.Contains("\"Type\": \"Runtime\""));
             Assert.IsTrue(filePlu.Contains("\"LoadingPhase\": \"Default\""));
+        }
+
+
+        [TestMethod]
+        public void AddPluginModuleFailureForUnexistentTemplatePath()
+        {
+            SetUpTestCaseForProject("UPrjOnePlug", SetupInvalidTemplatePath: true);
+
+            bool taskResult = service.AddPluginModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+
+            Assert.IsFalse(taskResult);
+            Assert.IsFalse(ubt.Called);
+            Assert.IsFalse(TestUtils.ExistsDir(uprojectPath, "Plugins/Plugin01/Source/MyMod"));
         }
 
         [TestMethod]

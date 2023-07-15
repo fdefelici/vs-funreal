@@ -62,22 +62,27 @@
     @{TPL_MODU_NAME}  Module name
     @{TPL_FILE_NAME}  Module source (.h, .cpp) file name 
   -->
-  <template context="modules" name="tpl_module_blank" ue="4,5" path="UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
+  <template context="modules" name="tpl_module_blank" ue="4,5" path="UEC/Plugins/Blank/@{TPL_PLUG_NAME}/Source">
     <ui label="Blank" desc="Create a blank module with a minimal amount of code."/>
     <meta type="Runtime" phase="Default" target="Editor"/>
   </template>
 
-  <template context="modules" name="tpl_module_blueprintlibrary" ue="4,5" path="UE5/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source">
+  <template context="modules" name="tpl_module_blueprintlibrary" ue="4,5" path="UEC/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source">
     <ui label="Blueprint Library" desc="Create a module that will contain Blueprint Function Library."/>
     <meta type="Runtime" phase="PreLoadingScreen" target="Editor"/>
   </template>
 
-  <template context="modules" name="tpl_module_editormode" ue="4,5" path="UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source">
+  <template context="modules" name="tpl_module_editormode" ue="4" path="UE4/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source">
     <ui label="Editor Mode" desc="Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage."/>
     <meta type="Editor" phase="Default" target="Editor"/>
   </template>
 
-  <template context="modules" name="tpl_module_editorstandalonewindow" ue="4" path="UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source">
+  <template context="modules" name="tpl_module_editormode" ue="5" path="UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source">
+    <ui label="Editor Mode" desc="Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage."/>
+    <meta type="Editor" phase="Default" target="Editor"/>
+  </template>
+
+  <template context="modules" name="tpl_module_editorstandalonewindow" ue="4" path="UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source">
     <ui label="Editor Standalone Window" desc="Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked."/>
     <meta type="Editor" phase="Default" target="Editor"/>
   </template>

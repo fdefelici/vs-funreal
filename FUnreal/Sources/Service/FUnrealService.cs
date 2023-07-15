@@ -774,6 +774,13 @@ namespace FUnreal
             }
             */
 
+            string tplPath = tpl.BasePath;
+            if (!XFilesystem.DirExists(tplPath))
+            {
+                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
+                return false;
+            }
+
             string metaType = tpl.GetMeta("type");
             string metaPhase = tpl.GetMeta("phase");
             if (metaType == null || metaPhase == null)
@@ -815,14 +822,6 @@ namespace FUnreal
                 LoadingPhase = metaPhase
             });
             upluginFile.Save(); //todo: SaveAsync
-
-            notifier.Info(XDialogLib.Ctx_RegenSolutionFiles);
-            XProcessResult ubtResult = await _engineUbt.GenerateVSProjectFilesAsync(_uprjFileAbsPath);
-            if (ubtResult.IsError)
-            {
-                notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
-                return false;
-            }
 
             //X. Regen VS Project
             bool taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
