@@ -1,4 +1,8 @@
 # FUnreal Changelog
+## v0.0.9: July 15, 2023 
+### Bug Fix
+* Template misconfiguration prevented to add some module (blank, blueprint library) to a plugin
+
 ## v0.0.8: April 4, 2023 
 * Change UE version detection strategy to work with UE official and custom builds
 
