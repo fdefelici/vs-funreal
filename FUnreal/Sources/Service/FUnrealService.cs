@@ -800,6 +800,9 @@ namespace FUnreal
             strategy.AddPlaceholder(moduleFilePH, fileName);
 
             string sourcePath = plugin.SourcePath;
+
+            //TODO: Check if BasePath exists (just in case of wrong path to template file)
+
             await XFilesystem.DirDeepCopyAsync(tpl.BasePath, sourcePath, strategy);
 
             //Update .uplugin
