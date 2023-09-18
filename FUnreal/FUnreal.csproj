@@ -50,6 +50,13 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
+    <Compile Include="Sources\Options\CustomOptionPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sources\Options\CustomPathConverter.cs" />
+    <Compile Include="Sources\Options\GeneralOptions.xaml.cs">
+      <DependentUpon>GeneralOptions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
     <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
     <Compile Include="Sources\Service\FUnrealServiceResults.cs" />
@@ -100,6 +107,7 @@
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\Options\MyOptions.cs" />
     <Compile Include="Sources\Utils\XFilesystem\DeepCopy\IDeepCopyVisitor.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystemEnumerable.cs" />
@@ -614,6 +622,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Sources\Options\GeneralOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sources\UI\Common\Controls\MessageDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

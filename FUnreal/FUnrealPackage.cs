@@ -12,6 +12,11 @@ namespace FUnreal
     [Guid(VSCTSymbols.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+
+    [ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), "FUnreal", "General", 0, 0, true)]
+    [ProvideProfile(typeof(OptionsProvider.GeneralOptions), "FUnreal", "General", 0, 0, true)]
+    //[ProvideOptionPage(typeof(CustomOptionPage), "FUnreal", "General", 0, 0, true)]
+    //[ProvideProfile(typeof(CustomOptionPage), "FUnreal", "General", 0, 0, true)]
     public sealed class FUnrealPackage : ToolkitPackage
     {
         /// <summary>
