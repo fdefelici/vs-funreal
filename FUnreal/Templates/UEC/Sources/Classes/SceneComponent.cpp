@@ -12,7 +12,7 @@ U@{TPL_SOUR_CLASS}::U@{TPL_SOUR_CLASS}()
 
 
 // Called when the game starts
-void U@{TPL_SOUR_CLASS}()::BeginPlay()
+void U@{TPL_SOUR_CLASS}::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -22,7 +22,7 @@ void U@{TPL_SOUR_CLASS}()::BeginPlay()
 
 
 // Called every frame
-void U@{TPL_SOUR_CLASS}()::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void U@{TPL_SOUR_CLASS}::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
