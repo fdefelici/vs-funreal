@@ -1,4 +1,10 @@
 # FUnreal Changelog
+## v0.1.0: October 25, 2023 
+### Improvements
+* Update UE version dection strategy to support UE v5.3
+### Bug Fix
+* Fix USceneComponent class template
+
 ## v0.0.9: July 15, 2023 
 ### Bug Fix
 * Template misconfiguration prevented to add some module (blank, blueprint library) to a plugin
