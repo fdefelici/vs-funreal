@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -265,14 +266,26 @@ namespace FUnreal
                 //DteMiscProject
                 if (project.Name.Equals("Visualizers", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (project.ProjectItems.Count != 1) return null;
-                    ProjectItem item = project.ProjectItems.Item(1); //Collection 1-based (not starting from 0!!!)
+                    if (project.ProjectItems.Count < 1) return null;
 
-                    if (item.FileCount != 1) return null;
-                    string absFilePath = item.FileNames[1];    //Collection 1-based (not starting from 0!!!)
-                    Debug.Print(" Natvis file path: {0}", absFilePath);
+                    // UE5.3 has an extra file in here, so find specifically .natvis files
+                    for (int i = 0; i < project.ProjectItems.Count; i++)
+                    {
+                        // For some reason these are 1-based and not 0
+                        var item2 = project.ProjectItems.Item(i+1);
 
-                    return absFilePath;
+                        string fileName = item2.FileNames[1];
+						Debug.Print(" Potential natvis file path: {0}", fileName);
+
+						if (Path.GetExtension(fileName) == ".natvis")
+                        {
+                            return fileName;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
                 }
             }
 
