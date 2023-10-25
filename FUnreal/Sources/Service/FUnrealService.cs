@@ -44,7 +44,7 @@ namespace FUnreal
             string enginePath = unrealVS.GetUnrealEnginePath(); //Try detecting UE "Engine" folder abs path from solution configuration  (<UE_ROOT>/Engine)
             if (enginePath == null || !XFilesystem.DirExists(enginePath))
             {
-                unrealVS.Output.Erro("Cannot detect a valid UE path for: ", uprjFilePath);
+                unrealVS.Output.Erro("Cannot detect a valid UE path for: {0}", uprjFilePath);
                 return null;
             }
 
