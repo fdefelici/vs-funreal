@@ -4,8 +4,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,7 +41,7 @@ namespace FUnreal
             }
 
             UENatvisPath = FindUENatvisPath();
-            await ReloadProjectAsync();   
+            await ReloadProjectAsync();
 
             if (UENatvisPath == null)
             {
@@ -264,26 +262,24 @@ namespace FUnreal
 
                 //Microsoft.VisualStudio.CommonIDE.Solutions
                 //DteMiscProject
+                //NOTE: DTE Collections (ex. ProjectItems, FileNames) are 1-based (start index is 1 and not 0!!!)
                 if (project.Name.Equals("Visualizers", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (project.ProjectItems.Count < 1) return null;
+                    if (project.ProjectItems.Count == 0) return null;
 
-                    // UE5.3 has an extra file in here, so find specifically .natvis files
-                    for (int i = 0; i < project.ProjectItems.Count; i++)
+                    foreach (ProjectItem item in project.ProjectItems)
                     {
-                        // For some reason these are 1-based and not 0
-                        var item2 = project.ProjectItems.Item(i+1);
+                        string absFilePath = item.FileNames[1]; //Collection 1-based (not starting from 0!!!)
+                        XDebug.Info("Visualizers file path: {0}", absFilePath);
 
-                        string fileName = item2.FileNames[1];
-						Debug.Print(" Potential natvis file path: {0}", fileName);
-
-						if (Path.GetExtension(fileName) == ".natvis")
+                        if (!XFilesystem.HasExtension(absFilePath, ".natvis"))
                         {
-                            return fileName;
+                            continue;
                         }
                         else
                         {
-                            continue;
+                            XDebug.Info("Visualizers natvis file found: {0}", absFilePath);
+                            return absFilePath;
                         }
                     }
                 }
@@ -300,7 +296,7 @@ namespace FUnreal
 
         //Example of api, to select multiple elment (like shift+selection). Not useful now, but just to keep it.
         //SolutionExplorerNode.SelectDown(vsUISelectionType.vsUISelectionTypeSetCaret, 1);
-        public async Task TryToSelectSolutionExplorerItemAsync(string[] relPathAfterProjectName) 
+        public async Task TryToSelectSolutionExplorerItemAsync(string[] relPathAfterProjectName)
         {
             await XThread.SwitchToUIThreadIfItIsNotAsync();
 
@@ -308,7 +304,7 @@ namespace FUnreal
 
             //NOTE: GetItem works only if item is expanded on Solution Explorer View (otherwise throws exception)
             //UIHierarchyItem foundItem = SolutionExplorerNode.GetItem(@"UENLOpt\Games\UENLOpt\Source\UENLOpt\MyActor.h");
-           
+
             //string[] parts = new string[] { "Source", "UENLOpt", "MyActor.h" };
 
             UIHierarchyItem lastItem = GetProjectUIHierarchItem();
@@ -323,7 +319,7 @@ namespace FUnreal
             {
                 found = TryFindUIHierItemChild(lastItem, part, out UIHierarchyItem child);
                 if (!found) break;
-                
+
                 child.UIHierarchyItems.Expanded = true;
                 lastItem = child;
             }
@@ -349,7 +345,7 @@ namespace FUnreal
             UIHierarchy SolutionExplorerNode = _DTE2.ToolWindows.SolutionExplorer;
             if (!SolutionExplorerNode.UIHierarchyItems.Expanded) SolutionExplorerNode.UIHierarchyItems.Expanded = true;
             if (SolutionExplorerNode.UIHierarchyItems.Count == 0) return null;
-  
+
             UIHierarchyItem solutionNode = SolutionExplorerNode.UIHierarchyItems.Item(1);
             if (!solutionNode.UIHierarchyItems.Expanded) solutionNode.UIHierarchyItems.Expanded = true;
             if (solutionNode.UIHierarchyItems.Count == 0) return null;
@@ -399,7 +395,8 @@ namespace FUnreal
                     }
 
                     lastItem = child;
-                } else
+                }
+                else
                 {
                     //Adding folder to the project item
                     var newPItem = GetProjectItemsFrom(lastItem.Object).AddFolder(part, VSConstants.ItemTypeGuid.VirtualFolder_string);
@@ -411,15 +408,16 @@ namespace FUnreal
                     if (childFound)
                     {
                         lastItem = newChild;
-                    } else
+                    }
+                    else
                     {
                         //shold not happen
                         XDebug.Erro($"For the ProjectItem '{part}' just added, was not found the respective UIHierarchyItem!");
                         return;
                     }
                 }
-            } 
-            
+            }
+
             if (firstNotExpanded != null)
             {
                 //by the fact the only way to explor UIHierarchyItem is to expand them, 
@@ -448,7 +446,7 @@ namespace FUnreal
             var uiItemParents = new List<UIHierarchyItem>();
 
             bool found = false;
-            foreach(var part in relPathAfterProject) 
+            foreach (var part in relPathAfterProject)
             {
                 found = false;
                 bool originalExpanded = lastItem.UIHierarchyItems.Expanded;
@@ -465,13 +463,14 @@ namespace FUnreal
                         lastItem = each;
                         found = true;
                         break;
-;                   }
+                        ;
+                    }
                     lastItem.UIHierarchyItems.Expanded = false;
                 }
             }
-            
+
             //restore expansion
-            for(int i = uiItemParents.Count-1; i >=0; i--)
+            for (int i = uiItemParents.Count - 1; i >= 0; i--)
             {
                 uiItemParents[i].UIHierarchyItems.Expanded = originalExpandState[i];
             }
@@ -479,7 +478,8 @@ namespace FUnreal
             if (!found)
             {
                 uiItems = null;
-            } else
+            }
+            else
             {
                 uiItems = uiItemParents;
                 uiItems.Add(lastItem);
@@ -507,7 +507,7 @@ namespace FUnreal
             return false;
         }
 
-        
+
         //This method is needed just because Project and ProjectItem haven't a common interface, but object
         private static ProjectItems GetProjectItemsFrom(object aProjectOrProjectItem)
         {

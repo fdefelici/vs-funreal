@@ -114,13 +114,13 @@ namespace FUnreal
             }
 
             FUnrealTemplates templates = FUnrealTemplates.Load(templateDescPath);
-            
+
             //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
             string ueMajorVer = engine.Version.Major.ToString();
             if (templates.GetTemplates(FUnrealTemplateCtx.PLUGINS, ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
-                return null;    
+                return null;
             }
             if (templates.GetTemplates(FUnrealTemplateCtx.MODULES, ueMajorVer).Count == 0)
             {
@@ -141,7 +141,7 @@ namespace FUnreal
         private string _engineMajorVer;
 
         private string _uprjFileAbsPath;
-        
+
         private string _prjPath;
         private string _pluginsPath;
         private string _sourcePath;
@@ -158,7 +158,7 @@ namespace FUnreal
             _uprjFileAbsPath = uprjAbsPath;
             ProjectName = XFilesystem.GetFilenameNoExt(uprjAbsPath);
             _templates = templates;
-        
+
             _prjPath = XFilesystem.PathParent(uprjAbsPath);
             _pluginsPath = XFilesystem.PathCombine(_prjPath, "Plugins");
             _sourcePath = XFilesystem.PathCombine(_prjPath, "Source");
@@ -200,9 +200,9 @@ namespace FUnreal
         }
 
 
-        public string ProjectName { get;  }
+        public string ProjectName { get; }
 
-        public bool IsSourceCodePath(string fullPath, bool afterModuleDir=false)
+        public bool IsSourceCodePath(string fullPath, bool afterModuleDir = false)
         {
             var module = GetUProject().AllModules.FindByBelongingPath(fullPath);
             if (module == null) return false;
@@ -259,7 +259,7 @@ namespace FUnreal
             string modulePath = ModulePathFromSourceCodePath(path);
 
             string afterModulePath = XFilesystem.PathSubtract(path, modulePath);
-            
+
             string firstModuleSubfolder = XFilesystem.PathSplit(afterModulePath)[0];
 
             if (firstModuleSubfolder == "Public")
@@ -338,7 +338,7 @@ namespace FUnreal
         {
             return _sourcePath;
         }
-        
+
         // UI Only
         public string ProjectRelativePathForPlugin(string pluginName)
         {
@@ -397,7 +397,7 @@ namespace FUnreal
 
         public bool ExistsPlugin(string pluginName)
         {
-            return GetUProject().Plugins.Exists(pluginName);    
+            return GetUProject().Plugins.Exists(pluginName);
         }
 
         public bool ExistsModule(string moduleName)
@@ -415,7 +415,7 @@ namespace FUnreal
             var project = GetUProject();
             return project.AllModules[moduleName];
         }
-       
+
         public string ModuleNameFromSourceCodePath(string path)
         {
             var found = GetUProject().AllModules.FindByBelongingPath(path);
@@ -511,7 +511,7 @@ namespace FUnreal
 
         public bool IsPluginDescriptorFile(string fullPath)
         {
-            var found = GetUProject().Plugins.FindByBelongingPath(fullPath); 
+            var found = GetUProject().Plugins.FindByBelongingPath(fullPath);
             if (found == null) return false;
             return fullPath == found.DescriptorFilePath;
         }
@@ -532,7 +532,7 @@ namespace FUnreal
         {
             string pluginName = PluginNameFromSourceCodePath(fullPath);
             string moduleName = ModuleNameFromSourceCodePath(fullPath);
-            
+
             bool isTrue = pluginName != null && moduleName != null;
             return isTrue;
         }
@@ -590,7 +590,7 @@ namespace FUnreal
             strategy.AddFileExtension(".cpp", ".h", ".cs", ".uplugin", "vcxproj"); //vcxproj from thirdpartylibrary
             strategy.AddPlaceholder(pluginNamePH, pluginName);
 
-            if (moduleNameOrNull != null) 
+            if (moduleNameOrNull != null)
             {
                 string fileName = moduleNameOrNull;
                 if (!fileName.EndsWith("Module"))
@@ -648,19 +648,21 @@ namespace FUnreal
 
             //Update uproject file
             var uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
-            if (uprojectJson.Plugins) {
+            if (uprojectJson.Plugins)
+            {
                 var pluginJson = uprojectJson.Plugins[pluginName];
-                if (pluginJson) {
+                if (pluginJson)
+                {
                     notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, _uprjFileAbsPath);
                     pluginJson.Remove();
                     uprojectJson.Plugins.RemoveIfEmpty();
                     uprojectJson.Save();
                 }
             }
-            
+
             // Remove plugin modules in dependent .Build.cs (if configured there)
             taskSuccess = await FUnrealServiceTasks.Plugin_DeleteModuleDependencyAsync(plugin, GetUProject().AllModules, notifier);
-            
+
             // Remove plugin in dependent .uplugin (if configured there)
             taskSuccess = await FUnrealServiceTasks.Plugin_DeleteDependencyAsync(plugin, GetUProject().Plugins, notifier);
             if (!taskSuccess) return false;
@@ -816,7 +818,8 @@ namespace FUnreal
             string upluginFilePath = plugin.DescriptorFilePath;
             notifier.Info(XDialogLib.Ctx_UpdatingPlugin, XDialogLib.Info_UpdatingPluginDescriptorFile, upluginFilePath);
             var upluginFile = new FUnrealUPluginJsonFile(upluginFilePath);
-            upluginFile.Modules.Add(new FUnrealUPluginModuleJson() { 
+            upluginFile.Modules.Add(new FUnrealUPluginModuleJson()
+            {
                 Name = moduleName,
                 Type = metaType,
                 LoadingPhase = metaPhase
@@ -883,7 +886,7 @@ namespace FUnreal
             //6. Rename module in .uplugin
             taskSuccess = FUnrealServiceTasks.Plugin_RenameModuleInDescriptor(plugin, module, newModuleName, notifier);
             if (!taskSuccess) return false;
-            
+
             //7. Regen VS Solution
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(project, _engineUbt, notifier);
             if (!taskSuccess) return false;
@@ -906,7 +909,8 @@ namespace FUnreal
 
             var plugin = PluginByName(pluginName);
             FUnrealModule module = plugin.Modules[moduleName];
-            if (module == null) {
+            if (module == null)
+            {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_PluginModuleNotFound, pluginName, moduleName);
                 return false;
             }
@@ -931,8 +935,8 @@ namespace FUnreal
                 moduleJson.Remove();
                 upluginFile.Save();
             }
-            
-            
+
+
             //X. Regen VS Project
             taskSuccess = await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
             if (!taskSuccess) return false;
@@ -956,8 +960,8 @@ namespace FUnreal
                 return false;
             }
 
-            ComputeSourceCodePaths(absBasePath, className, classType, 
-                out string headerPath, 
+            ComputeSourceCodePaths(absBasePath, className, classType,
+                out string headerPath,
                 out string sourcePath,
                 out string sourceRelPath
                 );
@@ -978,7 +982,7 @@ namespace FUnreal
 
             string headerFileME = tpl.GetMeta("header");
             string sourceFileME = tpl.GetMeta("source");
-       
+
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
             if (!XFilesystem.FileExists(tplHeaderPath) && !XFilesystem.FileExists(tplSourcePath))
@@ -987,12 +991,12 @@ namespace FUnreal
                 return false;
             }
 
-            
-            string moduleApiPH = "@{TPL_MODU_API}"; 
+
+            string moduleApiPH = "@{TPL_MODU_API}";
             string incluPathPH = "@{TPL_SOUR_INCL}";
             string classNamePH = "@{TPL_SOUR_CLASS}";
             string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{module.ApiMacro} " : ""; //Final space to separate from Class Name
-            
+
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
             if (incluPath != "") incluPath += "/";             //Final Path separator to separate from Class Name
 
@@ -1004,7 +1008,7 @@ namespace FUnreal
 
             PlaceHolderReplaceVisitor strategy = new PlaceHolderReplaceVisitor();
             strategy.AddFileExtension(".h", ".cpp");
-            strategy.AddPlaceholder(moduleApiPH, moduleApi); 
+            strategy.AddPlaceholder(moduleApiPH, moduleApi);
             strategy.AddPlaceholder(incluPathPH, incluPath);
             strategy.AddPlaceholder(classNamePH, className);
             strategy.HandleFileContent(headerPath);
@@ -1037,13 +1041,13 @@ namespace FUnreal
             List<string> files = new List<string>();
 
             List<string> parentPaths = new List<string>();
-            foreach(string sourcePath in sourcePaths)
+            foreach (string sourcePath in sourcePaths)
             {
                 if (ExistsSourceFile(sourcePath))
                 {
                     parentPaths.Add(XFilesystem.PathParent(sourcePath));
                     files.Add(sourcePath);
-                } 
+                }
                 else if (ExistsSourceDirectory(sourcePath))
                 {
                     parentPaths.Add(XFilesystem.PathParent(sourcePath));
@@ -1148,7 +1152,7 @@ namespace FUnreal
             if (metaTarget == "Game")
             {
                 targetName = FUnrealTargets.GAME;
-            } 
+            }
             else
             {
                 targetName = metaTarget; //Should check if its valid
@@ -1171,9 +1175,9 @@ namespace FUnreal
             FUnrealUProjectFile uprojectJson = new FUnrealUProjectFile(_uprjFileAbsPath);
             uprojectJson.Modules.Add(new FUnrealUProjectModuleJson()
             {
-                 Name = moduleName,
-                 Type = metaType,
-                 LoadingPhase = metaPhase
+                Name = moduleName,
+                Type = metaType,
+                LoadingPhase = metaPhase
             });
             uprojectJson.Save();
 
@@ -1225,7 +1229,7 @@ namespace FUnreal
             //3. Update MODULENAME_API macro in all .h files under Public/**
             taskSuccess = FUnrealServiceTasks.Module_UpdateApiMacro(module, newModuleName, notifier);
             if (!taskSuccess) return false;
-        
+
             //4. Rename Module Folder
             taskSuccess = await FUnrealServiceTasks.Module_RenameFolderAsync(module, newModuleName, notifier);
             if (!taskSuccess) return false;
@@ -1272,13 +1276,13 @@ namespace FUnreal
             if (!taskSuccess) return false;
 
             //2. Delete module path
-            { 
+            {
                 notifier.Info(XDialogLib.Ctx_DeletingModule, XDialogLib.Info_DeletingModuleFolder, module.FullPath);
                 XFilesystem.DirDelete(module.FullPath);
             }
 
             //3. Update .uproject removing the module
-            { 
+            {
                 notifier.Info(XDialogLib.Ctx_UpdatingProject, XDialogLib.Info_UpdatingProjectDescriptorFile, project.DescriptorFilePath);
                 var descrFile = new FUnrealUProjectFile(project.DescriptorFilePath);
                 var moduleJson = descrFile.Modules[moduleName];
@@ -1365,7 +1369,7 @@ namespace FUnreal
             //      - il vecchio filename finisce per .h
 
             var project = GetUProject();
-            
+
             bool isHeaderFileScenario = XFilesystem.HasExtension(filePath, ".h") && XFilesystem.HasExtension(newFileNameWithExt, ".h");
             if (isHeaderFileScenario)
             {
@@ -1436,7 +1440,7 @@ namespace FUnreal
 
             var project = GetUProject();
             var module = project.AllModules.FindByBelongingPath(folderPath);
-            if (module == null) 
+            if (module == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, XDialogLib.Error_ModuleNotFound, $"for path {folderPath}");
                 return false;
@@ -1452,7 +1456,7 @@ namespace FUnreal
             bool needIncludeUpdate = false;
             bool hasPublicHeaderInvolved = false;
             //handle only Public or Private specific case. In case of Custom folder is threated always as private.... (eventually could check in .Build.cs)
-            if (folderPath != module.PublicPath && folderPath != module.PrivatePath) 
+            if (folderPath != module.PublicPath && folderPath != module.PrivatePath)
             {
                 needIncludeUpdate = true;
                 hasPublicHeaderInvolved = XFilesystem.FileExists(folderPath, true, "*.h", filePath =>
@@ -1497,5 +1501,5 @@ namespace FUnreal
             var module = ModuleFromSourceCodePath(absPathSelected);
             FUnrealServiceTasks.Module_ComputeSourceCodePaths(module, absPathSelected, className, sourceType, out headerPath, out sourcePath, out sourceRelPath);
         }
-    } 
+    }
 }
