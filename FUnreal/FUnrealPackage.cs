@@ -57,8 +57,10 @@ namespace FUnreal
                 unrealVS.AddProjectLoadedHandler(projectLoadHandler.ExecuteAsync);
                 unrealVS.AddProjectLoadedHandler(emptyFolderHandler.ExecuteAsync);
 
-                //Bind Cmd with VSCT file (To be done after ContexMenuManager)
-                await this.RegisterCommandsAsync();
+                CommandVsSln.Service = unrealService;
+
+				//Bind Cmd with VSCT file (To be done after ContexMenuManager)
+				await this.RegisterCommandsAsync();
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
                 unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");

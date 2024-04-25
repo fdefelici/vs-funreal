@@ -9,5 +9,7 @@
         public const int Cmd13 = 0x0013;
         public const int Cmd21 = 0x0021;
         public const int Cmd22 = 0x0022;
+        
+        public const int CmdVsSln = 0x0031;
     }
 }

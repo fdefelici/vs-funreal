@@ -3,6 +3,7 @@
 
   <Extern href="stdidcmd.h"/>
   <Extern href="vsshlids.h"/>
+  <Extern href="KnownImageIds.vsct"/>
   
   <Commands package="guidFUnrealPackage">
 
@@ -13,7 +14,14 @@
           <ButtonText>FUnreal</ButtonText>
         </Strings>
       </Menu>
-      
+
+      <Menu guid="guidFUnrealPackage" id="Toolbar" type="Toolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>FUnreal</ButtonText>
+          <CommandName>FUnreal</CommandName>
+        </Strings>
+      </Menu>
     </Menus>
 
     <Groups>
@@ -26,6 +34,10 @@
       
       <Group guid="guidFUnrealPackage" id="ToolboxMenuInner02Group" priority="0x0002">
         <Parent guid="guidFUnrealPackage" id="ToolboxMenu"/>
+      </Group>
+
+      <Group guid="guidFUnrealPackage" id="ToolbarGroup" priority="0x0000">
+        <Parent guid="guidFUnrealPackage" id="Toolbar" />
       </Group>
 
     </Groups>
@@ -77,6 +89,15 @@
         </Strings>
       </Button>
 
+      <Button guid="guidFUnrealPackage" id="CmdVsSln" priority="0x0100" type="Button">
+        <Parent guid= "guidFUnrealPackage" id="ToolbarGroup" />
+        <Icon guid="ImageCatalogGuid" id="Solution" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Generate Unreal Visual Studio Project Files</ButtonText>
+        </Strings>
+      </Button>
+        
     </Buttons>
   </Commands>
 
@@ -139,7 +160,11 @@
       <IDSymbol name="Cmd13"             value="0x0013" />
       <IDSymbol name="Cmd21"             value="0x0021" />
       <IDSymbol name="Cmd22"             value="0x0022" />
+      <IDSymbol name="CmdVsSln"          value="0x0031" />
 
+      <IDSymbol name="Toolbar"      value="0x1000" />
+      <IDSymbol name="ToolbarGroup" value="0x1050" />
+        
     </GuidSymbol>
   </Symbols>
 </CommandTable>

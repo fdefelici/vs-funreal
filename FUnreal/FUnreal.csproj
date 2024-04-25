@@ -50,6 +50,7 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
+    <Compile Include="Sources\UI\Common\Commands\CommandVsSln.cs" />
     <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
     <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
     <Compile Include="Sources\Service\FUnrealServiceResults.cs" />
