@@ -50,8 +50,14 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
-    <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
-    <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealSourceTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealGameModuleTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealPluginModuleTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealPluginTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplatesDescriptor.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplatesRules.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\DetectEmptyFolderHandler.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\ProjectReloadHandler.cs" />
     <Compile Include="Sources\Service\FUnrealServiceResults.cs" />
     <Compile Include="Sources\Core\Domain\FUnrealModule.cs" />
     <Compile Include="Sources\Core\Domain\IFUnrealModuleContainer.cs" />
@@ -61,33 +67,33 @@
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
     <Compile Include="Sources\Service\FUnrealServiceTasks.cs" />
     <Compile Include="Sources\Core\FUnrealTemplates.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd22.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd21.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd13.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd12.cs" />
-    <Compile Include="Sources\UI\Common\Controls\MessageDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd22.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd21.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd13.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd12.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\MessageDialog.xaml.cs">
       <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Common\IXCommand.cs" />
-    <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd11.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\IXCommand.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\ContextMenuManager.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd11.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleDialog.xaml.cs">
       <DependentUpon>AddGameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\GameModules\DeleteModule\DeleteGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\DeleteModule\DeleteGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
       <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\RenameFolder\RenameFolderController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\RenameFolder\RenameFolderController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderDialog.xaml.cs">
       <DependentUpon>AddFolderDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
       <DependentUpon>AddSourceFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
@@ -95,54 +101,58 @@
     <Compile Include="Sources\Core\Domain\FUnrealPlugin.cs" />
     <Compile Include="Sources\Core\Files\FUnrealUPluginFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealUProjectFile.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\UI\OptionsPage\StringToPathConverter.cs" />
+    <Compile Include="Sources\Utils\ObjectValidator\XObjectValidator.cs" />
+    <Compile Include="Sources\Utils\ObjectValidator\XObjectValidatorAttributes.cs" />
     <Compile Include="Sources\Utils\XFilesystem\DeepCopy\IDeepCopyVisitor.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystemEnumerable.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystem_Path.cs" />
+    <Compile Include="Sources\Utils\XJsonUtils.cs" />
     <Compile Include="Sources\Utils\XString.cs" />
     <Compile Include="Sources\Utils\XThread.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
-    <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\FProgressPanel.xaml.cs">
       <DependentUpon>FProgressPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Common\XDialogLib.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleController.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\XDialogLib.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleDialog.xaml.cs">
       <DependentUpon>AddModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
     <Compile Include="Sources\Core\VS\FUnrealVS.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
       <DependentUpon>RenameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginController.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml.cs">
       <DependentUpon>RenamePluginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginController.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginDialog.xaml.cs">
       <DependentUpon>AddPluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealBuildTool.cs" />
     <Compile Include="Sources\Service\FUnrealService.cs" />
-    <Compile Include="Sources\UI\Common\AXActionController.cs" />
-    <Compile Include="Sources\UI\Common\Controls\ConfirmDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\AXActionController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\ConfirmDialog.xaml.cs">
       <DependentUpon>ConfirmDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Common\ImageSourceFromIconExt.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\ImageSourceFromIconExt.cs" />
     <Compile Include="Sources\Utils\XFilesystem\DeepCopy\PlaceHolderReplaceVisitor.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
     <Compile Include="Sources\Utils\XJson.cs" />
     <Compile Include="Sources\Utils\XProcess.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystem_IO.cs" />
-    <Compile Include="Sources\UI\Common\XActionCmd.cs" />
-    <Compile Include="Sources\UI\Common\Commands\VSCTSymbols.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\XActionCmd.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\VSCTSymbols.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
     <Content Include="icon.png">
@@ -614,59 +624,59 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Sources\UI\Common\Controls\MessageDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\MessageDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Common\Controls\FProgressPanel.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\FProgressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\UI\Common\Controls\ConfirmDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\ConfirmDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\descriptor.xml">
+    <None Include="Templates\descriptor.json">
       <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

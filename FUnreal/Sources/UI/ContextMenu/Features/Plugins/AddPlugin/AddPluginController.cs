@@ -11,7 +11,7 @@ namespace FUnreal
     {
         private AddPluginDialog _dialog;
         private string _lastPlugName;
-        private List<FUnrealTemplate> _templates;
+        private List<FUnrealPluginTemplate> _templates;
         private FUnrealNotifier _notifier;
         private bool _templateHasModuleName;
 
@@ -43,11 +43,11 @@ namespace FUnreal
         public Task TemplateChangedAsync()
         {
             int index = _dialog.pluginTemplCbx.SelectedIndex;
-            FUnrealTemplate selected = _templates[index];
+            var selected = _templates[index];
             _dialog.pluginTemplTbl.Text = selected.Description;
 
 
-            _templateHasModuleName = selected.GetMeta("has_module") == "true";
+            _templateHasModuleName = selected.HasModule;
             if (_templateHasModuleName)
             {
                 _dialog.ShowModuleNameControls(true);

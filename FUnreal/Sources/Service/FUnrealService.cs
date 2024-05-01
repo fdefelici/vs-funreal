@@ -8,13 +8,6 @@ using System.Text.RegularExpressions;
 namespace FUnreal
 {
     public enum FUnrealSourceType { INVALID = -1, PUBLIC, PRIVATE, CUSTOM }
-    public struct FUnrealTemplateCtx
-    {
-        public const string PLUGINS = "plugins";
-        public const string MODULES = "modules";
-        public const string SOURCES = "sources";
-        public const string GAME_MODULES = "game_modules";
-    }
 
     public struct FUnrealTargets
     {
@@ -103,7 +96,7 @@ namespace FUnreal
             string vsixDllPath = unrealVS.GetVSixDllPath();
             string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
             string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
-            string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.xml");
+            string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.json");
             XDebug.Info("VSIX Dll Path: {0}", vsixDllPath);
             XDebug.Info("VSIX Base Path: {0}", vsixBasePath);
             XDebug.Info("Template Descriptor Path: {0}", templateDescPath);
@@ -114,21 +107,40 @@ namespace FUnreal
                 return null;
             }
 
-            FUnrealTemplates templates = FUnrealTemplates.Load(templateDescPath);
+            FUnrealTemplatesRules rules = new FUnrealTemplatesRules()
+            {
+                MustHavePlugins = true,
+                MustHavePluginModules = true,
+                MustHaveGameModules = true,
+                MustHaveSources = true
+            };
+
+            bool loadSuccess = FUnrealTemplates.TryLoad_V1_0(templateDescPath, rules, out FUnrealTemplates templates);
+            if (!loadSuccess)
+            {
+                unrealVS.Output.Erro("Failed to load templates from path: {0}", templateDescPath);
+                return null;
+            }
+
 
             //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
             string ueMajorVer = engine.Version.Major.ToString();
-            if (templates.GetTemplates(FUnrealTemplateCtx.PLUGINS, ueMajorVer).Count == 0)
+            if (templates.GetPlugins(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
                 return null;
             }
-            if (templates.GetTemplates(FUnrealTemplateCtx.MODULES, ueMajorVer).Count == 0)
+            if (templates.GetPluginModules(ueMajorVer).Count == 0)
             {
-                unrealVS.Output.Erro("Cannot load module templates from path: {0}", templateDescPath);
+                unrealVS.Output.Erro("Cannot load plugin module templates from path: {0}", templateDescPath);
                 return null;
             }
-            if (templates.GetTemplates(FUnrealTemplateCtx.SOURCES, ueMajorVer).Count == 0)
+            if (templates.GetGameModules(ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Cannot load game module templates from path: {0}", templateDescPath);
+                return null;
+            }
+            if (templates.GetSources(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load source templates from path: {0}", templateDescPath);
                 return null;
@@ -276,20 +288,26 @@ namespace FUnreal
             return FUnrealSourceType.CUSTOM;
         }
 
-        public List<FUnrealTemplate> PluginTemplates()
+        public List<FUnrealPluginTemplate> PluginTemplates()
         {
-            return _templates.GetTemplates("plugins", _engineMajorVer);
+            return _templates.GetPlugins(_engineMajorVer);
         }
 
-        public List<FUnrealTemplate> SourceTemplates()
+        public List<FUnrealPluginModuleTemplate> PluginModuleTemplates()
         {
-            return _templates.GetTemplates("sources", _engineMajorVer);
+            return _templates.GetPluginModules(_engineMajorVer);
         }
 
-        public List<FUnrealTemplate> ModuleTemplates()
+        public List<FUnrealGameModuleTemplate> GameModuleTemplates()
         {
-            return _templates.GetTemplates("modules", _engineMajorVer);
+            return _templates.GetGameModules(_engineMajorVer);
         }
+        
+        public List<FUnrealSourceTemplate> SourceTemplates()
+        {
+            return _templates.GetSources(_engineMajorVer);
+        }
+
 
         private FUnrealPlugin PluginByName(string name)
         {
@@ -557,7 +575,7 @@ namespace FUnreal
 
         public async Task<FUnrealServicePluginResult> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
         {
-            string context = FUnrealTemplateCtx.PLUGINS;
+            string context = "plugins";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -574,7 +592,7 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetPlugin(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
@@ -762,20 +780,12 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetPluginModule(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
-            /*
-            string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
-            if (moduleNamePH == null)
-            {
-                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
-                return false;
-            }
-            */
 
             string tplPath = tpl.BasePath;
             if (!XFilesystem.DirExists(tplPath))
@@ -784,8 +794,8 @@ namespace FUnreal
                 return false;
             }
 
-            string metaType = tpl.GetMeta("type");
-            string metaPhase = tpl.GetMeta("phase");
+            string metaType = tpl.Type;
+            string metaPhase = tpl.Phase;
             if (metaType == null || metaPhase == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
@@ -974,15 +984,15 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, sourcePath);
                 return false;
             }
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetSource(engine, name);
             if (tpl == null || !XFilesystem.DirExists(tpl.BasePath))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string headerFileME = tpl.GetMeta("header");
-            string sourceFileME = tpl.GetMeta("source");
+            string headerFileME = tpl.Header;
+            string sourceFileME = tpl.Source;
 
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
@@ -1103,7 +1113,7 @@ namespace FUnreal
 
         public async Task<FUnrealServiceModuleResult> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
         {
-            string context = FUnrealTemplateCtx.MODULES; //FUnrealTemplateCtx.GAME_MODULES;  //BY NOW SAME AS "modules" plus the meta "Target"
+            string context = "game_modules";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -1113,16 +1123,16 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetGameModule(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string metaType = tpl.GetMeta("type");
-            string metaPhase = tpl.GetMeta("phase");
-            string metaTarget = tpl.GetMeta("target");
+            string metaType = tpl.Type;
+            string metaPhase = tpl.Phase;
+            string metaTarget = tpl.Target;
             if (metaType == null || metaPhase == null || metaTarget == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);

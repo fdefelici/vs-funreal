@@ -1,0 +1,258 @@
+{
+  "version": "1.0",
+  "templates": {
+    "plugins": [
+      { 
+        "name": "tpl_plugin_blank", "ue": "4,5", "path": "UEC/Plugins/Blank",
+        "ui": { "label": "Blank", "desc": "Create a blank plugin with a minimal amount of code." },
+        "meta": { "has_module": true }
+      },
+      {
+        "name": "tpl_plugin_contentonly", "ue": "4,5", "path": "UEC/Plugins/ContentOnly",
+        "ui": { "label": "Content Only", "desc": "Create a blank plugin that can only contain content." },
+        "meta": { "has_module": false }
+      },
+      {
+        "name": "tpl_plugin_blueprintlibrary", "ue": "4,5", "path": "UEC/Plugins/BlueprintLibrary",
+        "ui": { "label": "Blueprint Library", "desc": "Create a plugin that will contain Blueprint Function Library." },
+        "meta": { "has_module": true }
+      },
+      {
+				"name": "tpl_plugin_editormode", "ue": "4", "path": "UE4/Plugins/EditorMode",
+				"ui": { "label": "Editor Mode", "desc": "Create a plugin that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "has_module": true }
+      },
+      {
+				"name": "tpl_plugin_editormode", "ue": "5", "path": "UE5/Plugins/EditorMode",
+				"ui": { "label": "Editor Mode", "desc": "Create a plugin that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "has_module": true }
+      },
+			{
+				"name": "tpl_plugin_editorstandalonewindow", "ue": "4", "path": "UE4/Plugins/EditorStandaloneWindow",
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a plugin that will add a button in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "has_module": true }
+			},
+			{
+				"name": "tpl_plugin_editorstandalonewindow", "ue": "5", "path": "UE5/Plugins/EditorStandaloneWindow",    
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a plugin that will add a button in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "has_module": true }
+			},
+			{
+				"name": "tpl_plugin_editortoolbarbutton", "ue": "4", "path": "UE4/Plugins/EditorToolbarButton",    
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a plugin that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "has_module": true }
+			},
+			{
+				"name": "tpl_plugin_editortoolbarbutton", "ue": "5", "path": "UE5/Plugins/EditorToolbarButton",
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a plugin that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "has_module": true }
+			},
+			{
+				"name": "tpl_plugin_thirdpartylibrary", "ue": "4", "path": "UE4/Plugins/ThirdPartyLibrary",
+				"ui": { "label": "Third Party Library", "desc": "Create a plugin that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "has_module": true }
+			},
+			{
+				"name": "tpl_plugin_thirdpartylibrary", "ue": "5", "path": "UE5/Plugins/ThirdPartyLibrary",
+				"ui": { "label": "Third Party Library", "desc": "Create a plugin that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "has_module": true }
+			}
+    ],
+    "plugin_modules": [
+			{
+				"name": "tpl_module_blank", "ue": "4,5", "path": "UEC/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Blank", "desc": "Create a blank module with a minimal amount of code." },
+				"meta": { "type": "Runtime", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_blueprintlibrary", "ue": "4,5", "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Blueprint Library", "desc": "Create a module that will contain Blueprint Function Library." },
+				"meta": { "type": "Runtime", "phase": "PreLoadingScreen" }
+			},
+			{
+				"name": "tpl_module_editormode", "ue": "4", "path": "UE4/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_editormode", "ue": "5", "path": "UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_editorstandalonewindow", "ue": "4", "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_editorstandalonewindow", "ue": "5", "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_editortoolbarbutton", "ue": "4", "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_editortoolbarbutton", "ue": "5", "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_thirdpartylibrary", "ue": "4", "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			},
+			{
+				"name": "tpl_module_thirdpartylibrary", "ue": "5", "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "type": "Editor", "phase": "Default" }
+			}
+    ],
+    "game_modules": [
+			{
+				"name": "tpl_module_blank", "ue": "4,5", "path": "UEC/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Blank", "desc": "Create a blank module with a minimal amount of code." },
+				"meta": { "type": "Runtime", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_blueprintlibrary", "ue": "4,5", "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Blueprint Library", "desc": "Create a module that will contain Blueprint Function Library." },
+				"meta": { "type": "Runtime", "phase": "PreLoadingScreen", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editormode", "ue": "4", "path": "UE4/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editormode", "ue": "5", "path": "UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editorstandalonewindow", "ue": "4", "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editorstandalonewindow", "ue": "5", "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editortoolbarbutton", "ue": "4", "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_editortoolbarbutton", "ue": "5", "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_thirdpartylibrary", "ue": "4", "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			},
+			{
+				"name": "tpl_module_thirdpartylibrary", "ue": "5", "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ui": { "label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself." },
+				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
+			}
+    ],
+    "sources": [
+			{
+				"name": "tpl_class_empty", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Empty", "desc": "An empty C++ class with a default contructor and destructor." },
+				"meta": {  "header": "Empty.h",  "source": "Empty.cpp" }
+			},
+			{
+				"name": "tpl_class_character", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Character", "desc": "A Character is a type of Pawn that includes the ability to walk around." },
+				"meta": {  "header": "Character.h",  "source": "Character.cpp" }
+			},
+			{
+				"name": "tpl_class_pawn", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Pawn", "desc": "A Pawn is an actor than can be 'possessed' and receive input from a controller." },
+				"meta": {  "header": "Pawn.h",  "source": "Pawn.cpp" }
+			},
+			{
+				"name": "tpl_class_actor", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"meta": {  "header": "Actor.h",  "source": "Actor.cpp" },
+				"ui": { "label": "Actor", "desc": "An Actor is an object that can be placed or spawned in the world." }
+			},
+			{
+				"name": "tpl_class_actorcomponent", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Actor Component", "desc": "An ActorComponent is a reusable component that can be added to any actor." },
+				"meta": {  "header": "ActorComponent.h",  "source": "ActorComponent.cpp" }
+			},
+			{
+				"name": "tpl_class_scenecomponent", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Scene Component", "desc": "A SceneComponent is a component that has a scene transform and can be attached to other scene components." },
+				"meta": {  "header": "SceneComponent.h",  "source": "SceneComponent.cpp" }
+			},
+			{
+				"name": "tpl_class_playercameramanager", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Player Camera Manager", "desc": "A PlayerCameraManager is responsible for managing the camera for a particular player." },
+				"meta": {  "header": "PlayerCameraManager.h",  "source": "PlayerCameraManager.cpp" }
+			},
+			{
+				"name": "tpl_class_playercontroller", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Player Controller", "desc": "A PlayerController is an actor responsible for controlling a Pawn used by the player." },
+				"meta": {  "header": "PlayerController.h",  "source": "PlayerController.cpp" }
+			},
+			{
+				"name": "tpl_class_gamemodebase", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Game Mode Base", "desc": "A GameModeBase defines the game being played, its rules, scoring and other facets of the game type." },
+				"meta": {  "header": "GameModeBase.h",  "source": "GameModeBase.cpp" }
+			},
+			{
+				"name": "tpl_class_worldsettings", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "World Settings", "desc": "A WorldSettings is an Actor containing all script accessible world properties." },
+				"meta": {  "header": "WorldSettings.h",  "source": "WorldSettings.cpp" }
+			},
+			{
+				"name": "tpl_class_hud", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "HUD", "desc": "Base class of the heads-up display." },
+				"meta": {  "header": "HUD.h",  "source": "HUD.cpp" }
+			},
+			{
+				"name": "tpl_class_playerstate", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Player State", "desc": "A PlayerState is created for every player on a server (or in a standalone game)." },
+				"meta": {  "header": "PlayerState.h",  "source": "PlayerState.cpp" }
+			},
+			{
+				"name": "tpl_class_gamestatebase", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Game State Base", "desc": "A GameStateBase is a class that manages the game's global state and is spawned by GameModeBase." },
+				"meta": {  "header": "GameStateBase.h",  "source": "GameStateBase.cpp" }
+			},
+			{
+				"name": "tpl_class_blueprintfunctionlibrary", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Blueprint Function Library", "desc": "This class is a base class for any function libraries exposed to blueprints." },
+				"meta": {  "header": "BlueprintFunctionLibrary.h",  "source": "BlueprintFunctionLibrary.cpp" }
+			},
+			{
+				"name": "tpl_class_slatewidget", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Slate Widget", "desc": "A custom Slate widget, deriving from SCompoundWidget." },
+				"meta": {  "header": "SlateWidget.h",  "source": "SlateWidget.cpp" }
+			},
+			{
+				"name": "tpl_class_slatewidgetstyle", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Slate Widget Style", "desc": "A custom Slate widget style, deriving from FSlateWidgetStyle, along with its associated UObject wrapper class." },
+				"meta": {  "header": "SlateWidgetStyle.h",  "source": "SlateWidgetStyle.cpp" }
+			},
+			{
+				"name": "tpl_class_unrealinterface", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "Unreal Interface", "desc": "A UObject Interface class, to be implemented by other UObject-based classes." },
+				"meta": {  "header": "UnrealInterface.h",  "source": "UnrealInterface.cpp" }
+			},
+			{
+				"name": "tpl_class_uobject", "ue": "4,5", "path": "UEC/Sources/Classes",
+				"ui": { "label": "UObject", "desc": "A class who inherits from UObject." },
+				"meta": {  "header": "UObject.h",  "source": "UObject.cpp" }
+			}
+    ]
+  }
+}

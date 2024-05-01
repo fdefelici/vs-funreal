@@ -8,7 +8,7 @@ namespace FUnreal
     public class AddSourceClassController : AXActionController
     {
         private AddSourceClassDialog _dialog;
-        private List<FUnrealTemplate> _templates;
+        private List<FUnrealSourceTemplate> _templates;
         private FUnrealNotifier _notifier;
         private string _absPathSelected;
         private FUnrealSourceType _absPathSelectedType;
@@ -62,7 +62,7 @@ namespace FUnreal
         public Task TemplateChangedAsync()
         {
             int index = _dialog.classTemplCbx.SelectedIndex;
-            FUnrealTemplate selected = _templates[index];
+            var selected = _templates[index];
             _dialog.classTemplTbl.Text = selected.Description;
 
             _dialog.SetClassTypeIndex((int)_absPathSelectedType); //Fire Event

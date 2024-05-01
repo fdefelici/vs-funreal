@@ -5,46 +5,52 @@ using System.Windows;
 
 namespace FUnreal
 {
-    public class AddGameModuleController : AXActionController
+    public class AddModuleController : AXActionController
     {
-        private List<FUnrealTemplate> _templates;
+        private List<FUnrealPluginModuleTemplate> _templates;
         private FUnrealNotifier _notifier;
-        private AddGameModuleDialog _dialog;
+        private string _currentPluginName;
+        private AddModuleDialog _dialog;
 
-        public AddGameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
+        public AddModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS)
         {
-            _templates = _unrealService.ModuleTemplates();
+            _templates = _unrealService.PluginModuleTemplates();
             _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
             var itemVs = await _unrealVS.GetSelectedItemAsync();
+            _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
 
-            _dialog = new AddGameModuleDialog();
+            _dialog = new AddModuleDialog();
             _dialog.OnConfirmAsync = ConfirmAsync;
             _dialog.OnTemplateChangeAsync = TemplateChangedAsync;
             _dialog.OnModuleNameChangeAsync = ModuleNameChangedAsync;
             _notifier.OnSendMessage = _dialog.SetProgressMessage;
 
+            _dialog.pluginNameTbl.Text = _currentPluginName;
+            _dialog.pluginPathTbl.Text = _unrealService.ProjectRelativePathForPlugin(_currentPluginName);
+
             //NOTE: doing this as last operation because it will fire templatechange event
-            _dialog.templateCbx.ItemsSource = _templates;
-            _dialog.templateCbx.SelectedIndex = 0;   //fire TemplateChanged Event
-            _dialog.templateTbl.Text = _templates[0].Description;
+            _dialog.pluginTemplCbx.ItemsSource = _templates;
+            _dialog.pluginTemplCbx.SelectedIndex = 0;   //fire TemplateChanged Event
+            _dialog.pluginTemplTbl.Text = _templates[0].Description;
 
             await _dialog.ShowDialogAsync();
         }
 
+
         public Task TemplateChangedAsync()
         {
-            int index = _dialog.templateCbx.SelectedIndex;
-            FUnrealTemplate selected = _templates[index];
-            _dialog.templateTbl.Text = selected.Description;
+            int index = _dialog.pluginTemplCbx.SelectedIndex;
+            var selected = _templates[index];
+            _dialog.pluginTemplTbl.Text = selected.Description;
 
             _dialog.moduleNameTbx.Focus();
-            _dialog.moduleNameTbx.Text = "NewGameModule"; //Setting Text will fire TextChange event
+            _dialog.moduleNameTbx.Text = "NewModule"; //Setting Text will fire TextChange event
             _dialog.moduleNameTbx.SelectionStart = 0;
             _dialog.moduleNameTbx.SelectionLength = _dialog.moduleNameTbx.Text.Length;
 
@@ -53,9 +59,10 @@ namespace FUnreal
 
         public Task ModuleNameChangedAsync()
         {
+            string plugName = _currentPluginName;
             string modName = _dialog.moduleNameTbx.Text;
 
-            _dialog.modulePathTbl.Text = _unrealService.ProjectRelativePathForGameModuleDefault(modName);
+            _dialog.modulePathTbl.Text = _unrealService.ProjectRelativePathForPluginModuleDefault(plugName, modName);
 
             if (string.IsNullOrEmpty(modName))
             {
@@ -78,10 +85,11 @@ namespace FUnreal
         {
             _dialog.ShowActionInProgress();
 
+            string pluginName = _currentPluginName;
             string moduleName = _dialog.moduleNameTbx.Text;
-            string templeName = _templates[_dialog.templateCbx.SelectedIndex].Name;
+            string templeName = _templates[_dialog.pluginTemplCbx.SelectedIndex].Name;
 
-            var success = await _unrealService.AddGameModuleAsync(templeName, moduleName, _notifier);
+            var success = await _unrealService.AddPluginModuleAsync(templeName, pluginName, moduleName, _notifier);
             if (!success)
             {
                 _dialog.ShowActionInError();
@@ -92,5 +100,6 @@ namespace FUnreal
 
             _dialog.Close();
         }
+
     }
 }

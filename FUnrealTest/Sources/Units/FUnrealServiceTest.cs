@@ -39,14 +39,20 @@ namespace FUnrealTest
             string templatePath = null; 
             if (SetupInvalidTemplatePath) 
             { 
-                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor-invalid-path.xml");
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor-invalid-path.json");
             } else
             {
-                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.xml");
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.json");
             }
 
-            FUnrealTemplates tpls = FUnrealTemplates.Load(templatePath);
+            var rules = new FUnrealTemplatesRules();
+            rules.MustHavePlugins = true;
+            rules.MustHavePluginModules = true;
+            rules.MustHaveGameModules = true;
+            rules.MustHaveSources = true;
 
+            bool success = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
+            
             service = new FUnrealService(eng, uprojectFile, tpls);
             service.UpdateProjectAsync(new FUnrealNotifier()).GetAwaiter().GetResult();
         }
