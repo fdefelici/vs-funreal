@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using C = FUnreal.VSCTSymbols;
+using C = FUnreal.ContextMenuVsctSymbols;
 
 namespace FUnreal
 {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUnreal
 {
@@ -24,7 +20,7 @@ namespace FUnreal
         {
             var pathAsString = value as string;
             //Allow to set field to Empty String, even if contains just blank spaces
-            if (string.IsNullOrEmpty(pathAsString) || pathAsString.Trim().Length > 0)
+            if (string.IsNullOrEmpty(pathAsString) || pathAsString.Trim().Length == 0)
             {
                 return string.Empty;
             }

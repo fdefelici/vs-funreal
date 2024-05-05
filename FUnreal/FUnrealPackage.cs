@@ -5,15 +5,20 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
+using System.Management;
 
 namespace FUnreal
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(VSCTSymbols.PackageGuidString)]
+    [Guid(PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideOptionPage(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage), "FUnreal", "Templates", 0, 0, true)] //Where Resource ID should be stored?
+    [ProvideProfile(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage), "FUnreal", "Templates", 0, 0, true)]
     public sealed class FUnrealPackage : ToolkitPackage
     {
+        public const string PackageGuidString = "43b90373-5388-42b6-9074-100c2b543eec";
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -35,7 +40,7 @@ namespace FUnreal
 
             if (await FUnrealVS.IsUnrealSolutionAsync())
             {
-                FUnrealVS unrealVS = await FUnrealVS.CreateAsync();
+                FUnrealVS unrealVS = await FUnrealVS.CreateAsync(this);
                 printTitle(unrealVS.Output);
 
                 FUnrealService unrealService = FUnrealService.Create(unrealVS);
@@ -47,18 +52,23 @@ namespace FUnreal
                     return;
                 }
 
-
-                /* Configure Menu Commands */
-                ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
+                unrealVS.OnOptionsSaved += () => { OnOptionSaved_UpdateTemplates(unrealVS, unrealService); };
 
                 var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS);    //object instance kept alive by unrealVS
                 var emptyFolderHandler = new DetectEmptyFolderHandler(unrealService, unrealVS);//object instance kept alive by unrealVS
 
                 unrealVS.AddProjectLoadedHandler(projectLoadHandler.ExecuteAsync);
                 unrealVS.AddProjectLoadedHandler(emptyFolderHandler.ExecuteAsync);
+                
+                // Registers all Commands 
+                await this.RegisterCommandsAsync();
+                // Configure ContextMenu Commands
+                ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
+                // Configure ExtensionMenu Commands
+                ExtensionMenuManager extMenuMgr = new ExtensionMenuManager(unrealService, unrealVS);
 
                 //Bind Cmd with VSCT file (To be done after ContexMenuManager)
-                await this.RegisterCommandsAsync();
+                //await this.RegisterCommandsAsync();
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
                 unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
@@ -67,13 +77,16 @@ namespace FUnreal
                 await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget
 
                 XDebug.Info("Loaded");
-
-
             }
             else
             {
                 XDebug.Info("Not Loaded! No Unreal project detected!");
             }
+        }
+
+        private void OnOptionSaved_UpdateTemplates(FUnrealVS unrealVS, FUnrealService unrealService)
+        {
+            FUnrealService.UpdateTemplates(unrealVS, unrealService);
         }
 
         private void printTitle(IFUnrealLogger output)

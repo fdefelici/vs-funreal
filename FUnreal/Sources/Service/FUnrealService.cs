@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
 using FUnreal.Sources.Core;
 using System.Text.RegularExpressions;
+using System;
+using EnvDTE90;
 
 namespace FUnreal
 {
@@ -90,7 +92,37 @@ namespace FUnreal
             unrealVS.Output.Info("UE Path: {0}", engine.EnginePath);
             unrealVS.Output.Info("UBT Path: {0}", engine.UnrealBuildTool.BinPath);
 
+            bool success = TryComputeTemplates(unrealVS, engine, out FUnrealTemplates templates);
+            if (!success)
+            {
+                return null;
+            }
 
+            return new FUnrealService(engine, uprjFilePath, templates);
+        }
+
+
+        public static void UpdateTemplates(IFUnrealVS unrealVS, FUnrealService unrealService)
+        {
+            //TODO: [Improvements] Undestand if options are changed for real after saving. If not, don't recompute templates.
+            //NOTE: Considere that Optons.Saved events if always called when opening Tools -> Options and pressing "OK" button.
+            //      So could be cool to implement an event OptionsChanged in FUnrealVS
+
+            unrealVS.Output.Info("Templates update in progress ...");
+            bool success = TryComputeTemplates(unrealVS, unrealService.Engine, out FUnrealTemplates templates);
+            if (success) 
+            {
+                unrealService.SetTemplates(templates);
+                unrealVS.Output.Info("Templates updated successfully!");
+            } 
+            else
+            {
+                unrealVS.Output.Erro("Failed to update templates!");
+            }
+        }
+
+        private static bool TryComputeTemplates(IFUnrealVS unrealVS, FUnrealEngine engine, out FUnrealTemplates outTemplates)
+        {
             // Load Templates
             //string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string vsixDllPath = unrealVS.GetVSixDllPath();
@@ -104,7 +136,8 @@ namespace FUnreal
             if (!XFilesystem.FileExists(templateDescPath))
             {
                 unrealVS.Output.Erro("Cannot locate templates at path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules()
@@ -119,7 +152,8 @@ namespace FUnreal
             if (!loadSuccess)
             {
                 unrealVS.Output.Erro("Failed to load templates from path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
 
 
@@ -128,26 +162,56 @@ namespace FUnreal
             if (templates.GetPlugins(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
             if (templates.GetPluginModules(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load plugin module templates from path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
             if (templates.GetGameModules(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load game module templates from path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
             if (templates.GetSources(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Cannot load source templates from path: {0}", templateDescPath);
-                return null;
+                outTemplates = null;
+                return false;
             }
 
-            return new FUnrealService(engine, uprjFilePath, templates);
+            //TODO: Reload Template Button? (Caso in cui cambio le Label o descrizioni UI)
+            var options = unrealVS.GetOptions();
+            var userTemplatePath = options.TemplateDescriptorPath;
+            if (!string.IsNullOrEmpty(userTemplatePath))
+            {
+                FUnrealTemplatesRules userRules = new FUnrealTemplatesRules()
+                {
+                    MustHavePlugins = false,
+                    MustHavePluginModules = false,
+                    MustHaveGameModules = false,
+                    MustHaveSources = false
+                };
+
+                bool userTemplatesSuccess = FUnrealTemplates.TryLoad_V1_0(userTemplatePath, userRules, out FUnrealTemplates userTemplates);
+                if (!userTemplatesSuccess)
+                {
+                    unrealVS.Output.Erro("Failed to load user templates from path: {0}", userTemplatePath);
+                    outTemplates = null;
+                    return false;
+                }
+
+                templates.MergeWith(userTemplates);
+            }
+
+            outTemplates = templates;
+            return true;
         }
+
 
         public FUnrealEngine Engine { get; private set; }
         private IFUnrealBuildTool _engineUbt;
@@ -184,6 +248,11 @@ namespace FUnreal
              : this(engine, project.DescriptorFilePath, templates)
         {
             _projectModel = project;
+        }
+
+        private void SetTemplates(FUnrealTemplates templates)
+        {
+            _templates = templates;
         }
 
         public List<string> KnownEmptyFolderPaths()

@@ -1,12 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
-
-
 using Microsoft.VisualStudio.Shell;
 
 namespace FUnreal

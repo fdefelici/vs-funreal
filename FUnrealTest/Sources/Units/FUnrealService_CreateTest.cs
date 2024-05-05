@@ -54,19 +54,24 @@ namespace FUnrealTest
                 Output = new LoggerMock();
             }
 
-            public IFUnrealLogger Output { get; private set; }
+            //public IFUnrealLogger Output { get; private set; }
 
-            public string GetUnrealEnginePath()
+            public override FUnrealTemplateOptionsPage GetOptions()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public override string GetUnrealEnginePath()
             {
                 return _engineRootPath;
             }
 
-            public string GetUProjectFilePath()
+            public override string GetUProjectFilePath()
             {
                 return _uprojectFilePath;
             }
 
-            public string GetVSixDllPath()
+            public override string GetVSixDllPath()
             {
                 return _vsixDllPath;
             }

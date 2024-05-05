@@ -1,9 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Collections.Generic;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Text.Adornments;
-using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace FUnreal
 {

@@ -1,8 +1,8 @@
 ﻿namespace FUnreal
 {
-    internal static class VSCTSymbols
+    internal static class ContextMenuVsctSymbols
     {
-        public const string PackageGuidString = "43b90373-5388-42b6-9074-100c2b543eec";
+        public const string ContextMenuGuid = "332D8970-F897-4E82-8A8C-55D7CEA5B95B";
 
         public const int Cmd11 = 0x0011;
         public const int Cmd12 = 0x0012;

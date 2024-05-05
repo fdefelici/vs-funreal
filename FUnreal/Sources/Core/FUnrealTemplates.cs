@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using System.Security.Cryptography;
 using System.Xml;
 
 namespace FUnreal
@@ -11,6 +12,13 @@ namespace FUnreal
     {
         public static bool TryLoad_V1_0(string templateDescriptorPath, FUnrealTemplatesRules rules, out FUnrealTemplates templates)
         {
+            if (!XFilesystem.FileExists(templateDescriptorPath))
+            {
+                XDebug.Erro("Templates file doesn't exists: " + templateDescriptorPath);
+                templates = null;
+                return false;
+            }
+            
             string jsonStr = XFilesystem.FileRead(templateDescriptorPath);
             if (jsonStr == null)
             {
@@ -248,6 +256,40 @@ namespace FUnreal
         public List<FUnrealSourceTemplate> GetSources(string ueMajorVer)
         {
             return GetTemplates<FUnrealSourceTemplate>(ueMajorVer);
+        }
+
+        public void MergeWith(FUnrealTemplates others)
+        {
+            bool duplicatedKeys = false;
+            foreach (var otherPair in others.templatesByKey)
+            {
+                if (templatesByKey.ContainsKey(otherPair.Key))
+                {
+                    duplicatedKeys = true;
+                    break;
+                }
+            }
+
+            if (duplicatedKeys) return;
+
+            foreach (var otherPair in others.templatesByKey) 
+            {
+                templatesByKey.Add(otherPair.Key, otherPair.Value);
+            }
+
+            foreach (var otherPair in others.templatesByContext)
+            {
+                var ctxKey = otherPair.Key; 
+                var ctxTpl = otherPair.Value;
+                if (!templatesByContext.TryGetValue(ctxKey, out var list))
+                {
+                    list = new List<object>();
+                    templatesByContext[ctxKey] = list;
+                };
+                list.AddRange(ctxTpl);
+            }
+
+
         }
     }
 

@@ -1,12 +1,9 @@
 ﻿using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace FUnreal
 {
-    [Command(VSCTSymbols.Cmd12)]
-    public class CtxMenuCmd12 : XActionCmd<CtxMenuCmd12>
+    [Command(ContextMenuVsctSymbols.ContextMenuGuid, ContextMenuVsctSymbols.Cmd12)]
+    public class CtxMenuCmd12 : XContextMenuActionCmd<CtxMenuCmd12>
     {
 
     }
