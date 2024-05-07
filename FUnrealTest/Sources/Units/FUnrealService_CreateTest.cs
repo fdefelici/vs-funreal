@@ -42,15 +42,18 @@ namespace FUnrealTest
             private string _uprojectFilePath;
             private string _engineRootPath;
             private string _vsixDllPath;
+            private FUnrealTemplateOptionsPage _options;
 
             public FUnrealVsMock(
                 string uprojectFilePath,
                 string engineRootPath,
-                string vsixDllPath)
+                string vsixDllPath,
+                FUnrealTemplateOptionsPage options)
             {
                 _uprojectFilePath = uprojectFilePath;
                 _engineRootPath = engineRootPath;
                 _vsixDllPath = vsixDllPath;
+                _options = options;
                 Output = new LoggerMock();
             }
 
@@ -58,7 +61,7 @@ namespace FUnrealTest
 
             public override FUnrealTemplateOptionsPage GetOptions()
             {
-                throw new System.NotImplementedException();
+                return _options;
             }
 
             public override string GetUnrealEnginePath()
@@ -85,9 +88,11 @@ namespace FUnrealTest
             string vsixDllPath = TestUtils.PathCombine(tmpPath, "faked-funreal.dll");
 
             var expVersion = new XVersion(4, 27, 2);
-            string expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool.exe");
-
-            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath));
+            var expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool.exe");
+            var options = new FUnrealTemplateOptionsPage();
+            options.TemplatesMode = TemplateMode.BuiltIn;
+           
+            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, options));
 
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
@@ -102,9 +107,11 @@ namespace FUnrealTest
             string vsixDllPath = TestUtils.PathCombine(tmpPath, "faked-funreal.dll");
 
             var expVersion = new XVersion(5, 1, 0);
-            string expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+            var expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+            var options = new FUnrealTemplateOptionsPage();
+            options.TemplatesMode = TemplateMode.BuiltIn;
 
-            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath));
+            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, options));
 
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);

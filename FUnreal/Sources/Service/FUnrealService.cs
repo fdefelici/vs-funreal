@@ -95,7 +95,8 @@ namespace FUnreal
             bool success = TryComputeTemplates(unrealVS, engine, out FUnrealTemplates templates);
             if (!success)
             {
-                return null;
+                unrealVS.Output.Erro("Some issue while loading templates. Eventually try to check Options or try reloading templates!");
+                //return null;
             }
 
             return new FUnrealService(engine, uprjFilePath, templates);
@@ -123,95 +124,121 @@ namespace FUnreal
 
         private static bool TryComputeTemplates(IFUnrealVS unrealVS, FUnrealEngine engine, out FUnrealTemplates outTemplates)
         {
-            // Load Templates
-            //string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string vsixDllPath = unrealVS.GetVSixDllPath();
-            string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
-            string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
-            string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.json");
-            XDebug.Info("VSIX Dll Path: {0}", vsixDllPath);
-            XDebug.Info("VSIX Base Path: {0}", vsixBasePath);
-            XDebug.Info("Template Descriptor Path: {0}", templateDescPath);
+            outTemplates = new FUnrealTemplates();
 
-            if (!XFilesystem.FileExists(templateDescPath))
-            {
-                unrealVS.Output.Erro("Cannot locate templates at path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-
-            FUnrealTemplatesRules rules = new FUnrealTemplatesRules()
-            {
-                MustHavePlugins = true,
-                MustHavePluginModules = true,
-                MustHaveGameModules = true,
-                MustHaveSources = true
-            };
-
-            bool loadSuccess = FUnrealTemplates.TryLoad_V1_0(templateDescPath, rules, out FUnrealTemplates templates);
-            if (!loadSuccess)
-            {
-                unrealVS.Output.Erro("Failed to load templates from path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-
-
-            //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
-            string ueMajorVer = engine.Version.Major.ToString();
-            if (templates.GetPlugins(ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-            if (templates.GetPluginModules(ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load plugin module templates from path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-            if (templates.GetGameModules(ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load game module templates from path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-            if (templates.GetSources(ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load source templates from path: {0}", templateDescPath);
-                outTemplates = null;
-                return false;
-            }
-
-            //TODO: Reload Template Button? (Caso in cui cambio le Label o descrizioni UI)
             var options = unrealVS.GetOptions();
-            var userTemplatePath = options.TemplateDescriptorPath;
-            if (!string.IsNullOrEmpty(userTemplatePath))
-            {
-                FUnrealTemplatesRules userRules = new FUnrealTemplatesRules()
-                {
-                    MustHavePlugins = false,
-                    MustHavePluginModules = false,
-                    MustHaveGameModules = false,
-                    MustHaveSources = false
-                };
 
-                bool userTemplatesSuccess = FUnrealTemplates.TryLoad_V1_0(userTemplatePath, userRules, out FUnrealTemplates userTemplates);
-                if (!userTemplatesSuccess)
+            FixOptions(options);
+
+            bool useBuiltInTemplates = (options.TemplatesMode == TemplateMode.BuiltIn || options.TemplatesMode == TemplateMode.Custom );
+            if (useBuiltInTemplates) 
+            { 
+                // Load Built-In Templates
+                string vsixDllPath = unrealVS.GetVSixDllPath();
+                string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
+                string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
+                string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.json");
+                XDebug.Info("VSIX Dll Path: {0}", vsixDllPath);
+                XDebug.Info("VSIX Base Path: {0}", vsixBasePath);
+                XDebug.Info("Template Descriptor Path: {0}", templateDescPath);
+
+                if (!XFilesystem.FileExists(templateDescPath))
                 {
-                    unrealVS.Output.Erro("Failed to load user templates from path: {0}", userTemplatePath);
-                    outTemplates = null;
+                    unrealVS.Output.Erro("Cannot locate built-in templates at path: {0}", templateDescPath);
                     return false;
                 }
 
-                templates.MergeWith(userTemplates);
+                FUnrealTemplatesRules rules = new FUnrealTemplatesRules()
+                {
+                    LoadPlugins = options.LoadBuiltInPlugins ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                    LoadPluginModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                    LoadGameModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                    LoadSources = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                };
+
+                bool loadSuccess = FUnrealTemplates.TryLoad_V1_0(templateDescPath, rules, out FUnrealTemplates builtInTemplates);
+                if (!loadSuccess)
+                {
+                    //TODO: Add Reason in TryLoad to have the error type to log on output console
+                    unrealVS.Output.Erro("Failed to load templates from path: {0}", templateDescPath);
+                    return false;
+                }
+
+                outTemplates.MergeWith(builtInTemplates);
             }
 
-            outTemplates = templates;
+            //User-Defined Templates
+            bool useCustomTemplates = options.TemplatesMode == TemplateMode.Custom;
+            if (useCustomTemplates)
+            {
+                var userTemplatePath = options.CustomTemplateDescriptorPath;
+                if (!string.IsNullOrEmpty(userTemplatePath))
+                {
+                    FUnrealTemplatesRules userRules = new FUnrealTemplatesRules()
+                    {
+                        LoadPlugins = options.LoadBuiltInPlugins ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                        LoadPluginModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                        LoadGameModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                        LoadSources = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                    };
+
+                    bool userTemplatesSuccess = FUnrealTemplates.TryLoad_V1_0(userTemplatePath, userRules, out FUnrealTemplates userTemplates);
+                    if (!userTemplatesSuccess)
+                    {
+                        //TODO: Add Reason in TryLoad to have the error type to log on output console
+                        unrealVS.Output.Erro("Failed to load user templates from path: {0}", userTemplatePath);
+                        return false;
+                    }
+
+                    outTemplates.MergeWith(userTemplates);
+                }
+                else
+                {
+                    unrealVS.Output.Erro("Selected template mode {0}, but custom template descriptor path is missing. Please check FUnreal options!", options.TemplatesMode.ToString());
+                    return false;
+                }
+            }
+
+            //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
+            string ueMajorVer = engine.Version.Major.ToString();
+            if (outTemplates.GetPlugins(ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Missing plugin templates. Please check FUnreal options!");
+                return false;
+            }
+            if (outTemplates.GetPluginModules(ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Missing plugin module templates. Please check FUnreal options!");
+                return false;
+            }
+            if (outTemplates.GetGameModules(ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Missing game module templates. Please check FUnreal options!");
+                return false;
+            }
+            if (outTemplates.GetSources(ueMajorVer).Count == 0)
+            {
+                unrealVS.Output.Erro("Missing source templates. Please check FUnreal options!");
+                return false;
+            }
+
             return true;
         }
 
+        private static void FixOptions(FUnrealTemplateOptionsPage options)
+        {
+            if (options.TemplatesMode == TemplateMode.BuiltIn)
+            {
+                options.LoadBuiltInPlugins = true;
+                options.LoadBuiltInPluginModules = true;
+                options.LoadBuiltInGameModule = true;
+                options.LoadBuiltInSource = true;
+            } 
+            else if (options.TemplatesMode == TemplateMode.Custom)
+            {
+                //keep options as it is
+            }
+        }
 
         public FUnrealEngine Engine { get; private set; }
         private IFUnrealBuildTool _engineUbt;

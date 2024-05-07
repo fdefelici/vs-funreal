@@ -6,19 +6,26 @@ using System.Threading.Tasks;
 
 namespace FUnreal
 {
+    public enum FUnrealTemplateLoadRule
+    {
+        MustLoad,
+        LoadIfAny,
+        DontLoad
+    }
+
     public class FUnrealTemplatesRules
     {
-        public bool MustHavePlugins { get; set; }
-        public bool MustHavePluginModules { get; set; }
-        public bool MustHaveGameModules { get; set; }
-        public bool MustHaveSources { get; set; }
+        public FUnrealTemplateLoadRule LoadPlugins { get; set; }
+        public FUnrealTemplateLoadRule LoadPluginModules { get; set; }
+        public FUnrealTemplateLoadRule LoadGameModules { get; set; }
+        public FUnrealTemplateLoadRule LoadSources { get; set; }
 
         public FUnrealTemplatesRules() 
-        { 
-            MustHavePlugins = false;
-            MustHavePluginModules = false;
-            MustHaveGameModules = false;
-            MustHaveSources = false;
+        {
+            LoadPlugins = FUnrealTemplateLoadRule.DontLoad;
+            LoadPluginModules = FUnrealTemplateLoadRule.DontLoad;
+            LoadGameModules = FUnrealTemplateLoadRule.DontLoad;
+            LoadSources = FUnrealTemplateLoadRule.DontLoad;
         }
 
     }

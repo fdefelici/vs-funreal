@@ -18,12 +18,17 @@ namespace FUnrealTest
             FUnrealTemplates templates;
             bool success;
 
-            rules.MustHavePlugins = true;
+            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
             success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
             Assert.IsFalse(success);
-            Assert.IsNull(templates);
+            Assert.AreEqual(0, templates.Count);
 
-            rules.MustHavePlugins = false;
+            rules.LoadPlugins = FUnrealTemplateLoadRule.LoadIfAny;
+            success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
+            Assert.IsTrue(success);
+            Assert.AreEqual(0, templates.Count);
+
+            rules.LoadPlugins = FUnrealTemplateLoadRule.DontLoad;
             success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
             Assert.IsTrue(success);
             Assert.AreEqual(0, templates.Count);
@@ -39,7 +44,7 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_3_plugins);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
-            rules.MustHavePlugins = true;
+            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
@@ -78,8 +83,8 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_2_plugin_modules);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
-            rules.MustHavePluginModules = true;
-
+            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
+            
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
 
@@ -112,7 +117,7 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_1_game_module);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
-            rules.MustHaveGameModules = true;
+            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
@@ -139,7 +144,7 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_1_source);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
-            rules.MustHaveSources = true;
+            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);

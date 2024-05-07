@@ -50,73 +50,61 @@ namespace FUnreal
                 return false;
             }
 
-            if (rules.MustHavePlugins && descriptor.templates.plugins.Length == 0)
-            {
-                XDebug.Erro("Templates descriptor must have plugin templates: " + templateDescriptorPath);
-                templates = null;
-                return false;
-            }
-
-            if (rules.MustHavePluginModules && descriptor.templates.plugin_modules.Length == 0)
-            {
-                XDebug.Erro("Templates descriptor must have plugin module templates: " + templateDescriptorPath);
-                templates = null;
-                return false;
-            }
-
-            if (rules.MustHaveGameModules && descriptor.templates.game_modules.Length == 0)
-            {
-                XDebug.Erro("Templates descriptor must have game module templates: " + templateDescriptorPath);
-                templates = null;
-                return false;
-            }
-
-            if (rules.MustHaveSources && descriptor.templates.sources.Length == 0)
-            {
-                XDebug.Erro("Templates descriptor must have source  templates: " + templateDescriptorPath);
-                templates = null;
-                return false;
-            }
-
             string templateBaseDir = XFilesystem.PathParent(templateDescriptorPath);
             templates = new FUnrealTemplates();
 
-            foreach (var eachModel in descriptor.templates.plugins)
+            bool addResult = true;
+            addResult &= TryAddPlugins(templates, templateBaseDir, descriptor.templates.plugins, rules.LoadPlugins);
+            addResult &= TryAddPluginModules(templates, templateBaseDir, descriptor.templates.plugin_modules, rules.LoadPluginModules);
+            addResult &= TryAddGameModules(templates, templateBaseDir, descriptor.templates.game_modules, rules.LoadGameModules);
+            addResult &= TryAddSources(templates, templateBaseDir, descriptor.templates.sources, rules.LoadSources);
+
+
+            if (!addResult) return false;
+            return true;
+        }
+
+        private static bool TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_SourceModel[] sources, FUnrealTemplateLoadRule rule)
+        {
+            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+
+            if (rule == FUnrealTemplateLoadRule.MustLoad && sources.Length == 0)
             {
-                FUnrealPluginTemplate template = new FUnrealPluginTemplate();
+                XDebug.Erro("Templates descriptor must have source templates!");
+                return false;
+            }
+
+            foreach (var eachModel in sources)
+            {
+                FUnrealSourceTemplate template = new FUnrealSourceTemplate();
                 template.Name = eachModel.name;
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.ui.label;
                 template.Description = eachModel.ui.desc;
-                
-                template.HasModule = eachModel.meta.has_module;
+
+                template.Header = eachModel.meta.header;
+                template.Source = eachModel.meta.source;
 
                 string[] ueArray = eachModel.ue.Split(',');
                 foreach (string ue in ueArray)
                 {
-                    templates.SetPlugin(ue, template.Name, template);
+                    templates.SetSource(ue, template.Name, template);
                 }
             }
+            return true;
+        }
 
-            foreach (var eachModel in descriptor.templates.plugin_modules)
+        private static bool TryAddGameModules(FUnrealTemplates templates, string templateBaseDir, XTPL_GameModuleModel[] game_modules, FUnrealTemplateLoadRule rule)
+        {
+            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+
+            if (rule == FUnrealTemplateLoadRule.MustLoad && game_modules.Length == 0)
             {
-                FUnrealPluginModuleTemplate template = new FUnrealPluginModuleTemplate();
-                template.Name = eachModel.name;
-                template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
-                template.Label = eachModel.ui.label;
-                template.Description = eachModel.ui.desc;
-
-                template.Type = eachModel.meta.type;
-                template.Phase = eachModel.meta.phase;
-
-                string[] ueArray = eachModel.ue.Split(',');
-                foreach (string ue in ueArray)
-                {
-                    templates.SetPluginModule(ue, template.Name, template);
-                }
+                XDebug.Erro("Templates descriptor must have game module templates!");
+                return false;
             }
 
-            foreach (var eachModel in descriptor.templates.game_modules)
+            foreach (var eachModel in game_modules)
             {
                 FUnrealGameModuleTemplate template = new FUnrealGameModuleTemplate();
                 template.Name = eachModel.name;
@@ -134,28 +122,70 @@ namespace FUnreal
                     templates.SetGameModule(ue, template.Name, template);
                 }
             }
+            return true;
+        }
 
-            foreach (var eachModel in descriptor.templates.sources)
+        private static bool TryAddPluginModules(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModuleModel[] plugin_modules, FUnrealTemplateLoadRule rule)
+        {
+            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+
+            if (rule == FUnrealTemplateLoadRule.MustLoad && plugin_modules.Length == 0)
             {
-                FUnrealSourceTemplate template = new FUnrealSourceTemplate();
+                XDebug.Erro("Templates descriptor must have plugin module templates!");
+                return false;
+            }
+
+            foreach (var eachModel in plugin_modules)
+            {
+                FUnrealPluginModuleTemplate template = new FUnrealPluginModuleTemplate();
                 template.Name = eachModel.name;
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.ui.label;
                 template.Description = eachModel.ui.desc;
 
-                template.Header = eachModel.meta.header;
-                template.Source = eachModel.meta.source;
+                template.Type = eachModel.meta.type;
+                template.Phase = eachModel.meta.phase;
 
                 string[] ueArray = eachModel.ue.Split(',');
                 foreach (string ue in ueArray)
                 {
-                    templates.SetSource(ue, template.Name, template);
+                    templates.SetPluginModule(ue, template.Name, template);
                 }
             }
 
             return true;
         }
-        
+
+        private static bool TryAddPlugins(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModel[] plugins, FUnrealTemplateLoadRule rule)
+        {
+            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+
+            if (rule == FUnrealTemplateLoadRule.MustLoad && plugins.Length == 0)
+            {
+                XDebug.Erro("Templates descriptor must have plugin templates!");
+                return false;
+            }
+
+            foreach (var eachModel in plugins)
+            {
+                FUnrealPluginTemplate template = new FUnrealPluginTemplate();
+                template.Name = eachModel.name;
+                template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
+                template.Label = eachModel.ui.label;
+                template.Description = eachModel.ui.desc;
+
+                template.HasModule = eachModel.meta.has_module;
+
+                string[] ueArray = eachModel.ue.Split(',');
+                foreach (string ue in ueArray)
+                {
+                    templates.SetPlugin(ue, template.Name, template);
+                }
+            }
+
+            return true; 
+        }
+
         private Dictionary<string, object> templatesByKey;
         private Dictionary<string, List<object>> templatesByContext;
 

@@ -113,6 +113,7 @@
     <Compile Include="Sources\UI\ExtensionMenu\Commands\ReloadExtensionMenuCmd.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\ExtensionMenuManager.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\ExtensionMenuVsctSymbols.cs" />
+    <Compile Include="Sources\UI\OptionsPage\Common\AXOptionsModel.cs" />
     <Compile Include="Sources\UI\OptionsPage\FUnrealTemplateOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>

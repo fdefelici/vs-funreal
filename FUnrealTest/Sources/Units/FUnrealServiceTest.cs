@@ -46,10 +46,10 @@ namespace FUnrealTest
             }
 
             var rules = new FUnrealTemplatesRules();
-            rules.MustHavePlugins = true;
-            rules.MustHavePluginModules = true;
-            rules.MustHaveGameModules = true;
-            rules.MustHaveSources = true;
+            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
 
             bool success = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
             

@@ -168,7 +168,7 @@ namespace FUnreal
 
 
             _options = FUnrealTemplateOptionsPage.Instance;
-            FUnrealTemplateOptionsPage.Saved += (opts) => OnOptionsSaved();
+            _options.AddChangedHandler(() => OnOptionsSaved?.Invoke());
         }
 
         public async Task ForceLoadProjectEventAsync()
