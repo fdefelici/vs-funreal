@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 using Community.VisualStudio.Toolkit;
 
 namespace FUnreal

@@ -15,6 +15,8 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_0_plugins);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
+            rules.TemplatePrefix = "prefix";
+
             FUnrealTemplates templates;
             bool success;
 
@@ -45,28 +47,29 @@ namespace FUnrealTest
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
 
             Assert.AreEqual(3, templates.Count);
 
-            FUnrealPluginTemplate tpl1 = templates.GetPlugin("4", "tpl_plugin_blank");
-            Assert.AreEqual("tpl_plugin_blank", tpl1.Name);
+            FUnrealPluginTemplate tpl1 = templates.GetPlugin("4", "tpl_plugin_0");
+            Assert.AreEqual("tpl_plugin_0", tpl1.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE5/Plugins/Blank"), tpl1.BasePath);
             Assert.AreEqual("Blank", tpl1.Label);
             Assert.AreEqual("Create a blank plugin", tpl1.Description);
             Assert.AreEqual(true, tpl1.HasModule);
 
-            FUnrealPluginTemplate tpl2 = templates.GetPlugin("5", "tpl_plugin_blank");
-            Assert.AreEqual("tpl_plugin_blank", tpl2.Name);
+            FUnrealPluginTemplate tpl2 = templates.GetPlugin("5", "tpl_plugin_0");
+            Assert.AreEqual("tpl_plugin_0", tpl2.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE5/Plugins/Blank"), tpl2.BasePath);
             Assert.AreEqual("Blank", tpl2.Label);
             Assert.AreEqual("Create a blank plugin", tpl2.Description);
             Assert.AreEqual(true, tpl2.HasModule);
 
-            FUnrealPluginTemplate tpl3 = templates.GetPlugin("5", "tpl_plugin_other");
-            Assert.AreEqual("tpl_plugin_other", tpl3.Name);
+            FUnrealPluginTemplate tpl3 = templates.GetPlugin("5", "tpl_plugin_1");
+            Assert.AreEqual("tpl_plugin_1", tpl3.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE5/Other"), tpl3.BasePath);
             Assert.AreEqual("OtherUi", tpl3.Label);
             Assert.AreEqual("OtherUiDesc", tpl3.Description);
@@ -84,22 +87,23 @@ namespace FUnrealTest
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
             rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            
+            rules.TemplatePrefix = "tpl";
+
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
 
             Assert.AreEqual(2, templates.Count);
 
-            FUnrealPluginModuleTemplate tpl1 = templates.GetPluginModule("4", "tpl_module_blank");
-            Assert.AreEqual("tpl_module_blank", tpl1.Name);
+            FUnrealPluginModuleTemplate tpl1 = templates.GetPluginModule("4", "tpl_pluginmodule_0");
+            Assert.AreEqual("tpl_pluginmodule_0", tpl1.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE5/Modules/Blank"), tpl1.BasePath);
             Assert.AreEqual("Blank", tpl1.Label);
             Assert.AreEqual("Create a blank module", tpl1.Description);
             Assert.AreEqual("Runtime", tpl1.Type);
             Assert.AreEqual("Default", tpl1.Phase);
 
-            FUnrealPluginModuleTemplate tpl2 = templates.GetPluginModule("5", "tpl_module_blank");
-            Assert.AreEqual("tpl_module_blank", tpl2.Name);
+            FUnrealPluginModuleTemplate tpl2 = templates.GetPluginModule("5", "tpl_pluginmodule_0");
+            Assert.AreEqual("tpl_pluginmodule_0", tpl2.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE5/Modules/Blank"), tpl2.BasePath);
             Assert.AreEqual("Blank", tpl2.Label);
             Assert.AreEqual("Create a blank module", tpl2.Description);
@@ -118,14 +122,15 @@ namespace FUnrealTest
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
             rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
 
             Assert.AreEqual(1, templates.Count);
 
-            FUnrealGameModuleTemplate tpl1 = templates.GetGameModule("4", "tpl_module_blank");
-            Assert.AreEqual("tpl_module_blank", tpl1.Name);
+            FUnrealGameModuleTemplate tpl1 = templates.GetGameModule("4", "tpl_gamemodule_0");
+            Assert.AreEqual("tpl_gamemodule_0", tpl1.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE4/Modules/Blank"), tpl1.BasePath);
             Assert.AreEqual("Blank", tpl1.Label);
             Assert.AreEqual("Create a blank module", tpl1.Description);
@@ -145,14 +150,15 @@ namespace FUnrealTest
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
             rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
 
             bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
             Assert.IsTrue(success);
 
             Assert.AreEqual(1, templates.Count);
 
-            FUnrealSourceTemplate tpl1 = templates.GetSource("4", "tpl_class_empty");
-            Assert.AreEqual("tpl_class_empty", tpl1.Name);
+            FUnrealSourceTemplate tpl1 = templates.GetSource("4", "tpl_source_0");
+            Assert.AreEqual("tpl_source_0", tpl1.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE4/Sources/Classes"), tpl1.BasePath);
             Assert.AreEqual("Empty", tpl1.Label);
             Assert.AreEqual("An empty class", tpl1.Description);
@@ -176,12 +182,12 @@ namespace FUnrealTest
            ""version"" : ""1.0"",
            ""templates"" : {
                 ""plugins"" : [
-                    { ""name"":""tpl_plugin_blank"", ""ue"":""4,5"", ""path"":""UE5/Plugins/Blank"",
-                      ""ui"": { ""label"":""Blank"", ""desc"":""Create a blank plugin"" },
+                    { ""label"":""Blank"", ""desc"":""Create a blank plugin"",
+                      ""ue"":[""4"",""5""], ""path"":""UE5/Plugins/Blank"",
                       ""meta"": { ""has_module"": true }
                     },
-                    { ""name"":""tpl_plugin_other"", ""ue"":""5"", ""path"":""UE5/Other"",
-                      ""ui"": { ""label"":""OtherUi"", ""desc"":""OtherUiDesc"" },
+                    { ""label"":""OtherUi"", ""desc"":""OtherUiDesc"",
+                      ""ue"":[""5""], ""path"":""UE5/Other"",
                       ""meta"": { ""has_module"": false }
                     }
                 ]
@@ -193,8 +199,8 @@ namespace FUnrealTest
            ""version"" : ""1.0"",
            ""templates"" : {
                 ""plugin_modules"" : [
-                    { ""name"":""tpl_module_blank"", ""ue"":""4,5"", ""path"":""UE5/Modules/Blank"",
-                      ""ui"": { ""label"":""Blank"", ""desc"":""Create a blank module"" },
+                    { ""label"":""Blank"", ""desc"":""Create a blank module"",
+                      ""ue"":[""4"",""5""], ""path"":""UE5/Modules/Blank"",
                       ""meta"": { ""type"": ""Runtime"", ""phase"": ""Default"" }
                     }
                 ]
@@ -206,8 +212,8 @@ namespace FUnrealTest
            ""version"" : ""1.0"",
            ""templates"" : {
                 ""game_modules"" : [
-                    { ""name"":""tpl_module_blank"", ""ue"":""4"", ""path"":""UE4/Modules/Blank"",
-                      ""ui"": { ""label"":""Blank"", ""desc"":""Create a blank module"" },
+                    { ""label"":""Blank"", ""desc"":""Create a blank module"",
+                      ""ue"":[""4""], ""path"":""UE4/Modules/Blank"",
                       ""meta"": { ""type"": ""Runtime"", ""phase"": ""Default"", ""target"": ""Editor"" }
                     }
                 ]
@@ -219,8 +225,8 @@ namespace FUnrealTest
            ""version"" : ""1.0"",
            ""templates"" : {
                 ""sources"" : [
-                    { ""name"":""tpl_class_empty"", ""ue"":""4"", ""path"":""UE4/Sources/Classes"",
-                      ""ui"": { ""label"":""Empty"", ""desc"":""An empty class"" },
+                    { ""label"":""Empty"", ""desc"":""An empty class"",
+                      ""ue"":[""4""], ""path"":""UE4/Sources/Classes"",
                       ""meta"": { ""header"": ""Empty.h"", ""source"": ""Empty.cpp"" }
                     }
                 ]

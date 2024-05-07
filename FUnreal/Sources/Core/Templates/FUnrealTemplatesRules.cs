@@ -20,12 +20,15 @@ namespace FUnreal
         public FUnrealTemplateLoadRule LoadGameModules { get; set; }
         public FUnrealTemplateLoadRule LoadSources { get; set; }
 
+        public string TemplatePrefix { get; set; }
+
         public FUnrealTemplatesRules() 
         {
             LoadPlugins = FUnrealTemplateLoadRule.DontLoad;
             LoadPluginModules = FUnrealTemplateLoadRule.DontLoad;
             LoadGameModules = FUnrealTemplateLoadRule.DontLoad;
             LoadSources = FUnrealTemplateLoadRule.DontLoad;
+            TemplatePrefix = string.Empty;
         }
 
     }

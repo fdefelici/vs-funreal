@@ -2,40 +2,34 @@
   "version": "1.0",
   "templates": {
     "plugins": [
-      { 
-        "name": "tpl_plugin_blank", "ue": "4,5", "path": "UE5/Plugins/Blank",
-        "ui": { "label": "Blank", "desc": "Create a blank plugin with a minimal amount of code." },
+      { "label": "Blank", "desc": "Create a blank plugin with a minimal amount of code.",
+        "ue": ["4","5"], "path": "UE5/Plugins/Blank",
         "meta": { "has_module": true }
       },
-      {
-        "name": "tpl_plugin_contentonly", "ue": "4,5", "path": "UE5/Plugins/ContentOnly",
-        "ui": { "label": "Content Only", "desc": "Create a blank plugin that can only contain content." },
+      { "label": "Content Only", "desc": "Create a blank plugin that can only contain content.",
+        "ue": ["4","5"], "path": "UE5/Plugins/ContentOnly",
         "meta": { "has_module": false }
       }
     ],
     "plugin_modules": [
-			{
-				"name": "tpl_module_blank", "ue": "4,5", "path": "UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
-				"ui": { "label": "Blank", "desc": "Create a blank module with a minimal amount of code." },
+			{ "label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
+				"ue": ["4","5"], "path": "UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "Default" }
 			}
     ],
     "game_modules": [
-			{
-				"name": "tpl_module_blank", "ue": "4,5", "path": "UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
-				"ui": { "label": "Blank", "desc": "Create a blank module with a minimal amount of code." },
+			{ "label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
+				"ue": ["4","5"], "path": "UE5/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "Default", "target": "Game" }
 			}
     ],
     "sources": [
-			{
-				"name": "tpl_class_actor", "ue": "4,5", "path": "UE5/Sources",
-				"meta": {  "header": "Actor.h",  "source": "Actor.cpp" },
-				"ui": { "label": "Actor", "desc": "An Actor is an object that can be placed or spawned in the world." }
+			{ "label": "Actor", "desc": "An Actor is an object that can be placed or spawned in the world.",
+				"ue": ["4","5"], "path": "UE5/Sources",
+				"meta": {  "header": "Actor.h",  "source": "Actor.cpp" }
 			},
-			{
-				"name": "tpl_class_actorcomponent", "ue": "4,5", "path": "UE5/Sources",
-				"ui": { "label": "Actor Component", "desc": "An ActorComponent is a reusable component that can be added to any actor." },
+			{ "label": "Actor Component", "desc": "An ActorComponent is a reusable component that can be added to any actor.",
+        "ue": ["4","5"], "path": "UE5/Sources",				
 				"meta": {  "header": "ActorComponent.h",  "source": "ActorComponent.cpp" }
 			}
     ]

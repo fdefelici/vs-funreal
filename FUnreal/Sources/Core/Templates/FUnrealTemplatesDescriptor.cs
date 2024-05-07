@@ -16,15 +16,6 @@
         public XTPL_GameModuleModel[] game_modules = new XTPL_GameModuleModel[0];
         public XTPL_SourceModel[] sources = new XTPL_SourceModel[0];
     }
-
-    public class XTPL_UIModel
-    {
-        [XNotNullAttrValidator]
-        public string label = null;
-        [XNotNullAttrValidator]
-        public string desc = null;
-    }
-
   
     public class XTPL_PluginModel
     {
@@ -34,13 +25,13 @@
         }
 
         [XNotNullAttrValidator]
-        public string name = null;
-        [XNotNullAttrValidator]
         public string path = null;
         [XNotNullAttrValidator]
-        public string ue = null;
+        public string[] ue = null;
         [XNotNullAttrValidator]
-        public XTPL_UIModel ui = null;
+        public string label = null;
+        [XNotNullAttrValidator]
+        public string desc = null;
         [XNotNullAttrValidator]
         public XTPL_PluginMetaModel meta = null;
     }
@@ -56,13 +47,13 @@
         }
 
         [XNotNullAttrValidator]
-        public string name = null;
-        [XNotNullAttrValidator]
         public string path = null;
         [XNotNullAttrValidator]
-        public string ue = null;
+        public string[] ue = null;
         [XNotNullAttrValidator]
-        public XTPL_UIModel ui = null;
+        public string label = null;
+        [XNotNullAttrValidator]
+        public string desc = null;
         [XNotNullAttrValidator]
         public XTPL_ModulePluginMetaModel meta = null;
     }
@@ -80,13 +71,13 @@
         }
 
         [XNotNullAttrValidator]
-        public string name = null;
-        [XNotNullAttrValidator]
         public string path = null;
         [XNotNullAttrValidator]
-        public string ue = null;
+        public string[] ue = null;
         [XNotNullAttrValidator]
-        public XTPL_UIModel ui = null;
+        public string label = null;
+        [XNotNullAttrValidator]
+        public string desc = null;
         [XNotNullAttrValidator]
         public XTPL_GameModuleMetaModel meta = null;
     }
@@ -102,13 +93,13 @@
         }
 
         [XNotNullAttrValidator]
-        public string name = null;
-        [XNotNullAttrValidator]
         public string path = null;
         [XNotNullAttrValidator]
-        public string ue = null;
+        public string[] ue = null;
         [XNotNullAttrValidator]
-        public XTPL_UIModel ui = null;
+        public string label = null;
+        [XNotNullAttrValidator]
+        public string desc = null;
         [XNotNullAttrValidator]
         public XTPL_SourceMetaModel meta = null;
     }

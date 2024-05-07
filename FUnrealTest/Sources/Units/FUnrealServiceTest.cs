@@ -50,6 +50,7 @@ namespace FUnrealTest
             rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
 
             bool success = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
             
@@ -69,7 +70,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjEmpty");
 
-            bool taskResult = service.AddPluginAsync("tpl_plugin_blank", "MyPlug", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginAsync("tpl_plugin_0", "MyPlug", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -107,7 +108,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjEmpty");
 
-            bool taskResult = service.AddPluginAsync("tpl_plugin_contentonly", "MyPlug", null, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginAsync("tpl_plugin_1", "MyPlug", null, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -310,7 +311,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjOnePlug");
 
-            bool taskResult = service.AddPluginModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginModuleAsync("tpl_pluginmodule_0", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -504,7 +505,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
             
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_source_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -530,7 +531,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private/SubFolder");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
             
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_source_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -556,7 +557,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PRIVATE;
           
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_source_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -582,7 +583,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01");
             FUnrealSourceType selectedType = FUnrealSourceType.CUSTOM;
 
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_source_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -638,7 +639,7 @@ namespace FUnrealTest
             SetUpTestCaseForProject("UPrjGame");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame");
 
-            bool taskResult = service.AddGameModuleAsync("tpl_module_blank", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddGameModuleAsync("tpl_gamemodule_0", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);

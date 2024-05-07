@@ -4,6 +4,7 @@ using FUnreal;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using System.Diagnostics;
 
 namespace FUnrealTest.Integrations
 {
@@ -17,7 +18,7 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(label, tpl.Label);
             Assert.IsNotNull(tpl.Description);
 
-            Assert.AreEqual($"tpl_module_{wikiName.ToLower()}", tpl.Name);
+            Assert.IsTrue(tpl.Name.StartsWith("tpl_pluginmodule_"));
             Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUG_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
             Assert.IsTrue(TestUtils.ExistsDir(tpl.BasePath), $"tpl_module_{wikiName.ToLower()} path not exists: {tpl.BasePath}");
             Assert.IsNotNull(tpl.Type);
@@ -31,7 +32,7 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(label, tpl.Label);
             Assert.IsNotNull(tpl.Description);
 
-            Assert.AreEqual($"tpl_module_{wikiName.ToLower()}", tpl.Name);
+            Assert.IsTrue(tpl.Name.StartsWith("tpl_gamemodule_"));
             Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUG_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
             Assert.IsTrue(TestUtils.ExistsDir(tpl.BasePath), $"tpl_module_{wikiName.ToLower()} path not exists: {tpl.BasePath}");
             Assert.IsNotNull(tpl.Type);
@@ -46,7 +47,7 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(label, tpl.Label);
             Assert.IsNotNull(tpl.Description);
 
-            Assert.AreEqual($"tpl_plugin_{wikiName.ToLower()}", tpl.Name);
+            Assert.IsTrue(tpl.Name.StartsWith("tpl_plugin_"));
             Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
             Assert.IsTrue(TestUtils.ExistsDir(tpl.BasePath), $"tpl_module_{wikiName.ToLower()} path not exists: {tpl.BasePath}");
             //Assert.IsNotNull(tpl.GetMeta("has_module"));
@@ -59,7 +60,7 @@ namespace FUnrealTest.Integrations
             Assert.AreEqual(label, tpl.Label);
             Assert.IsNotNull(tpl.Description);
 
-            Assert.AreEqual($"tpl_class_{wikiName.ToLower()}", tpl.Name);
+            Assert.IsTrue(tpl.Name.StartsWith("tpl_source_"));
             Assert.IsTrue(tpl.BasePath.EndsWith(@"\UEC\Sources\Classes"));
             Assert.AreEqual($"{wikiName}.h", tpl.Header);
             Assert.AreEqual($"{wikiName}.cpp", tpl.Source);
@@ -70,6 +71,18 @@ namespace FUnrealTest.Integrations
             Assert.IsTrue(TestUtils.ExistsFile(cppFullPath), cppFullPath);
         };
 
+        FUnrealTemplatesRules rules;
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            rules = new FUnrealTemplatesRules();
+            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
+        }
 
         [TestMethod]
         public void CheckSourcesTemplate()
@@ -83,12 +96,6 @@ namespace FUnrealTest.Integrations
                 "World Settings", "HUD", "Player State", "Game State Base", "Blueprint Function Library",
                 "Slate Widget", "Slate Widget Style", "Unreal Interface", "UObject"
             };
-
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
 
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
@@ -120,12 +127,6 @@ namespace FUnrealTest.Integrations
         public void CheckPluginModules_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
 
@@ -156,12 +157,6 @@ namespace FUnrealTest.Integrations
         public void CheckGameModules_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
             var ctxTpls = tpls.GetGameModules("4");
@@ -190,12 +185,6 @@ namespace FUnrealTest.Integrations
         public void CheckGameModules_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
 
@@ -226,12 +215,6 @@ namespace FUnrealTest.Integrations
         public void CheckPluginModules_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
             var ctxTpls = tpls.GetPluginModules("4");
@@ -261,12 +244,6 @@ namespace FUnrealTest.Integrations
         public void CheckPlugins_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
 
@@ -298,12 +275,6 @@ namespace FUnrealTest.Integrations
         public void CheckPlugins_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            var rules = new FUnrealTemplatesRules();
-            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
-
             bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(success);
             var ctxTpls = tpls.GetPlugins("4");

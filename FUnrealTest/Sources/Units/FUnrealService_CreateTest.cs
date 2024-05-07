@@ -91,12 +91,16 @@ namespace FUnrealTest
             var expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool.exe");
             var options = new FUnrealTemplateOptionsPage();
             options.TemplatesMode = TemplateMode.BuiltIn;
-           
+
             var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, options));
 
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
             Assert.AreEqual(expUbtPath, engine.UnrealBuildTool.BinPath);
+            Assert.AreEqual(2, service.PluginTemplates().Count);
+            Assert.AreEqual(1, service.PluginModuleTemplates().Count);
+            Assert.AreEqual(1, service.GameModuleTemplates().Count);
+            Assert.AreEqual(2, service.SourceTemplates().Count);
         }
 
         [TestMethod]
@@ -116,6 +120,10 @@ namespace FUnrealTest
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
             Assert.AreEqual(expUbtPath, engine.UnrealBuildTool.BinPath);
+            Assert.AreEqual(2, service.PluginTemplates().Count);
+            Assert.AreEqual(1, service.PluginModuleTemplates().Count);
+            Assert.AreEqual(1, service.GameModuleTemplates().Count);
+            Assert.AreEqual(2, service.SourceTemplates().Count);
         }
 
     }

@@ -159,13 +159,16 @@ namespace FUnreal
             }
             else if (expectedCSharpType.IsArray)
             {
-                var jsonArray = (JArray)jsonToken;
+                if (jsonToken.Type == JTokenType.Array)
+                {
+                    var jsonArray = (JArray)jsonToken;
 
-                int arraySize = jsonArray.Count;
-                Array arrayIstance = Array.CreateInstance(expectedCSharpType.GetElementType(), arraySize);
-                bool success = TryFromJsonArray(jsonArray, permissive, ref arrayIstance);
-                csharpValue = arrayIstance;
-                if (success) return true;
+                    int arraySize = jsonArray.Count;
+                    Array arrayIstance = Array.CreateInstance(expectedCSharpType.GetElementType(), arraySize);
+                    bool success = TryFromJsonArray(jsonArray, permissive, ref arrayIstance);
+                    csharpValue = arrayIstance;
+                    if (success) return true;
+                }
             }
             else if (expectedCSharpType.IsValueType || expectedCSharpType.IsClass) //struct or class (array/list are considered class)
             {

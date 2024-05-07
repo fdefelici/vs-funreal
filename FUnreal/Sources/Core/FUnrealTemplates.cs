@@ -54,38 +54,40 @@ namespace FUnreal
             templates = new FUnrealTemplates();
 
             bool addResult = true;
-            addResult &= TryAddPlugins(templates, templateBaseDir, descriptor.templates.plugins, rules.LoadPlugins);
-            addResult &= TryAddPluginModules(templates, templateBaseDir, descriptor.templates.plugin_modules, rules.LoadPluginModules);
-            addResult &= TryAddGameModules(templates, templateBaseDir, descriptor.templates.game_modules, rules.LoadGameModules);
-            addResult &= TryAddSources(templates, templateBaseDir, descriptor.templates.sources, rules.LoadSources);
+            addResult &= TryAddPlugins(templates, templateBaseDir, descriptor.templates.plugins, rules);
+            addResult &= TryAddPluginModules(templates, templateBaseDir, descriptor.templates.plugin_modules, rules);
+            addResult &= TryAddGameModules(templates, templateBaseDir, descriptor.templates.game_modules, rules);
+            addResult &= TryAddSources(templates, templateBaseDir, descriptor.templates.sources, rules);
 
 
             if (!addResult) return false;
             return true;
         }
 
-        private static bool TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_SourceModel[] sources, FUnrealTemplateLoadRule rule)
+        private static bool TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_SourceModel[] sources, FUnrealTemplatesRules rules)
         {
-            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+            if (rules.LoadSources == FUnrealTemplateLoadRule.DontLoad) return true;
 
-            if (rule == FUnrealTemplateLoadRule.MustLoad && sources.Length == 0)
+            if (rules.LoadSources == FUnrealTemplateLoadRule.MustLoad && sources.Length == 0)
             {
                 XDebug.Erro("Templates descriptor must have source templates!");
                 return false;
             }
 
-            foreach (var eachModel in sources)
+            for(int i=0; i < sources.Length; ++i)
             {
+                var eachModel = sources[i];
+
                 FUnrealSourceTemplate template = new FUnrealSourceTemplate();
-                template.Name = eachModel.name;
+                template.Name = $"{rules.TemplatePrefix}_source_{i}";//_{eachModel.label.Replace(" ", "")}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
-                template.Label = eachModel.ui.label;
-                template.Description = eachModel.ui.desc;
+                template.Label = eachModel.label;
+                template.Description = eachModel.desc;
 
                 template.Header = eachModel.meta.header;
                 template.Source = eachModel.meta.source;
 
-                string[] ueArray = eachModel.ue.Split(',');
+                string[] ueArray = eachModel.ue;
                 foreach (string ue in ueArray)
                 {
                     templates.SetSource(ue, template.Name, template);
@@ -94,29 +96,30 @@ namespace FUnreal
             return true;
         }
 
-        private static bool TryAddGameModules(FUnrealTemplates templates, string templateBaseDir, XTPL_GameModuleModel[] game_modules, FUnrealTemplateLoadRule rule)
+        private static bool TryAddGameModules(FUnrealTemplates templates, string templateBaseDir, XTPL_GameModuleModel[] game_modules, FUnrealTemplatesRules rules)
         {
-            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+            if (rules.LoadGameModules == FUnrealTemplateLoadRule.DontLoad) return true;
 
-            if (rule == FUnrealTemplateLoadRule.MustLoad && game_modules.Length == 0)
+            if (rules.LoadPluginModules == FUnrealTemplateLoadRule.MustLoad && game_modules.Length == 0)
             {
                 XDebug.Erro("Templates descriptor must have game module templates!");
                 return false;
             }
 
-            foreach (var eachModel in game_modules)
+            for(int i=0; i < game_modules.Length; ++i)
             {
+                var eachModel = game_modules[i];
                 FUnrealGameModuleTemplate template = new FUnrealGameModuleTemplate();
-                template.Name = eachModel.name;
+                template.Name = template.Name = $"{rules.TemplatePrefix}_gamemodule_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
-                template.Label = eachModel.ui.label;
-                template.Description = eachModel.ui.desc;
+                template.Label = eachModel.label;
+                template.Description = eachModel.desc;
 
                 template.Type = eachModel.meta.type;
                 template.Phase = eachModel.meta.phase;
                 template.Target = eachModel.meta.target;
 
-                string[] ueArray = eachModel.ue.Split(',');
+                string[] ueArray = eachModel.ue;
                 foreach (string ue in ueArray)
                 {
                     templates.SetGameModule(ue, template.Name, template);
@@ -125,28 +128,29 @@ namespace FUnreal
             return true;
         }
 
-        private static bool TryAddPluginModules(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModuleModel[] plugin_modules, FUnrealTemplateLoadRule rule)
+        private static bool TryAddPluginModules(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModuleModel[] plugin_modules, FUnrealTemplatesRules rules)
         {
-            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+            if (rules.LoadPluginModules == FUnrealTemplateLoadRule.DontLoad) return true;
 
-            if (rule == FUnrealTemplateLoadRule.MustLoad && plugin_modules.Length == 0)
+            if (rules.LoadPluginModules == FUnrealTemplateLoadRule.MustLoad && plugin_modules.Length == 0)
             {
                 XDebug.Erro("Templates descriptor must have plugin module templates!");
                 return false;
             }
 
-            foreach (var eachModel in plugin_modules)
+            for (int i=0; i < plugin_modules.Length; ++i)
             {
+                var eachModel = plugin_modules[i];
                 FUnrealPluginModuleTemplate template = new FUnrealPluginModuleTemplate();
-                template.Name = eachModel.name;
+                template.Name = template.Name = $"{rules.TemplatePrefix}_pluginmodule_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
-                template.Label = eachModel.ui.label;
-                template.Description = eachModel.ui.desc;
+                template.Label = eachModel.label;
+                template.Description = eachModel.desc;
 
                 template.Type = eachModel.meta.type;
                 template.Phase = eachModel.meta.phase;
 
-                string[] ueArray = eachModel.ue.Split(',');
+                string[] ueArray = eachModel.ue;
                 foreach (string ue in ueArray)
                 {
                     templates.SetPluginModule(ue, template.Name, template);
@@ -156,27 +160,28 @@ namespace FUnreal
             return true;
         }
 
-        private static bool TryAddPlugins(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModel[] plugins, FUnrealTemplateLoadRule rule)
+        private static bool TryAddPlugins(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModel[] plugins, FUnrealTemplatesRules rules)
         {
-            if (rule == FUnrealTemplateLoadRule.DontLoad) return true;
+            if (rules.LoadPlugins == FUnrealTemplateLoadRule.DontLoad) return true;
 
-            if (rule == FUnrealTemplateLoadRule.MustLoad && plugins.Length == 0)
+            if (rules.LoadPlugins == FUnrealTemplateLoadRule.MustLoad && plugins.Length == 0)
             {
                 XDebug.Erro("Templates descriptor must have plugin templates!");
                 return false;
             }
 
-            foreach (var eachModel in plugins)
+            for(int i=0; i < plugins.Length; ++i)
             {
+                var eachModel = plugins[i];
                 FUnrealPluginTemplate template = new FUnrealPluginTemplate();
-                template.Name = eachModel.name;
+                template.Name = template.Name = $"{rules.TemplatePrefix}_plugin_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
-                template.Label = eachModel.ui.label;
-                template.Description = eachModel.ui.desc;
+                template.Label = eachModel.label;
+                template.Description = eachModel.desc;
 
                 template.HasModule = eachModel.meta.has_module;
 
-                string[] ueArray = eachModel.ue.Split(',');
+                string[] ueArray = eachModel.ue;
                 foreach (string ue in ueArray)
                 {
                     templates.SetPlugin(ue, template.Name, template);
