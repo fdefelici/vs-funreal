@@ -75,7 +75,7 @@ namespace FUnreal
             if (!validationSuccess)
             {
                 templates = null;
-                return FUnrealTemplatesLoadResult.Failure("Invalid syntax in templates descriptor: " + templateDescriptorPath);
+                return FUnrealTemplatesLoadResult.Failure("Validation failure for templates descriptor: " + templateDescriptorPath);
             }
 
             string templateBaseDir = XFilesystem.PathParent(templateDescriptorPath);

@@ -16,12 +16,13 @@ namespace FUnreal
         public AddSourceClassController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS)
         {
-            _templates = _unrealService.SourceTemplates();
             _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
+            _templates = _unrealService.SourceTemplates();
+
             _dialog = new AddSourceClassDialog();
             _dialog.OnTemplateChangeAsync = TemplateChangedAsync;
             _dialog.OnClassNameChangeAsync = ClassNameChangedAsync;

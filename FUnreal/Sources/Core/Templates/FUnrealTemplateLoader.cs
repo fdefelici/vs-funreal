@@ -80,9 +80,9 @@ namespace FUnreal
                         unrealVS.Output.Erro("Cause:");
 
                         string reason = string.Empty;
-                        for (int i = 0; i < loadResult.Messages.Count; i++)
+                        for (int i = 0; i < userTemplatesResult.Messages.Count; i++)
                         {
-                            var msg = loadResult.Messages[i];
+                            var msg = userTemplatesResult.Messages[i];
                             unrealVS.Output.Erro("- {0}", msg);
                         }
                         return false;

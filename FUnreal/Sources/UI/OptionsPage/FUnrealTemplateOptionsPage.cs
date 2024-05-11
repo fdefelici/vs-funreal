@@ -23,7 +23,7 @@ namespace FUnreal
         public const string Category_General = "0) General";
         public const string Category_CustomTemplates = "1) Custom Templates";
 
-        private const string EvalutedOnlyMessage = "Evaluated only when 'Template Mode' = 'Custom'";
+        private const string EvalutedOnlyMessage = "Evaluated only when 'Templates Mode' = 'Custom'";
        
         [Category(Category_General)]
         [DisplayName("01) Templates Mode")]
@@ -40,22 +40,22 @@ namespace FUnreal
         public string CustomTemplateDescriptorPath { get; set; } = string.Empty;
 
         [Category(Category_CustomTemplates)]
-        [DisplayName("12) Load Built-In Plugins")]
+        [DisplayName("12) Use Built-In Plugins")]
         [Description("Load built-in Plugin templates. " + EvalutedOnlyMessage)]
         public bool LoadBuiltInPlugins { get; set; } = true;
 
         [Category(Category_CustomTemplates)]
-        [DisplayName("13) Load Built-In Plugin Modules")]
+        [DisplayName("13) Use Built-In Plugin Modules")]
         [Description("Load built-in Plugin Module templates. " + EvalutedOnlyMessage)]
         public bool LoadBuiltInPluginModules { get; set; } = true;
 
         [Category(Category_CustomTemplates)]
-        [DisplayName("14) Load Built-In Game Modules")]
+        [DisplayName("14) Use Built-In Game Modules")]
         [Description("Load built-in Game Module templates. " + EvalutedOnlyMessage)]
         public bool LoadBuiltInGameModule { get; set; } = true;
 
         [Category(Category_CustomTemplates)]
-        [DisplayName("15) Load Built-In Sources")]
+        [DisplayName("15) Use Built-In Sources")]
         [Description("Load built-in Source templates. " + EvalutedOnlyMessage)]
         public bool LoadBuiltInSource { get; set; } = true;
 

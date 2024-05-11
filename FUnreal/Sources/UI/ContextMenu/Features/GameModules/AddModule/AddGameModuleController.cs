@@ -14,14 +14,14 @@ namespace FUnreal
         public AddGameModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS)
         {
-            _templates = _unrealService.GameModuleTemplates();
             _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
-            var itemVs = await _unrealVS.GetSelectedItemAsync();
+            _templates = _unrealService.GameModuleTemplates();
 
+            var itemVs = await _unrealVS.GetSelectedItemAsync();
 
             _dialog = new AddGameModuleDialog();
             _dialog.OnConfirmAsync = ConfirmAsync;

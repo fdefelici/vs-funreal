@@ -15,12 +15,13 @@ namespace FUnreal
         public AddModuleController(FUnrealService unrealService, FUnrealVS unrealVS, ContextMenuManager ctxMenuMgr) 
             : base(unrealService, unrealVS)
         {
-            _templates = _unrealService.PluginModuleTemplates();
             _notifier = new FUnrealNotifier();
         }
 
         public override async Task DoActionAsync()
         {
+            _templates = _unrealService.PluginModuleTemplates();
+
             var itemVs = await _unrealVS.GetSelectedItemAsync();
             _currentPluginName = _unrealService.PluginNameFromSourceCodePath(itemVs.FullPath);
 
