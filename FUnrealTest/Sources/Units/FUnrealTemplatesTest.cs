@@ -18,21 +18,21 @@ namespace FUnrealTest
             rules.TemplatePrefix = "prefix";
 
             FUnrealTemplates templates;
-            bool success;
+            FUnrealTemplatesLoadResult result;
 
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
-            success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
-            Assert.IsFalse(success);
+            result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
+            Assert.IsFalse(result.IsSuccess);
             Assert.AreEqual(0, templates.Count);
 
             rules.LoadPlugins = FUnrealTemplateLoadRule.LoadIfAny;
-            success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
-            Assert.IsTrue(success);
+            result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
+            Assert.IsTrue(result.IsSuccess);
             Assert.AreEqual(0, templates.Count);
 
             rules.LoadPlugins = FUnrealTemplateLoadRule.DontLoad;
-            success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
-            Assert.IsTrue(success);
+            result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);
+            Assert.IsTrue(result.IsSuccess);
             Assert.AreEqual(0, templates.Count);
 
             TestUtils.DeleteDir(basePath);
@@ -49,8 +49,8 @@ namespace FUnrealTest
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
+            Assert.IsTrue(result.IsSuccess);
 
             Assert.AreEqual(3, templates.Count);
 
@@ -89,8 +89,8 @@ namespace FUnrealTest
             rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
+            Assert.IsTrue(result.IsSuccess);
 
             Assert.AreEqual(2, templates.Count);
 
@@ -124,8 +124,8 @@ namespace FUnrealTest
             rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
+            Assert.IsTrue(result.IsSuccess);
 
             Assert.AreEqual(1, templates.Count);
 
@@ -152,8 +152,8 @@ namespace FUnrealTest
             rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
+            Assert.IsTrue(result.IsSuccess);
 
             Assert.AreEqual(1, templates.Count);
 

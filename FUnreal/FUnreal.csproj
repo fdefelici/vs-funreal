@@ -54,6 +54,7 @@
     <Compile Include="Sources\Core\Templates\FUnrealGameModuleTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealPluginModuleTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealPluginTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplateLoader.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealTemplatesDescriptor.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealTemplatesRules.cs" />
     <Compile Include="Sources\Handlers\DetectEmptyFolderHandler.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Sources\UI\OptionsPage\FUnrealTemplateOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Sources\UI\OptionsPage\OptionPageManager.cs" />
     <Compile Include="Sources\UI\OptionsPage\StringToPathConverter.cs" />
     <Compile Include="Sources\Utils\ObjectValidator\XObjectValidator.cs" />
     <Compile Include="Sources\Utils\ObjectValidator\XObjectValidatorAttributes.cs" />

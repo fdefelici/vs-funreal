@@ -97,8 +97,8 @@ namespace FUnrealTest.Integrations
                 "Slate Widget", "Slate Widget Style", "Unreal Interface", "UObject"
             };
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
 
             var classTpls = tpls.GetSources("4");
             Assert.AreEqual(list.Count, classTpls.Count);
@@ -127,8 +127,8 @@ namespace FUnrealTest.Integrations
         public void CheckPluginModules_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
 
             var ctxTpls = tpls.GetPluginModules("5");
 
@@ -157,8 +157,8 @@ namespace FUnrealTest.Integrations
         public void CheckGameModules_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
             var ctxTpls = tpls.GetGameModules("4");
 
             var modulePerRoot = new Dictionary<string, string>();
@@ -185,8 +185,8 @@ namespace FUnrealTest.Integrations
         public void CheckGameModules_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
 
             var ctxTpls = tpls.GetGameModules("5");
 
@@ -215,8 +215,8 @@ namespace FUnrealTest.Integrations
         public void CheckPluginModules_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
             var ctxTpls = tpls.GetPluginModules("4");
 
             var modulePerRoot = new Dictionary<string, string>();
@@ -244,8 +244,8 @@ namespace FUnrealTest.Integrations
         public void CheckPlugins_ForUE5()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
 
             var ctxTpls = tpls.GetPlugins("5");
 
@@ -275,8 +275,8 @@ namespace FUnrealTest.Integrations
         public void CheckPlugins_ForUE4()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
-            bool success = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
-            Assert.IsTrue(success);
+            var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
+            Assert.IsTrue(result.IsSuccess);
             var ctxTpls = tpls.GetPlugins("4");
 
             var pluginPerRoot = new Dictionary<string, string>();

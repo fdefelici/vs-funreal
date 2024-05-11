@@ -1,77 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Security.Cryptography;
-using System.Xml;
 
 namespace FUnreal
 {
+    public class FUnrealTemplatesLoadResult
+    {
+        public static FUnrealTemplatesLoadResult Failure(string message)
+        {
+            var r = new FUnrealTemplatesLoadResult();
+            r.Messages.Add(message);
+            r.IsSuccess = false;
+            return r;
+        }
+
+        public static FUnrealTemplatesLoadResult Success()
+        {
+            var r = new FUnrealTemplatesLoadResult();
+            r.IsSuccess = true;
+            return r;
+        }
+
+        public bool IsSuccess { get; private set; }
+
+        public bool IsFailure { get => !IsSuccess; }
+        public List<string> Messages { get; private set; }
+
+        public FUnrealTemplatesLoadResult()
+        {
+            IsSuccess = false;
+            Messages = new List<string>();
+        }
+
+        public static FUnrealTemplatesLoadResult operator +(FUnrealTemplatesLoadResult a, FUnrealTemplatesLoadResult b)
+        {
+            var r = new FUnrealTemplatesLoadResult();
+            r.IsSuccess = a.IsSuccess & b.IsSuccess;
+            r.Messages.AddRange(a.Messages);
+            r.Messages.AddRange(b.Messages);
+            return r;
+        }
+    }
+
     public class FUnrealTemplates
     {
-        public static bool TryLoad_V1_0(string templateDescriptorPath, FUnrealTemplatesRules rules, out FUnrealTemplates templates)
+        public static FUnrealTemplatesLoadResult TryLoad_V1_0(string templateDescriptorPath, FUnrealTemplatesRules rules, out FUnrealTemplates templates)
         {
             if (!XFilesystem.FileExists(templateDescriptorPath))
             {
-                XDebug.Erro("Templates file doesn't exists: " + templateDescriptorPath);
                 templates = null;
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Templates file doesn't exists: " + templateDescriptorPath);
             }
             
             string jsonStr = XFilesystem.FileRead(templateDescriptorPath);
             if (jsonStr == null)
             {
-                XDebug.Erro("Cannot read templates from: " + templateDescriptorPath);
                 templates = null;
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Cannot read templates from: " + templateDescriptorPath);
             }
 
             bool parseSuccess = XJsonUtils.TryFromJsonString(jsonStr, out XTPL_DescriptorModel descriptor);
             if (!parseSuccess)
             {
-                XDebug.Erro("Cannot parse json from templates descriptor: " + templateDescriptorPath);
                 templates = null;
-                return false;   
+                return FUnrealTemplatesLoadResult.Failure("Cannot parse json from templates descriptor: " + templateDescriptorPath);
             }
 
             if (descriptor.version != "1.0")
             {
-                XDebug.Erro("Unsupported templates descriptor version: " + descriptor.version);
                 templates = null;
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Unsupported templates descriptor version: " + descriptor.version);
             }
 
             bool validationSuccess = XObjectValidator.Validate(descriptor);
             if (!validationSuccess)
             {
-                XDebug.Erro("Invalid templates descriptor: " + templateDescriptorPath);
                 templates = null;
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Invalid syntax in templates descriptor: " + templateDescriptorPath);
             }
 
             string templateBaseDir = XFilesystem.PathParent(templateDescriptorPath);
             templates = new FUnrealTemplates();
 
-            bool addResult = true;
-            addResult &= TryAddPlugins(templates, templateBaseDir, descriptor.templates.plugins, rules);
-            addResult &= TryAddPluginModules(templates, templateBaseDir, descriptor.templates.plugin_modules, rules);
-            addResult &= TryAddGameModules(templates, templateBaseDir, descriptor.templates.game_modules, rules);
-            addResult &= TryAddSources(templates, templateBaseDir, descriptor.templates.sources, rules);
+            FUnrealTemplatesLoadResult addResult = FUnrealTemplatesLoadResult.Success();
+            addResult += TryAddPlugins(templates, templateBaseDir, descriptor, rules);
+            addResult += TryAddPluginModules(templates, templateBaseDir, descriptor, rules);
+            addResult += TryAddGameModules(templates, templateBaseDir, descriptor, rules);
+            addResult += TryAddSources(templates, templateBaseDir, descriptor, rules);
 
-
-            if (!addResult) return false;
-            return true;
+            return addResult;
         }
 
-        private static bool TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_SourceModel[] sources, FUnrealTemplatesRules rules)
+        private static FUnrealTemplatesLoadResult TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
         {
-            if (rules.LoadSources == FUnrealTemplateLoadRule.DontLoad) return true;
+            XTPL_SourceModel[] sources = descriptor.templates.sources;
+
+            if (rules.LoadSources == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
 
             if (rules.LoadSources == FUnrealTemplateLoadRule.MustLoad && sources.Length == 0)
             {
-                XDebug.Erro("Templates descriptor must have source templates!");
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Templates descriptor must have source templates!");
             }
 
             for(int i=0; i < sources.Length; ++i)
@@ -79,7 +106,7 @@ namespace FUnreal
                 var eachModel = sources[i];
 
                 FUnrealSourceTemplate template = new FUnrealSourceTemplate();
-                template.Name = $"{rules.TemplatePrefix}_source_{i}";//_{eachModel.label.Replace(" ", "")}";
+                template.Name = $"{rules.TemplatePrefix}_source_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.label;
                 template.Description = eachModel.desc;
@@ -93,24 +120,25 @@ namespace FUnreal
                     templates.SetSource(ue, template.Name, template);
                 }
             }
-            return true;
+            return FUnrealTemplatesLoadResult.Success();
         }
 
-        private static bool TryAddGameModules(FUnrealTemplates templates, string templateBaseDir, XTPL_GameModuleModel[] game_modules, FUnrealTemplatesRules rules)
+        private static FUnrealTemplatesLoadResult TryAddGameModules(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
         {
-            if (rules.LoadGameModules == FUnrealTemplateLoadRule.DontLoad) return true;
+            XTPL_GameModuleModel[] game_modules = descriptor.templates.game_modules;
+
+            if (rules.LoadGameModules == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
 
             if (rules.LoadPluginModules == FUnrealTemplateLoadRule.MustLoad && game_modules.Length == 0)
             {
-                XDebug.Erro("Templates descriptor must have game module templates!");
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Templates descriptor must have game module templates!");
             }
 
             for(int i=0; i < game_modules.Length; ++i)
             {
                 var eachModel = game_modules[i];
                 FUnrealGameModuleTemplate template = new FUnrealGameModuleTemplate();
-                template.Name = template.Name = $"{rules.TemplatePrefix}_gamemodule_{i}";
+                template.Name = $"{rules.TemplatePrefix}_gamemodule_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.label;
                 template.Description = eachModel.desc;
@@ -125,24 +153,25 @@ namespace FUnreal
                     templates.SetGameModule(ue, template.Name, template);
                 }
             }
-            return true;
+            return FUnrealTemplatesLoadResult.Success();
         }
 
-        private static bool TryAddPluginModules(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModuleModel[] plugin_modules, FUnrealTemplatesRules rules)
+        private static FUnrealTemplatesLoadResult TryAddPluginModules(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
         {
-            if (rules.LoadPluginModules == FUnrealTemplateLoadRule.DontLoad) return true;
+            XTPL_PluginModuleModel[] plugin_modules = descriptor.templates.plugin_modules;
+
+            if (rules.LoadPluginModules == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
 
             if (rules.LoadPluginModules == FUnrealTemplateLoadRule.MustLoad && plugin_modules.Length == 0)
             {
-                XDebug.Erro("Templates descriptor must have plugin module templates!");
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Templates descriptor must have plugin module templates!");
             }
 
             for (int i=0; i < plugin_modules.Length; ++i)
             {
                 var eachModel = plugin_modules[i];
                 FUnrealPluginModuleTemplate template = new FUnrealPluginModuleTemplate();
-                template.Name = template.Name = $"{rules.TemplatePrefix}_pluginmodule_{i}";
+                template.Name = $"{rules.TemplatePrefix}_pluginmodule_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.label;
                 template.Description = eachModel.desc;
@@ -157,24 +186,25 @@ namespace FUnreal
                 }
             }
 
-            return true;
+            return FUnrealTemplatesLoadResult.Success();
         }
 
-        private static bool TryAddPlugins(FUnrealTemplates templates, string templateBaseDir, XTPL_PluginModel[] plugins, FUnrealTemplatesRules rules)
+        private static FUnrealTemplatesLoadResult TryAddPlugins(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
         {
-            if (rules.LoadPlugins == FUnrealTemplateLoadRule.DontLoad) return true;
+            XTPL_PluginModel[] plugins = descriptor.templates.plugins;
+
+            if (rules.LoadPlugins == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
 
             if (rules.LoadPlugins == FUnrealTemplateLoadRule.MustLoad && plugins.Length == 0)
             {
-                XDebug.Erro("Templates descriptor must have plugin templates!");
-                return false;
+                return FUnrealTemplatesLoadResult.Failure("Templates descriptor must have plugin templates!");
             }
 
             for(int i=0; i < plugins.Length; ++i)
             {
                 var eachModel = plugins[i];
                 FUnrealPluginTemplate template = new FUnrealPluginTemplate();
-                template.Name = template.Name = $"{rules.TemplatePrefix}_plugin_{i}";
+                template.Name = $"{rules.TemplatePrefix}_plugin_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.label;
                 template.Description = eachModel.desc;
@@ -188,7 +218,7 @@ namespace FUnreal
                 }
             }
 
-            return true; 
+            return FUnrealTemplatesLoadResult.Success();
         }
 
         private Dictionary<string, object> templatesByKey;

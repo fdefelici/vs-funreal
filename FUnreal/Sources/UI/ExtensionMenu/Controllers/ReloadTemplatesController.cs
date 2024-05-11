@@ -10,7 +10,8 @@ namespace FUnreal
 
         public override Task DoActionAsync()
         {
-            FUnrealService.UpdateTemplates(_unrealVS, _unrealService);
+            _unrealVS.Output.Info("Templates reload forced!");
+            FUnrealTemplateLoader.UpdateTemplates(_unrealVS, _unrealService);
             return Task.CompletedTask;
         }
     }

@@ -52,7 +52,7 @@ namespace FUnrealTest
             rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
-            bool success = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
+            var result = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
             
             service = new FUnrealService(eng, uprojectFile, tpls);
             service.UpdateProjectAsync(new FUnrealNotifier()).GetAwaiter().GetResult();

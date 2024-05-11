@@ -97,7 +97,11 @@ namespace FUnrealTest
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
             Assert.AreEqual(expUbtPath, engine.UnrealBuildTool.BinPath);
+
+            var plugins = service.PluginTemplates();
             Assert.AreEqual(2, service.PluginTemplates().Count);
+            Assert.AreEqual("builtin_plugin_0", plugins[0].Name);
+       
             Assert.AreEqual(1, service.PluginModuleTemplates().Count);
             Assert.AreEqual(1, service.GameModuleTemplates().Count);
             Assert.AreEqual(2, service.SourceTemplates().Count);
@@ -120,7 +124,11 @@ namespace FUnrealTest
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
             Assert.AreEqual(expUbtPath, engine.UnrealBuildTool.BinPath);
+
+            var plugins = service.PluginTemplates();
             Assert.AreEqual(2, service.PluginTemplates().Count);
+            Assert.AreEqual("builtin_plugin_0", plugins[0].Name);
+
             Assert.AreEqual(1, service.PluginModuleTemplates().Count);
             Assert.AreEqual(1, service.GameModuleTemplates().Count);
             Assert.AreEqual(2, service.SourceTemplates().Count);

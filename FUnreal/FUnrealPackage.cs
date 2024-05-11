@@ -55,7 +55,7 @@ namespace FUnreal
                     return;
                 }
 
-                unrealVS.OnOptionsSaved += () => { OnOptionSaved_UpdateTemplates(unrealVS, unrealService); };
+               
 
                 var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS);    //object instance kept alive by unrealVS
                 var emptyFolderHandler = new DetectEmptyFolderHandler(unrealService, unrealVS);//object instance kept alive by unrealVS
@@ -69,9 +69,8 @@ namespace FUnreal
                 ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
                 // Configure ExtensionMenu Commands
                 ExtensionMenuManager extMenuMgr = new ExtensionMenuManager(unrealService, unrealVS);
-
-                //Bind Cmd with VSCT file (To be done after ContexMenuManager)
-                //await this.RegisterCommandsAsync();
+                //Configure Option Page Action
+                OptionPageManager optPageMgr = new OptionPageManager(unrealService, unrealVS);
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
                 unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
@@ -85,11 +84,6 @@ namespace FUnreal
             {
                 XDebug.Info("Not Loaded! No Unreal project detected!");
             }
-        }
-
-        private void OnOptionSaved_UpdateTemplates(FUnrealVS unrealVS, FUnrealService unrealService)
-        {
-            FUnrealService.UpdateTemplates(unrealVS, unrealService);
         }
 
         private void printTitle(IFUnrealLogger output)
