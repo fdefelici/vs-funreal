@@ -19,7 +19,6 @@ namespace FUnreal
         public FUnrealTemplateLoadRule LoadPluginModules { get; set; }
         public FUnrealTemplateLoadRule LoadGameModules { get; set; }
         public FUnrealTemplateLoadRule LoadSources { get; set; }
-
         public string TemplatePrefix { get; set; }
 
         public FUnrealTemplatesRules() 

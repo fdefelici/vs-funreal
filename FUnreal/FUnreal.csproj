@@ -50,6 +50,7 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
+    <Compile Include="Sources\Core\Templates\AFUnrealTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealSourceTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealGameModuleTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealPluginModuleTemplate.cs" />

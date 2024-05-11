@@ -97,6 +97,18 @@ namespace FUnreal
                 }
             }
 
+
+            if (options.SortMode == SortMode.Descriptor)
+            {
+                //nothing to do, because template load is already following descriptor order
+            } 
+            else //SortMode.Alphabetical
+            {
+                outTemplates.Sort();
+            }
+
+
+
             //Template Validation
             string ueMajorVer = engine.Version.Major.ToString();
             if (outTemplates.GetPlugins(ueMajorVer).Count == 0)

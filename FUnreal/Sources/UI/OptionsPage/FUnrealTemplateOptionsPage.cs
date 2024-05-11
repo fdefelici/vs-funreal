@@ -18,6 +18,12 @@ namespace FUnreal
         Custom,
     }
 
+    public enum SortMode
+    {
+        Alphabetical,
+        Descriptor,
+    }
+
     public class FUnrealTemplateOptionsPage : AXOptionModel<FUnrealTemplateOptionsPage>  //BaseOptionModel<FUnrealTemplateOptionsPage>
     {
         public const string Category_General = "0) General";
@@ -32,7 +38,12 @@ namespace FUnreal
         [TypeConverter(typeof(EnumConverter))]
         public TemplateMode TemplatesMode { get; set; } = TemplateMode.BuiltIn;
 
-        
+        [Category(Category_General)]
+        [DisplayName("02) Sort Mode")]
+        [Description("Select templates sort mode to be used: Alphatical (by Label) or Descriptor (following order declaration in descriptor file)")]
+        [TypeConverter(typeof(EnumConverter))]
+        public SortMode SortMode { get; set; } = SortMode.Descriptor;
+
         [Category(Category_CustomTemplates)]
         [DisplayName("11) Descriptor Path")]
         [Description("Path to custom templates descriptor file. " + EvalutedOnlyMessage)]
@@ -58,8 +69,6 @@ namespace FUnreal
         [DisplayName("15) Use Built-In Sources")]
         [Description("Load built-in Source templates. " + EvalutedOnlyMessage)]
         public bool LoadBuiltInSource { get; set; } = true;
-
-
     }
 
 }

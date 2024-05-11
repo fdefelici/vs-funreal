@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FUnreal
@@ -221,18 +222,18 @@ namespace FUnreal
             return FUnrealTemplatesLoadResult.Success();
         }
 
-        private Dictionary<string, object> templatesByKey;
-        private Dictionary<string, List<object>> templatesByContext;
+        private Dictionary<string, AFUnrealTemplate> templatesByKey;
+        private Dictionary<string, List<AFUnrealTemplate>> templatesByContext;
 
         public FUnrealTemplates()
         {
-            templatesByKey = new Dictionary<string, object>();
-            templatesByContext = new Dictionary<string, List<object>>();
+            templatesByKey = new Dictionary<string, AFUnrealTemplate>();
+            templatesByContext = new Dictionary<string, List<AFUnrealTemplate>>();
         }
 
         public int Count { get => templatesByKey.Count; } 
 
-        private void SetTemplate<T>(string ue, string name, T tpl) where T : class
+        private void SetTemplate<T>(string ue, string name, T tpl) where T : AFUnrealTemplate
         {
             string context = typeof(T).Name;
             string key = context + "_" + ue + "_" + name;
@@ -241,7 +242,7 @@ namespace FUnreal
             string ctxKey = context + "_" + ue;
             if (!templatesByContext.TryGetValue(ctxKey, out var list))
             {
-                list = new List<object>();
+                list = new List<AFUnrealTemplate>();
                 templatesByContext[ctxKey] = list;
             };
             list.Add(tpl);
@@ -251,7 +252,7 @@ namespace FUnreal
         {
             string context = typeof(T).Name;
             string key = context + "_" + ue + "_" + name;
-            if (!templatesByKey.TryGetValue(key, out object tpl)) return null;
+            if (!templatesByKey.TryGetValue(key, out AFUnrealTemplate tpl)) return null;
             return tpl as T;
         }
 
@@ -259,7 +260,7 @@ namespace FUnreal
         {
             string context = typeof(T).Name;
             string ctxKey = context + "_" + ue;
-            if (!templatesByContext.TryGetValue(ctxKey, out List<object> tpls)) return new List<T>();
+            if (!templatesByContext.TryGetValue(ctxKey, out List<AFUnrealTemplate> tpls)) return new List<T>();
             return tpls.Cast<T>().ToList();
         }
 
@@ -348,13 +349,29 @@ namespace FUnreal
                 var ctxTpl = otherPair.Value;
                 if (!templatesByContext.TryGetValue(ctxKey, out var list))
                 {
-                    list = new List<object>();
+                    list = new List<AFUnrealTemplate>();
                     templatesByContext[ctxKey] = list;
                 };
                 list.AddRange(ctxTpl);
             }
+        }
 
+        public void Sort()
+        {
+            var comparer = new LabelComparer();
+            foreach (var pair in templatesByContext)
+            {
+                var list = pair.Value;
+                list.Sort(comparer);
+            }
+        }
 
+        private class LabelComparer : Comparer<AFUnrealTemplate>
+        {
+            public override int Compare(AFUnrealTemplate x, AFUnrealTemplate y)
+            {
+                return x.Label.CompareTo(y.Label);
+            }
         }
     }
 
