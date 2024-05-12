@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
-using System;
-using EnvDTE90;
 
 namespace FUnreal
 {
@@ -965,7 +963,7 @@ namespace FUnreal
             string moduleApiPH = "@{TPL_MODU_API}";
             string incluPathPH = "@{TPL_SOUR_INCL}";
             string classNamePH = "@{TPL_SOUR_CLASS}";
-            string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{module.ApiMacro} " : ""; //Final space to separate from Class Name
+            string moduleApi = classType == FUnrealSourceType.PUBLIC ? module.ApiMacro : string.Empty;
 
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
             if (incluPath != "") incluPath += "/";             //Final Path separator to separate from Class Name
@@ -981,6 +979,11 @@ namespace FUnreal
             strategy.AddPlaceholder(moduleApiPH, moduleApi);
             strategy.AddPlaceholder(incluPathPH, incluPath);
             strategy.AddPlaceholder(classNamePH, className);
+            if (classType != FUnrealSourceType.PUBLIC)
+            {
+                //Get rid off the possible extra space due to TPL_MODU_API becoming Empty in case of Private or Custom classes
+                strategy.AddPlaceholder("class  ", "class "); //replace "class double space" with "class space"
+            }
             strategy.HandleFileContent(headerPath);
             strategy.HandleFileContent(sourcePath);
 

@@ -5,7 +5,7 @@
 #include "@{TPL_SOUR_CLASS}.generated.h"
 
 UCLASS()
-class @{TPL_MODU_API}U@{TPL_SOUR_CLASS} : public UObject
+class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public UObject
 {
 	GENERATED_BODY()
 

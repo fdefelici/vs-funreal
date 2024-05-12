@@ -8,7 +8,7 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class @{TPL_MODU_API}U@{TPL_SOUR_CLASS} : public UInterface
+class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public UInterface
 {
 	GENERATED_BODY()
 };

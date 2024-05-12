@@ -6,7 +6,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class @{TPL_MODU_API}U@{TPL_SOUR_CLASS} : public USceneComponent
+class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public USceneComponent
 {
 	GENERATED_BODY()
 

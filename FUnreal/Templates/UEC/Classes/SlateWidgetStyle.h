@@ -6,7 +6,7 @@
 #include "@{TPL_SOUR_CLASS}.generated.h"
 
 USTRUCT()
-struct @{TPL_MODU_API}F@{TPL_SOUR_CLASS} : public FSlateWidgetStyle
+struct @{TPL_MODU_API} F@{TPL_SOUR_CLASS} : public FSlateWidgetStyle
 {
 	GENERATED_USTRUCT_BODY()
 
