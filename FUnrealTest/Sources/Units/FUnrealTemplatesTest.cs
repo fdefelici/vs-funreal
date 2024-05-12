@@ -142,7 +142,7 @@ namespace FUnrealTest
         }
 
         [TestMethod]
-        public void LoadTemplates_With1Source()
+        public void LoadTemplates_With1Class()
         {
             string basePath = TestUtils.AbsPath("FUnrealTemplatesTest");
             string descPath = TestUtils.PathCombine(basePath, "descr_1_source.json");
@@ -158,7 +158,7 @@ namespace FUnrealTest
             Assert.AreEqual(1, templates.Count);
 
             FUnrealClassTemplate tpl1 = templates.GetClass("4", "tpl_class_0");
-            Assert.AreEqual("tpl_source_0", tpl1.Name);
+            Assert.AreEqual("tpl_class_0", tpl1.Name);
             Assert.AreEqual(TestUtils.PathCombine(basePath, "UE4/Classes"), tpl1.BasePath);
             Assert.AreEqual("Empty", tpl1.Label);
             Assert.AreEqual("An empty class", tpl1.Description);

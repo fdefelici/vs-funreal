@@ -53,14 +53,14 @@ namespace FUnrealTest.Integrations
             //Assert.IsNotNull(tpl.GetMeta("has_module"));
         };
 
-        Action<string, FUnrealClassTemplate> testSource = (label, tpl) =>
+        Action<string, FUnrealClassTemplate> testClass = (label, tpl) =>
         {
             string wikiName = label.Replace(" ", "");
 
             Assert.AreEqual(label, tpl.Label);
             Assert.IsNotNull(tpl.Description);
 
-            Assert.IsTrue(tpl.Name.StartsWith("tpl_source_"));
+            Assert.IsTrue(tpl.Name.StartsWith("tpl_class_"));
             Assert.IsTrue(tpl.BasePath.EndsWith(@"\UEC\Classes"));
             Assert.AreEqual($"{wikiName}.h", tpl.Header);
             Assert.AreEqual($"{wikiName}.cpp", tpl.Source);
@@ -85,7 +85,7 @@ namespace FUnrealTest.Integrations
         }
 
         [TestMethod]
-        public void CheckSourcesTemplate()
+        public void CheckClassesTemplate()
         {
             string prodTpls = TestUtils.AbsPath("../../../FUnreal/Templates/descriptor.json");
 
@@ -107,7 +107,7 @@ namespace FUnrealTest.Integrations
             {
                 var label = list[i];
                 var tpl = classTpls[i];
-                testSource(label, tpl);
+                testClass(label, tpl);
             }
 
             classTpls = tpls.GetClasses("5");
@@ -117,7 +117,7 @@ namespace FUnrealTest.Integrations
             {
                 var label = list[i];
                 var tpl = classTpls[i];
-                testSource(label, tpl);
+                testClass(label, tpl);
             }
         }
 

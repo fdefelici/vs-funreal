@@ -53,9 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\SimulateLock-Plugin01.umap">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\FUnrealServiceTest\Templates\descriptor-invalid-path.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\SimulateLock-Plugin01.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\Actor.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

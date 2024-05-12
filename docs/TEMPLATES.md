@@ -203,7 +203,7 @@ In case you need to change template setup, you can access FUnreal Option page fr
 | Property       |  Description                                       | 
 | -------------- | -------------------------------------------------- | 
 | Templates Mode | Select templates mode to be used: Built-in (use only templates provided by FUnreal) or Custom (allow to use user-defined ones)" | 
-| Sort Mode      | Select templates sort mode to be used: Alphatical (by Label) or Descriptor (following order declaration in descriptor file) |
+| Sort Mode      | Select templates sort mode to be used: Alphanumeric (by Label) or Descriptor (following order declaration in descriptor file) |
 
 ### Custom Templates Properties
 These properties are evaluated only if `Templates Mode` is set to `Custom`.

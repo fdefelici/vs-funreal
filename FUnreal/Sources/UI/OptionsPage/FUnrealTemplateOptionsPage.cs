@@ -20,7 +20,7 @@ namespace FUnreal
 
     public enum SortMode
     {
-        Alphabetical,
+        Alphanumeric,
         Descriptor,
     }
 
@@ -40,7 +40,7 @@ namespace FUnreal
 
         [Category(Category_General)]
         [DisplayName("02) Sort Mode")]
-        [Description("Select templates sort mode to be used: Alphatical (by Label) or Descriptor (following order declaration in descriptor file)")]
+        [Description("Select templates sort mode to be used: Alphanumeric (by Label) or Descriptor (following order declaration in descriptor file)")]
         [TypeConverter(typeof(EnumConverter))]
         public SortMode SortMode { get; set; } = SortMode.Descriptor;
 
