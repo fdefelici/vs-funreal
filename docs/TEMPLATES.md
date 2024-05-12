@@ -39,7 +39,7 @@ Entrypoint for user defined templates is a descriptor file in JSON format with t
     "plugins"        : [ ],    // template definition for plugins
     "plugin_modules" : [ ],    // template definition for plugin modules
     "game_modules"   : [ ],    // template definition for game modules
-    "sources"        : [ ],    // template definition for source files
+    "classes"        : [ ],    // template definition for class files
 }
 ```
 
@@ -131,7 +131,7 @@ Game Module template compatible with UE 4 and 5, loaded in editor with default p
 ```
 
 ## Class Schema
-To define a source, [Base Schema](#template-base-schema) must be honored.
+To define a class, [Base Schema](#template-base-schema) must be honored.
 Futhermore, it requires the following metadata:
 
 | Attribute  | Type   | Required | Description                                                 | 
@@ -146,7 +146,7 @@ Class template compatible with UE 4 and 5:
     "label" : "My Class",
     "desc"  : "My Class description",
     "ue"    : ["4", "5"],
-    "path"  : "relpath/to/sources",
+    "path"  : "relpath/to/classes",
     "meta"  : {
         "header" : "MyClass.h",
         "source" : "MyClass.cpp"
@@ -214,7 +214,7 @@ These properties are evaluated only if `Templates Mode` is set to `Custom`.
 | Use Built-In Plugins        | Load built-in Plugin templates |
 | Use Built-In Plugin Modules | Load built-in Plugin Module templates |
 | Use Built-In Game Modules   | Load built-in Game Module templates |
-| Use Built-In Sources        | Load built-in Plugin templates |
+| Use Built-In Classes        | Load built-in Class templates |
 
 >  FUnreal requires that at least 1 template for each template type exist. So, in case you want only define template for a specific type, you can use the Built-in templates for the others.
 

@@ -63,12 +63,12 @@ namespace FUnreal
         [Category(Category_CustomTemplates)]
         [DisplayName("14) Use Built-In Game Modules")]
         [Description("Load built-in Game Module templates. " + EvalutedOnlyMessage)]
-        public bool LoadBuiltInGameModule { get; set; } = true;
+        public bool LoadBuiltInGameModules { get; set; } = true;
 
         [Category(Category_CustomTemplates)]
-        [DisplayName("15) Use Built-In Sources")]
-        [Description("Load built-in Source templates. " + EvalutedOnlyMessage)]
-        public bool LoadBuiltInSource { get; set; } = true;
+        [DisplayName("15) Use Built-In Classes")]
+        [Description("Load built-in Class templates. " + EvalutedOnlyMessage)]
+        public bool LoadBuiltInClasses { get; set; } = true;
     }
 
 }

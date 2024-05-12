@@ -49,7 +49,7 @@ namespace FUnrealTest
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadClasses = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
             var result = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);

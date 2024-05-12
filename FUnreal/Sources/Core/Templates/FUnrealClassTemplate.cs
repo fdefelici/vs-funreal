@@ -1,6 +1,6 @@
 ﻿namespace FUnreal
 {
-    public class FUnrealSourceTemplate : AFUnrealTemplate
+    public class FUnrealClassTemplate : AFUnrealTemplate
     {
         public string Header { get; set; }
         public string Source { get; set; }

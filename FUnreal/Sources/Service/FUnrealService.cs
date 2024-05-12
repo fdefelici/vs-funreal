@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
-using FUnreal.Sources.Core;
 using System.Text.RegularExpressions;
 using System;
 using EnvDTE90;
@@ -263,9 +262,9 @@ namespace FUnreal
             return _templates.GetGameModules(_engineMajorVer);
         }
         
-        public List<FUnrealSourceTemplate> SourceTemplates()
+        public List<FUnrealClassTemplate> SourceTemplates()
         {
-            return _templates.GetSources(_engineMajorVer);
+            return _templates.GetClasses(_engineMajorVer);
         }
 
 
@@ -920,7 +919,7 @@ namespace FUnreal
 
         public async Task<FUnrealServiceSourceClassResult> AddSourceClassAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
         {
-            string context = "sources";
+            string context = "classes";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -944,7 +943,7 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, sourcePath);
                 return false;
             }
-            var tpl = _templates.GetSource(engine, name);
+            var tpl = _templates.GetClass(engine, name);
             if (tpl == null || !XFilesystem.DirExists(tpl.BasePath))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);

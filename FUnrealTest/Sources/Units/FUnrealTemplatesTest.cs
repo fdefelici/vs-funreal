@@ -149,7 +149,7 @@ namespace FUnrealTest
             TestUtils.WriteFile(descPath, descr_1_source);
 
             FUnrealTemplatesRules rules = new FUnrealTemplatesRules();
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadClasses = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
 
             var result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out FUnrealTemplates templates);
@@ -157,9 +157,9 @@ namespace FUnrealTest
 
             Assert.AreEqual(1, templates.Count);
 
-            FUnrealSourceTemplate tpl1 = templates.GetSource("4", "tpl_source_0");
+            FUnrealClassTemplate tpl1 = templates.GetClass("4", "tpl_class_0");
             Assert.AreEqual("tpl_source_0", tpl1.Name);
-            Assert.AreEqual(TestUtils.PathCombine(basePath, "UE4/Sources/Classes"), tpl1.BasePath);
+            Assert.AreEqual(TestUtils.PathCombine(basePath, "UE4/Classes"), tpl1.BasePath);
             Assert.AreEqual("Empty", tpl1.Label);
             Assert.AreEqual("An empty class", tpl1.Description);
             Assert.AreEqual("Empty.h", tpl1.Header);
@@ -224,9 +224,9 @@ namespace FUnrealTest
         {
            ""version"" : ""1.0"",
            ""templates"" : {
-                ""sources"" : [
+                ""classes"" : [
                     { ""label"":""Empty"", ""desc"":""An empty class"",
-                      ""ue"":[""4""], ""path"":""UE4/Sources/Classes"",
+                      ""ue"":[""4""], ""path"":""UE4/Classes"",
                       ""meta"": { ""header"": ""Empty.h"", ""source"": ""Empty.cpp"" }
                     }
                 ]

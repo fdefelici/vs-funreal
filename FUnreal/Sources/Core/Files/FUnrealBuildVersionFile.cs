@@ -1,4 +1,4 @@
-﻿namespace FUnreal.Sources.Core
+﻿namespace FUnreal
 {
     public class FUnrealBuildVersionFile : XJsonFile
     {

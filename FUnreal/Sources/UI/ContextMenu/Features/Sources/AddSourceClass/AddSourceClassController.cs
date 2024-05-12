@@ -8,7 +8,7 @@ namespace FUnreal
     public class AddSourceClassController : AXActionController
     {
         private AddSourceClassDialog _dialog;
-        private List<FUnrealSourceTemplate> _templates;
+        private List<FUnrealClassTemplate> _templates;
         private FUnrealNotifier _notifier;
         private string _absPathSelected;
         private FUnrealSourceType _absPathSelectedType;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
 
-namespace FUnreal.Sources.Core
+namespace FUnreal
 {
     public class FUnrealUProjectFile : XJsonFile
     {

@@ -18,7 +18,7 @@ namespace FUnreal
         public FUnrealTemplateLoadRule LoadPlugins { get; set; }
         public FUnrealTemplateLoadRule LoadPluginModules { get; set; }
         public FUnrealTemplateLoadRule LoadGameModules { get; set; }
-        public FUnrealTemplateLoadRule LoadSources { get; set; }
+        public FUnrealTemplateLoadRule LoadClasses { get; set; }
         public string TemplatePrefix { get; set; }
 
         public FUnrealTemplatesRules() 
@@ -26,7 +26,7 @@ namespace FUnreal
             LoadPlugins = FUnrealTemplateLoadRule.DontLoad;
             LoadPluginModules = FUnrealTemplateLoadRule.DontLoad;
             LoadGameModules = FUnrealTemplateLoadRule.DontLoad;
-            LoadSources = FUnrealTemplateLoadRule.DontLoad;
+            LoadClasses = FUnrealTemplateLoadRule.DontLoad;
             TemplatePrefix = string.Empty;
         }
 

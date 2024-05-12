@@ -162,95 +162,95 @@
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			}
     ],
-    "sources": [
+    "classes": [
 			{
 				"label": "Empty", "desc": "An empty C++ class with a default contructor and destructor.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "Empty.h",  "source": "Empty.cpp" }
 			},
 			{
 				"label": "Character", "desc": "A Character is a type of Pawn that includes the ability to walk around.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "Character.h",  "source": "Character.cpp" }
 			},
 			{
 				"label": "Pawn", "desc": "A Pawn is an actor than can be 'possessed' and receive input from a controller.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "Pawn.h",  "source": "Pawn.cpp" }
 			},
 			{
 				"label": "Actor", "desc": "An Actor is an object that can be placed or spawned in the world.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "Actor.h",  "source": "Actor.cpp" }
 			},
 			{
 				"label": "Actor Component", "desc": "An ActorComponent is a reusable component that can be added to any actor.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "ActorComponent.h",  "source": "ActorComponent.cpp" }
 			},
 			{
 				"label": "Scene Component", "desc": "A SceneComponent is a component that has a scene transform and can be attached to other scene components.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "SceneComponent.h",  "source": "SceneComponent.cpp" }
 			},
 			{
 				"label": "Player Camera Manager", "desc": "A PlayerCameraManager is responsible for managing the camera for a particular player.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "PlayerCameraManager.h",  "source": "PlayerCameraManager.cpp" }
 			},
 			{
 				"label": "Player Controller", "desc": "A PlayerController is an actor responsible for controlling a Pawn used by the player.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "PlayerController.h",  "source": "PlayerController.cpp" }
 			},
 			{
 				"label": "Game Mode Base", "desc": "A GameModeBase defines the game being played, its rules, scoring and other facets of the game type.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "GameModeBase.h",  "source": "GameModeBase.cpp" }
 			},
 			{
 				"label": "World Settings", "desc": "A WorldSettings is an Actor containing all script accessible world properties.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "WorldSettings.h",  "source": "WorldSettings.cpp" }
 			},
 			{
 				"label": "HUD", "desc": "Base class of the heads-up display.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "HUD.h",  "source": "HUD.cpp" }
 			},
 			{
 				"label": "Player State", "desc": "A PlayerState is created for every player on a server (or in a standalone game).",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "PlayerState.h",  "source": "PlayerState.cpp" }
 			},
 			{
 				"label": "Game State Base", "desc": "A GameStateBase is a class that manages the game's global state and is spawned by GameModeBase.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "GameStateBase.h",  "source": "GameStateBase.cpp" }
 			},
 			{
 				"label": "Blueprint Function Library", "desc": "This class is a base class for any function libraries exposed to blueprints.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "BlueprintFunctionLibrary.h",  "source": "BlueprintFunctionLibrary.cpp" }
 			},
 			{
 				"label": "Slate Widget", "desc": "A custom Slate widget, deriving from SCompoundWidget.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "SlateWidget.h",  "source": "SlateWidget.cpp" }
 			},
 			{
 				"label": "Slate Widget Style", "desc": "A custom Slate widget style, deriving from FSlateWidgetStyle, along with its associated UObject wrapper class.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "SlateWidgetStyle.h",  "source": "SlateWidgetStyle.cpp" }
 			},
 			{
 				"label": "Unreal Interface", "desc": "A UObject Interface class, to be implemented by other UObject-based classes.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "UnrealInterface.h",  "source": "UnrealInterface.cpp" }
 			},
 			{
 				"label": "UObject", "desc": "A class who inherits from UObject.",
-				"ue": ["4","5"], "path": "UEC/Sources/Classes",
+				"ue": ["4","5"], "path": "UEC/Classes",
 				"meta": {  "header": "UObject.h",  "source": "UObject.cpp" }
 			}
     ]

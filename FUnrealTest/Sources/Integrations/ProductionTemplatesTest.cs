@@ -53,7 +53,7 @@ namespace FUnrealTest.Integrations
             //Assert.IsNotNull(tpl.GetMeta("has_module"));
         };
 
-        Action<string, FUnrealSourceTemplate> testSource = (label, tpl) =>
+        Action<string, FUnrealClassTemplate> testSource = (label, tpl) =>
         {
             string wikiName = label.Replace(" ", "");
 
@@ -61,7 +61,7 @@ namespace FUnrealTest.Integrations
             Assert.IsNotNull(tpl.Description);
 
             Assert.IsTrue(tpl.Name.StartsWith("tpl_source_"));
-            Assert.IsTrue(tpl.BasePath.EndsWith(@"\UEC\Sources\Classes"));
+            Assert.IsTrue(tpl.BasePath.EndsWith(@"\UEC\Classes"));
             Assert.AreEqual($"{wikiName}.h", tpl.Header);
             Assert.AreEqual($"{wikiName}.cpp", tpl.Source);
 
@@ -80,7 +80,7 @@ namespace FUnrealTest.Integrations
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
             rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
-            rules.LoadSources = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadClasses = FUnrealTemplateLoadRule.MustLoad;
             rules.TemplatePrefix = "tpl";
         }
 
@@ -100,7 +100,7 @@ namespace FUnrealTest.Integrations
             var result = FUnrealTemplates.TryLoad_V1_0(prodTpls, rules, out FUnrealTemplates tpls);
             Assert.IsTrue(result.IsSuccess);
 
-            var classTpls = tpls.GetSources("4");
+            var classTpls = tpls.GetClasses("4");
             Assert.AreEqual(list.Count, classTpls.Count);
 
             for(int i=0; i < list.Count; i++)
@@ -110,7 +110,7 @@ namespace FUnrealTest.Integrations
                 testSource(label, tpl);
             }
 
-            classTpls = tpls.GetSources("5");
+            classTpls = tpls.GetClasses("5");
             Assert.AreEqual(list.Count, classTpls.Count);
 
             for (int i = 0; i < list.Count; i++)

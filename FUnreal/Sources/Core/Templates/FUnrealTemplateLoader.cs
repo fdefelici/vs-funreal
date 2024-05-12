@@ -34,8 +34,8 @@ namespace FUnreal
             {
                 LoadPlugins = options.LoadBuiltInPlugins ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
                 LoadPluginModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
-                LoadGameModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
-                LoadSources = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                LoadGameModules = options.LoadBuiltInGameModules ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
+                LoadClasses = options.LoadBuiltInClasses ? FUnrealTemplateLoadRule.MustLoad : FUnrealTemplateLoadRule.DontLoad,
                 TemplatePrefix = "builtin"
             };
 
@@ -68,8 +68,8 @@ namespace FUnreal
                     {
                         LoadPlugins = options.LoadBuiltInPlugins ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
                         LoadPluginModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
-                        LoadGameModules = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
-                        LoadSources = options.LoadBuiltInPluginModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                        LoadGameModules = options.LoadBuiltInGameModules ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
+                        LoadClasses = options.LoadBuiltInClasses ? FUnrealTemplateLoadRule.LoadIfAny : FUnrealTemplateLoadRule.MustLoad,
                         TemplatePrefix = "custom"
                     };
 
@@ -126,7 +126,7 @@ namespace FUnreal
                 unrealVS.Output.Erro("Missing game module templates. Please check FUnreal options or custom template descriptor if used!");
                 return false;
             }
-            if (outTemplates.GetSources(ueMajorVer).Count == 0)
+            if (outTemplates.GetClasses(ueMajorVer).Count == 0)
             {
                 unrealVS.Output.Erro("Missing source templates. Please check FUnreal options or custom template descriptor if used!");
                 return false;
@@ -156,8 +156,8 @@ namespace FUnreal
             {
                 options.LoadBuiltInPlugins = true;
                 options.LoadBuiltInPluginModules = true;
-                options.LoadBuiltInGameModule = true;
-                options.LoadBuiltInSource = true;
+                options.LoadBuiltInGameModules = true;
+                options.LoadBuiltInClasses = true;
             }
             else if (options.TemplatesMode == TemplateMode.Custom)
             {

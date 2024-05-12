@@ -14,7 +14,7 @@
         public XTPL_PluginModel[] plugins = new XTPL_PluginModel[0];
         public XTPL_PluginModuleModel[] plugin_modules = new XTPL_PluginModuleModel[0];
         public XTPL_GameModuleModel[] game_modules = new XTPL_GameModuleModel[0];
-        public XTPL_SourceModel[] sources = new XTPL_SourceModel[0];
+        public XTPL_ClassModel[] classes = new XTPL_ClassModel[0];
     }
   
     public class XTPL_PluginModel
@@ -82,9 +82,9 @@
         public XTPL_GameModuleMetaModel meta = null;
     }
 
-    public class XTPL_SourceModel
+    public class XTPL_ClassModel
     {
-        public class XTPL_SourceMetaModel
+        public class XTPL_ClassMetaModel
         {
             [XNotNullAttrValidator]
             public string header = null;
@@ -101,6 +101,6 @@
         [XNotNullAttrValidator]
         public string desc = null;
         [XNotNullAttrValidator]
-        public XTPL_SourceMetaModel meta = null;
+        public XTPL_ClassMetaModel meta = null;
     }
 }

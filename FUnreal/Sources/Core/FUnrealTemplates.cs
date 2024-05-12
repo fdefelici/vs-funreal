@@ -86,28 +86,28 @@ namespace FUnreal
             addResult += TryAddPlugins(templates, templateBaseDir, descriptor, rules);
             addResult += TryAddPluginModules(templates, templateBaseDir, descriptor, rules);
             addResult += TryAddGameModules(templates, templateBaseDir, descriptor, rules);
-            addResult += TryAddSources(templates, templateBaseDir, descriptor, rules);
+            addResult += TryAddClasses(templates, templateBaseDir, descriptor, rules);
 
             return addResult;
         }
 
-        private static FUnrealTemplatesLoadResult TryAddSources(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
+        private static FUnrealTemplatesLoadResult TryAddClasses(FUnrealTemplates templates, string templateBaseDir, XTPL_DescriptorModel descriptor, FUnrealTemplatesRules rules)
         {
-            XTPL_SourceModel[] sources = descriptor.templates.sources;
+            XTPL_ClassModel[] classes = descriptor.templates.classes;
 
-            if (rules.LoadSources == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
+            if (rules.LoadClasses == FUnrealTemplateLoadRule.DontLoad) return FUnrealTemplatesLoadResult.Success();
 
-            if (rules.LoadSources == FUnrealTemplateLoadRule.MustLoad && sources.Length == 0)
+            if (rules.LoadClasses == FUnrealTemplateLoadRule.MustLoad && classes.Length == 0)
             {
                 return FUnrealTemplatesLoadResult.Failure("Templates descriptor must have source templates!");
             }
 
-            for(int i=0; i < sources.Length; ++i)
+            for(int i=0; i < classes.Length; ++i)
             {
-                var eachModel = sources[i];
+                var eachModel = classes[i];
 
-                FUnrealSourceTemplate template = new FUnrealSourceTemplate();
-                template.Name = $"{rules.TemplatePrefix}_source_{i}";
+                FUnrealClassTemplate template = new FUnrealClassTemplate();
+                template.Name = $"{rules.TemplatePrefix}_class_{i}";
                 template.BasePath = XFilesystem.PathCombine(templateBaseDir, eachModel.path);
                 template.Label = eachModel.label;
                 template.Description = eachModel.desc;
@@ -118,7 +118,7 @@ namespace FUnreal
                 string[] ueArray = eachModel.ue;
                 foreach (string ue in ueArray)
                 {
-                    templates.SetSource(ue, template.Name, template);
+                    templates.SetClass(ue, template.Name, template);
                 }
             }
             return FUnrealTemplatesLoadResult.Success();
@@ -294,14 +294,14 @@ namespace FUnreal
             return GetTemplate<FUnrealGameModuleTemplate>(ue, name);
         }
 
-        private void SetSource(string ue, string name, FUnrealSourceTemplate tpl)
+        private void SetClass(string ue, string name, FUnrealClassTemplate tpl)
         {
             SetTemplate(ue, name, tpl);
         }
 
-        public FUnrealSourceTemplate GetSource(string ue, string name)
+        public FUnrealClassTemplate GetClass(string ue, string name)
         {
-            return GetTemplate<FUnrealSourceTemplate>(ue, name);
+            return GetTemplate<FUnrealClassTemplate>(ue, name);
         }
 
         public List<FUnrealPluginTemplate> GetPlugins(string ueMajorVer)
@@ -319,9 +319,9 @@ namespace FUnreal
             return GetTemplates<FUnrealGameModuleTemplate>(ueMajorVer);
         }
 
-        public List<FUnrealSourceTemplate> GetSources(string ueMajorVer)
+        public List<FUnrealClassTemplate> GetClasses(string ueMajorVer)
         {
-            return GetTemplates<FUnrealSourceTemplate>(ueMajorVer);
+            return GetTemplates<FUnrealClassTemplate>(ueMajorVer);
         }
 
         public void MergeWith(FUnrealTemplates others)
