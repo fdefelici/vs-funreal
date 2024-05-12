@@ -28,12 +28,15 @@ namespace FUnrealTest.Integrations
         [TestMethod]
         public void Simple()
         {
-            string vsixPath = @"C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\0.0.5";
+   
+            string vsixPath = @"C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_b7638a25Exp\Extensions\Federico De Felici\FUnreal\0.1.0";
 
             string tplPath = TestUtils.PathCombine(vsixPath, @"Templates\UE5\Plugins\ThirdPartyLibrary");
 
-            string filePath = @"\\?\C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_ee860280Exp\Extensions\Federico De Felici\FUnreal\0.0.5\Templates\UE5\Plugins\ThirdPartyLibrary\@{TPL_PLUG_NAME}\Source\ThirdParty\@{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll";
-            
+            //string filePath = @"\\?\C:\Users\fdf82\AppData\Local\Microsoft\VisualStudio\17.0_b7638a25Exp\Extensions\Federico De Felici\FUnreal\0.1.0\Templates\UE5\Plugins\ThirdPartyLibrary\@{TPL_PLUGIN_NAME}\Source\ThirdParty\@{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll";
+
+            string filePath = TestUtils.PathCombine(tplPath, @"@{TPL_PLUGIN_NAME}\Source\ThirdParty\@{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll");
+
             Assert.IsTrue(File.Exists(filePath));
 
             bool success = XFilesystem.DirDeepCopy(tplPath, tmpPath);

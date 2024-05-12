@@ -5,15 +5,20 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
+using System.Management;
 
 namespace FUnreal
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(VSCTSymbols.PackageGuidString)]
+    [Guid(PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideOptionPage(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage), "FUnreal", "Templates", 0, 0, true)] //Where Resource ID should be stored?
+    [ProvideProfile(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage), "FUnreal", "Templates", 0, 0, true)]
     public sealed class FUnrealPackage : ToolkitPackage
     {
+        public const string PackageGuidString = "43b90373-5388-42b6-9074-100c2b543eec";
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -35,7 +40,7 @@ namespace FUnreal
 
             if (await FUnrealVS.IsUnrealSolutionAsync())
             {
-                FUnrealVS unrealVS = await FUnrealVS.CreateAsync();
+                FUnrealVS unrealVS = await FUnrealVS.CreateAsync(this);
                 printTitle(unrealVS.Output);
 
                 FUnrealService unrealService = FUnrealService.Create(unrealVS);
@@ -44,21 +49,28 @@ namespace FUnreal
                     unrealVS.Output.Erro($"{XDialogLib.Title_FUnreal} failed to load!");
                     unrealVS.Output.ForceFocus();
                     unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} fails. Please check {XDialogLib.Title_FUnreal} Output window!");
+
+                    //TODO: Eventually add message saying to solve the issue and then restart VSStudio to reload FUnreal
+                    //      OR: Add Menu Command to Reload FUnreal
                     return;
                 }
 
-
-                /* Configure Menu Commands */
-                ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
+               
 
                 var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS);    //object instance kept alive by unrealVS
                 var emptyFolderHandler = new DetectEmptyFolderHandler(unrealService, unrealVS);//object instance kept alive by unrealVS
 
                 unrealVS.AddProjectLoadedHandler(projectLoadHandler.ExecuteAsync);
                 unrealVS.AddProjectLoadedHandler(emptyFolderHandler.ExecuteAsync);
-
-                //Bind Cmd with VSCT file (To be done after ContexMenuManager)
+                
+                // Registers all Commands 
                 await this.RegisterCommandsAsync();
+                // Configure ContextMenu Commands
+                ContextMenuManager ctxMenuMgr = new ContextMenuManager(unrealService, unrealVS);
+                // Configure ExtensionMenu Commands
+                ExtensionMenuManager extMenuMgr = new ExtensionMenuManager(unrealService, unrealVS);
+                //Configure Option Page Action
+                OptionPageManager optPageMgr = new OptionPageManager(unrealService, unrealVS);
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
                 unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
@@ -67,8 +79,6 @@ namespace FUnreal
                 await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget
 
                 XDebug.Info("Loaded");
-
-
             }
             else
             {

@@ -1,10 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.VCProjectEngine;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FUnreal
@@ -27,8 +23,8 @@ namespace FUnreal
         }
 
         protected override void BeforeQueryStatus(EventArgs e)
-        {   
-            ThreadHelper.JoinableTaskFactory.Run(async () => await ContextMenuManager.Instance.ConfigureCommandAsync(this));
+        {
+            // nothing to do
         }
 
         protected override Task ExecuteAsync(OleMenuCmdEventArgs e)

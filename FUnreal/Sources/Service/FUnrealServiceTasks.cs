@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FUnreal.Sources.Core
+namespace FUnreal
 {
     public static class FUnrealServiceTasks
     {

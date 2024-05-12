@@ -2,19 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
-using FUnreal.Sources.Core;
 using System.Text.RegularExpressions;
 
 namespace FUnreal
 {
     public enum FUnrealSourceType { INVALID = -1, PUBLIC, PRIVATE, CUSTOM }
-    public struct FUnrealTemplateCtx
-    {
-        public const string PLUGINS = "plugins";
-        public const string MODULES = "modules";
-        public const string SOURCES = "sources";
-        public const string GAME_MODULES = "game_modules";
-    }
 
     public struct FUnrealTargets
     {
@@ -97,45 +89,17 @@ namespace FUnreal
             unrealVS.Output.Info("UE Path: {0}", engine.EnginePath);
             unrealVS.Output.Info("UBT Path: {0}", engine.UnrealBuildTool.BinPath);
 
-
-            // Load Templates
-            //string vsixDllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string vsixDllPath = unrealVS.GetVSixDllPath();
-            string vsixBasePath = XFilesystem.PathParent(vsixDllPath);
-            string templatePath = XFilesystem.PathCombine(vsixBasePath, "Templates");
-            string templateDescPath = XFilesystem.PathCombine(templatePath, "descriptor.xml");
-            XDebug.Info("VSIX Dll Path: {0}", vsixDllPath);
-            XDebug.Info("VSIX Base Path: {0}", vsixBasePath);
-            XDebug.Info("Template Descriptor Path: {0}", templateDescPath);
-
-            if (!XFilesystem.FileExists(templateDescPath))
+            bool success = FUnrealTemplateLoader.TryComputeTemplates(unrealVS, engine, out FUnrealTemplates templates);
+            if (!success)
             {
-                unrealVS.Output.Erro("Cannot locate templates at path: {0}", templateDescPath);
-                return null;
-            }
-
-            FUnrealTemplates templates = FUnrealTemplates.Load(templateDescPath);
-
-            //Doing this validation now (by the fact is a fatal error), can avoid check on Controller side.
-            string ueMajorVer = engine.Version.Major.ToString();
-            if (templates.GetTemplates(FUnrealTemplateCtx.PLUGINS, ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load plugin templates from path: {0}", templateDescPath);
-                return null;
-            }
-            if (templates.GetTemplates(FUnrealTemplateCtx.MODULES, ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load module templates from path: {0}", templateDescPath);
-                return null;
-            }
-            if (templates.GetTemplates(FUnrealTemplateCtx.SOURCES, ueMajorVer).Count == 0)
-            {
-                unrealVS.Output.Erro("Cannot load source templates from path: {0}", templateDescPath);
-                return null;
+                unrealVS.Output.Erro("Some issue while loading templates. Eventually try to check Options or try reloading templates!");
+                //return null;
             }
 
             return new FUnrealService(engine, uprjFilePath, templates);
         }
+
+       
 
         public FUnrealEngine Engine { get; private set; }
         private IFUnrealBuildTool _engineUbt;
@@ -172,6 +136,11 @@ namespace FUnreal
              : this(engine, project.DescriptorFilePath, templates)
         {
             _projectModel = project;
+        }
+
+        public void SetTemplates(FUnrealTemplates templates)
+        {
+            _templates = templates;
         }
 
         public List<string> KnownEmptyFolderPaths()
@@ -276,20 +245,26 @@ namespace FUnreal
             return FUnrealSourceType.CUSTOM;
         }
 
-        public List<FUnrealTemplate> PluginTemplates()
+        public List<FUnrealPluginTemplate> PluginTemplates()
         {
-            return _templates.GetTemplates("plugins", _engineMajorVer);
+            return _templates.GetPlugins(_engineMajorVer);
         }
 
-        public List<FUnrealTemplate> SourceTemplates()
+        public List<FUnrealPluginModuleTemplate> PluginModuleTemplates()
         {
-            return _templates.GetTemplates("sources", _engineMajorVer);
+            return _templates.GetPluginModules(_engineMajorVer);
         }
 
-        public List<FUnrealTemplate> ModuleTemplates()
+        public List<FUnrealGameModuleTemplate> GameModuleTemplates()
         {
-            return _templates.GetTemplates("modules", _engineMajorVer);
+            return _templates.GetGameModules(_engineMajorVer);
         }
+        
+        public List<FUnrealClassTemplate> SourceTemplates()
+        {
+            return _templates.GetClasses(_engineMajorVer);
+        }
+
 
         private FUnrealPlugin PluginByName(string name)
         {
@@ -557,7 +532,7 @@ namespace FUnreal
 
         public async Task<FUnrealServicePluginResult> AddPluginAsync(string templeName, string pluginName, string moduleNameOrNull, FUnrealNotifier notifier)
         {
-            string context = FUnrealTemplateCtx.PLUGINS;
+            string context = "plugins";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -574,16 +549,16 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetPlugin(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string pluginNamePH = "@{TPL_PLUG_NAME}";
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string pluginNamePH = "@{TPL_PLUGIN_NAME}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
 
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, _pluginsPath);
@@ -762,20 +737,12 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetPluginModule(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
-            /*
-            string moduleNamePH = tpl.GetPlaceHolder("ModuleName");
-            if (moduleNamePH == null)
-            {
-                notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
-                return false;
-            }
-            */
 
             string tplPath = tpl.BasePath;
             if (!XFilesystem.DirExists(tplPath))
@@ -784,8 +751,8 @@ namespace FUnreal
                 return false;
             }
 
-            string metaType = tpl.GetMeta("type");
-            string metaPhase = tpl.GetMeta("phase");
+            string metaType = tpl.Type;
+            string metaPhase = tpl.Phase;
             if (metaType == null || metaPhase == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
@@ -804,8 +771,8 @@ namespace FUnreal
                 fileName = $"{fileName}Module";
             }
 
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
             strategy.AddPlaceholder(moduleFilePH, fileName);
 
@@ -950,7 +917,7 @@ namespace FUnreal
 
         public async Task<FUnrealServiceSourceClassResult> AddSourceClassAsync(string templeName, string absBasePath, string className, FUnrealSourceType classType, FUnrealNotifier notifier)
         {
-            string context = "sources";
+            string context = "classes";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -974,15 +941,15 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_CheckProjectPlayout, sourcePath);
                 return false;
             }
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetClass(engine, name);
             if (tpl == null || !XFilesystem.DirExists(tpl.BasePath))
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string headerFileME = tpl.GetMeta("header");
-            string sourceFileME = tpl.GetMeta("source");
+            string headerFileME = tpl.Header;
+            string sourceFileME = tpl.Source;
 
             string tplHeaderPath = XFilesystem.PathCombine(tpl.BasePath, headerFileME);
             string tplSourcePath = XFilesystem.PathCombine(tpl.BasePath, sourceFileME);
@@ -993,10 +960,10 @@ namespace FUnreal
             }
 
 
-            string moduleApiPH = "@{TPL_MODU_API}";
-            string incluPathPH = "@{TPL_SOUR_INCL}";
-            string classNamePH = "@{TPL_SOUR_CLASS}";
-            string moduleApi = classType == FUnrealSourceType.PUBLIC ? $"{module.ApiMacro} " : ""; //Final space to separate from Class Name
+            string moduleApiPH = "@{TPL_MODULE_API}";
+            string incluPathPH = "@{TPL_CLASS_RELPATH}";
+            string classNamePH = "@{TPL_CLASS_NAME}";
+            string moduleApi = classType == FUnrealSourceType.PUBLIC ? module.ApiMacro : string.Empty;
 
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
             if (incluPath != "") incluPath += "/";             //Final Path separator to separate from Class Name
@@ -1012,6 +979,11 @@ namespace FUnreal
             strategy.AddPlaceholder(moduleApiPH, moduleApi);
             strategy.AddPlaceholder(incluPathPH, incluPath);
             strategy.AddPlaceholder(classNamePH, className);
+            if (classType != FUnrealSourceType.PUBLIC)
+            {
+                //Get rid off the possible extra space due to TPL_MODULE_API becoming Empty in case of Private or Custom classes
+                strategy.AddPlaceholder("class  ", "class "); //replace "class double space" with "class space"
+            }
             strategy.HandleFileContent(headerPath);
             strategy.HandleFileContent(sourcePath);
 
@@ -1103,7 +1075,7 @@ namespace FUnreal
 
         public async Task<FUnrealServiceModuleResult> AddGameModuleAsync(string templeName, string moduleName, FUnrealNotifier notifier)
         {
-            string context = FUnrealTemplateCtx.MODULES; //FUnrealTemplateCtx.GAME_MODULES;  //BY NOW SAME AS "modules" plus the meta "Target"
+            string context = "game_modules";
             string engine = _engineMajorVer;
             string name = templeName;
 
@@ -1113,16 +1085,16 @@ namespace FUnreal
                 return false;
             }
 
-            FUnrealTemplate tpl = _templates.GetTemplate(context, engine, name);
+            var tpl = _templates.GetGameModule(engine, name);
             if (tpl == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateNotFound, context, engine, name);
                 return false;
             }
 
-            string metaType = tpl.GetMeta("type");
-            string metaPhase = tpl.GetMeta("phase");
-            string metaTarget = tpl.GetMeta("target");
+            string metaType = tpl.Type;
+            string metaPhase = tpl.Phase;
+            string metaTarget = tpl.Target;
             if (metaType == null || metaPhase == null || metaTarget == null)
             {
                 notifier.Erro(XDialogLib.Ctx_CheckTemplate, XDialogLib.Error_TemplateWrongConfig, context, engine, name);
@@ -1141,8 +1113,8 @@ namespace FUnreal
                 fileName = $"{fileName}Module";
             }
 
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
             strategy.AddPlaceholder(moduleFilePH, fileName);
 

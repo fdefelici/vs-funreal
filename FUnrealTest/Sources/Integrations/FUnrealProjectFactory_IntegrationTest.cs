@@ -15,13 +15,13 @@ namespace FUnrealTest.Integrations
         [TestMethod]
         public void LoadUE5()
         {
-            string uprjFilePath = @"C:\Program Files\Epic Games\UE_5.0\Engine\Engine.uproject";
+            string uprjFilePath = @"C:\_fdf\tools\epic\Epic Games\UE_5.0\Engine\FUnrealIntegrationTest.uproject";
 
             FUnrealProjectFactory factory = new FUnrealProjectFactory();
             FUnrealProject project = factory.CreateAsync(uprjFilePath, new FUnrealNotifier()).GetAwaiter().GetResult();
 
-            Assert.AreEqual(434, project.Plugins.Count);
-            Assert.AreEqual(1417, project.AllModules.Count);
+            Assert.AreEqual(433, project.Plugins.Count);
+            Assert.AreEqual(1415, project.AllModules.Count);
         }
 
 

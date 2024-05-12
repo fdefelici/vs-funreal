@@ -5,20 +5,22 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using System.Windows.Forms;
 
 
 namespace FUnreal
 {
 
-    public interface IFUnrealVS
+    public abstract class IFUnrealVS
     {
-        string GetUnrealEnginePath();
-        string GetUProjectFilePath();
+        public abstract string GetUnrealEnginePath();
+        public abstract string GetUProjectFilePath();
+        public abstract string GetVSixDllPath ();
 
-        IFUnrealLogger Output { get; }
+        public IFUnrealLogger Output { get; protected set; }
 
-        string GetVSixDllPath ();
+        public abstract FUnrealTemplateOptionsPage GetOptions();
+        public Action OnOptionsSaved;
+
     }
 
     public interface IFUnrealLogger
@@ -82,6 +84,18 @@ namespace FUnreal
 
     public class FUnrealVS : IFUnrealVS
     {
+        FUnrealTemplateOptionsPage _options = null;
+
+        public override FUnrealTemplateOptionsPage GetOptions()
+        {
+            return _options;
+        }
+
+        public void ShowOptionPage()
+        {
+            _package.ShowOptionPage(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage));
+        }
+
         public static async Task<bool> IsUnrealSolutionAsync()
         {
             /*
@@ -106,9 +120,9 @@ namespace FUnreal
             return XFilesystem.FileExists(uprojectPath);
         }
 
-        public static async Task<FUnrealVS> CreateAsync()
+        public static async Task<FUnrealVS> CreateAsync(FUnrealPackage package)
         {
-            var uvs = new FUnrealVS();
+            var uvs = new FUnrealVS(package);
             await uvs.InitializeAsync();
             return uvs;
         }
@@ -121,14 +135,18 @@ namespace FUnreal
         }
         
 
-        public IFUnrealLogger Output { get; private set; }
+        //public IFUnrealLogger Output { get; private set; }
 
         private FUnrealDTE _unrealDTE;
+        private FUnrealPackage _package;
 
         public string WhenProjectReload_MarkItemForSelection { get; set; }
         public List<string> WhenProjectReload_MarkItemsForCreation { get; set; }
 
-        private FUnrealVS() { }
+        private FUnrealVS(FUnrealPackage package) 
+        { 
+            _package = package;
+        }
 
         public async Task InitializeAsync()
         {
@@ -147,6 +165,10 @@ namespace FUnreal
 
             WhenProjectReload_MarkItemForSelection = null;
             WhenProjectReload_MarkItemsForCreation = null;
+
+
+            _options = FUnrealTemplateOptionsPage.Instance;
+            _options.AddChangedHandler(() => OnOptionsSaved?.Invoke());
         }
 
         public async Task ForceLoadProjectEventAsync()
@@ -227,7 +249,7 @@ namespace FUnreal
             return VS.Solutions.GetCurrentSolution().FullPath;
         }
 
-        public string GetUProjectFilePath()
+        public override string GetUProjectFilePath()
         {
             string solAbsPath = GetSolutionFilePath();
             string uprjFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
@@ -325,7 +347,7 @@ namespace FUnreal
 
     
 
-        public string GetUnrealEnginePath()
+        public override string GetUnrealEnginePath()
         {
             string natvisFilePath = _unrealDTE.UENatvisPath;
 
@@ -371,10 +393,11 @@ namespace FUnreal
             return await _unrealDTE.RemoveFoldersFromSelectionAsync();  
         }
 
-        public string GetVSixDllPath()
+        public override string GetVSixDllPath()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
+
     }
 
     /* 
