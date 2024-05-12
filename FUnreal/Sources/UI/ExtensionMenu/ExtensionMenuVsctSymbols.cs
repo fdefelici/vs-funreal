@@ -6,5 +6,7 @@
 
         public const int ReloadTemplatesCmd = 0x0001;
         public const int OpenOptionsCmd     = 0x0002;
+        public const int RegenSolutionCmd   = 0x0003;
+        
     }
 }

@@ -4,6 +4,8 @@
   <Extern href="stdidcmd.h"/>
   <Extern href="vsshlids.h"/>
   
+  <Include href="KnownImageIds.vsct"/>
+  
   <Commands package="guidFUnrealPackage">
     <Menus>
       <Menu guid="ExtensionMenuGuid" id="ExtensionMenu" type="Menu">
@@ -24,17 +26,27 @@
 
     <Buttons>
       <Button guid="ExtensionMenuGuid" id="ReloadTemplatesCmd" type="Button">
+        <Icon guid="ImageCatalogGuid" id="UpdateScript" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>Reload Templates</ButtonText>
         </Strings>
       </Button>
+      <Button guid="ExtensionMenuGuid" id="RegenSolutionCmd" type="Button">
+        <Icon guid="ImageCatalogGuid" id="Refresh" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Regenerate Solution</ButtonText>
+        </Strings>
+      </Button>
       <Button guid="ExtensionMenuGuid" id="OpenOptionsCmd" type="Button">
+        <Icon guid="ImageCatalogGuid" id="Settings" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>Options...</ButtonText>
         </Strings>
       </Button>
     </Buttons>
-    
   </Commands>
 
   <CommandPlacements>
@@ -45,6 +57,10 @@
 
     <!-- COMMANDS -->
     <CommandPlacement guid="ExtensionMenuGuid" id="ReloadTemplatesCmd" priority="0x0001">
+      <Parent guid="ExtensionMenuGuid" id="ExtensionMenuInner01Group"/>
+    </CommandPlacement>
+
+    <CommandPlacement guid="ExtensionMenuGuid" id="RegenSolutionCmd" priority="0x0002">
       <Parent guid="ExtensionMenuGuid" id="ExtensionMenuInner01Group"/>
     </CommandPlacement>
     
@@ -60,8 +76,9 @@
       <IDSymbol name="ExtensionMenu"             value="0x9000" />
       <IDSymbol name="ExtensionMenuInner01Group" value="0x9001" />
       <IDSymbol name="ExtensionMenuInner02Group" value="0x9002" />
-      
+
       <IDSymbol name="ReloadTemplatesCmd"        value="0x0001" />
+      <IDSymbol name="RegenSolutionCmd"         value="0x0003" />
       <IDSymbol name="OpenOptionsCmd"            value="0x0002" />
     </GuidSymbol>
 

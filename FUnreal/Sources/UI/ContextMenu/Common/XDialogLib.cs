@@ -52,7 +52,8 @@ namespace FUnreal
         public static string Error_ModuleAlreadyExists = "Module already exists at: {0}";
         public static string Error_GameModuleAlreadyExists = "Module already exists: {0}";
         public static string Error_ModuleNotFound = "Module not found: {0}";
-        internal static string Ctx_RegenSolutionFiles = "Regenerating VS Soluton files ...";
+        internal static string Ctx_RegenSolutionFiles = "Regenerating VS Solution files ...";
+        internal static string Ctx_RegenSolutionFilesCompleted = "VS Solution regeneration completed!";
         internal static string Error_TemplateNotFound = "Template not found for ({0}, {1}, {2})";
         internal static string Error_TemplateWrongConfig = "Template configuration error for ({0}, {1}, {2})";
         internal static string Ctx_ConfiguringTemplate = "Configuring template ...";

@@ -61,7 +61,8 @@ This `FUnreal` menu is located on the the main VS Toolbar under `Extensions` men
 ![FUnreal Extensions Menu](./docs/images/extensions-menu.png)
 
 From there you can:
-- Force reloading templates (in case you change your custom template on disk)
+- Force reloading templates (in case you change your custom template configuration on disk)
+- Regenerating VS Solution files on demand (basically a shortcut for running UBT from within VS IDE)
 - Access options page, where you can configure the extension (e.g for tuning template configuration)
 
 > More info about `FUnreal` options and custom templates configuration can be found at [this page](docs/TEMPLATES.md).

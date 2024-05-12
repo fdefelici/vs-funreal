@@ -99,8 +99,6 @@ namespace FUnreal
             return new FUnrealService(engine, uprjFilePath, templates);
         }
 
-       
-
         public FUnrealEngine Engine { get; private set; }
         private IFUnrealBuildTool _engineUbt;
         private string _engineMajorVer;
@@ -167,6 +165,12 @@ namespace FUnreal
         {
             await _projectModuleFactory.ScanEmptyFoldersAsync(_projectModel);
             return true;
+        }
+
+
+        public async Task<bool> RegenSolutionFilesAsync(FUnrealNotifier notifier)
+        {
+            return await FUnrealServiceTasks.Project_RegenSolutionFilesAsync(GetUProject(), _engineUbt, notifier);
         }
 
 
