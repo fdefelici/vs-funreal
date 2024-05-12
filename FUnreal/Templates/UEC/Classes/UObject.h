@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 UCLASS()
-class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public UObject
+class @{TPL_MODULE_API} U@{TPL_CLASS_NAME} : public UObject
 {
 	GENERATED_BODY()
 

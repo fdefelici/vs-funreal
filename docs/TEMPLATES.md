@@ -165,30 +165,30 @@ Here follow the available hooks for each template type.
 > As a [live example](../FUnreal/Templates/) you can check how `FUnreal` built-in templates are defined.
 
 ## Plugin Hooks
-| Attribute      |  Description                                       | 
-| -------------- | -------------------------------------------------- | 
-| TPL_PLUG_NAME  | Plugin name coming from UI while creating a plugin | 
-| TPL_MODU_NAME  | Module name coming from UI while creating a plugin | 
-| TPL_MODU_CLASS | Module class name computed from FUnreal. To the TPL_MODU_NAME is appended the token `Module` if not already there |
+| Attribute        |  Description                                       | 
+| ---------------- | -------------------------------------------------- | 
+| TPL_PLUGIN_NAME  | Plugin name coming from UI while creating a plugin | 
+| TPL_MODULE_NAME  | Module name coming from UI while creating a plugin | 
+| TPL_MODULE_CLASS | Module class name computed from FUnreal. To the TPL_MODULE_NAME is appended the token `Module` if not already there |
 
 ## Plugin Module Hooks
-| Attribute      |  Description                                       | 
-| -------------- | -------------------------------------------------- | 
-| TPL_MODU_NAME  | Module name coming from UI while creating a plugin | 
-| TPL_MODU_CLASS | Module class name computed from FUnreal. To the TPL_MODU_NAME is appended the token `Module` if not already there |
+| Attribute        |  Description                                       | 
+| ---------------- | -------------------------------------------------- | 
+| TPL_MODULE_NAME  | Module name coming from UI while creating a plugin | 
+| TPL_MODULE_CLASS | Module class name computed from FUnreal. To the TPL_MODULE_NAME is appended the token `Module` if not already there |
 
 ## Game Module Hooks
-| Attribute      |  Description                                       | 
-| -------------- | -------------------------------------------------- | 
-| TPL_MODU_NAME  | Module name coming from UI while creating a plugin | 
-| TPL_MODU_CLASS | Module class name computed from FUnreal. To the TPL_MODU_NAME is appended the token `Module` if not already there |
+| Attribute        |  Description                                       | 
+| ---------------- | -------------------------------------------------- | 
+| TPL_MODULE_NAME  | Module name coming from UI while creating a plugin | 
+| TPL_MODULE_CLASS | Module class name computed from FUnreal. To the TPL_MODULE_NAME is appended the token `Module` if not already there |
 
 ## Class Hooks
-| Attribute      |  Description                                       | 
-| -------------- | -------------------------------------------------- | 
-| TPL_MODU_API   | Module api macro. Empty if class is set to Private on the UI during creation. Otherwise (Public), valorized properly | 
-| TPL_SOUR_CLASS | Class name coming from UI while creating a class |
-| TPL_SOUR_INCL  | Include path coming from UI while creating a class. Basically a relative folder path that will contains the class files |
+| Attribute         |  Description                                       | 
+| ----------------- | -------------------------------------------------- | 
+| TPL_MODULE_API    | Module api macro. Empty if class is set to Private on the UI during creation. Otherwise (Public), valorized properly | 
+| TPL_CLASS_NAME    | Class name coming from UI while creating a class |
+| TPL_CLASS_RELPATH | Relative path (unix like) coming from UI while creating a class. Basically the relative folder path that contains the class files |
 
 # Extension Setup
 Once you templates and descriptor file are ready, you can make FUnreal aware of them.

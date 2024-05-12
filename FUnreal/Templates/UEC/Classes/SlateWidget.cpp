@@ -1,8 +1,8 @@
-#include "@{TPL_SOUR_INCL}@{TPL_SOUR_CLASS}.h"
+#include "@{TPL_CLASS_RELPATH}@{TPL_CLASS_NAME}.h"
 #include "SlateOptMacros.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
-void S@{TPL_SOUR_CLASS}::Construct(const FArguments& InArgs)
+void S@{TPL_CLASS_NAME}::Construct(const FArguments& InArgs)
 {
 	/*
 	ChildSlot

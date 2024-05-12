@@ -19,7 +19,7 @@ namespace FUnrealTest.Integrations
             Assert.IsNotNull(tpl.Description);
 
             Assert.IsTrue(tpl.Name.StartsWith("tpl_pluginmodule_"));
-            Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUG_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
+            Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUGIN_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
             Assert.IsTrue(TestUtils.ExistsDir(tpl.BasePath), $"tpl_module_{wikiName.ToLower()} path not exists: {tpl.BasePath}");
             Assert.IsNotNull(tpl.Type);
             Assert.IsNotNull(tpl.Phase);
@@ -33,7 +33,7 @@ namespace FUnrealTest.Integrations
             Assert.IsNotNull(tpl.Description);
 
             Assert.IsTrue(tpl.Name.StartsWith("tpl_gamemodule_"));
-            Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUG_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
+            Assert.IsTrue(tpl.BasePath.EndsWith($@"\{root}\Plugins\{wikiName}\@{{TPL_PLUGIN_NAME}}\Source"), $"tpl_module_{wikiName.ToLower()} wrong path: {tpl.BasePath}");
             Assert.IsTrue(TestUtils.ExistsDir(tpl.BasePath), $"tpl_module_{wikiName.ToLower()} path not exists: {tpl.BasePath}");
             Assert.IsNotNull(tpl.Type);
             Assert.IsNotNull(tpl.Phase);

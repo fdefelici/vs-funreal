@@ -3,21 +3,21 @@
 #include "CoreMinimal.h"
 #include "Styling/SlateWidgetStyle.h"
 #include "Styling/SlateWidgetStyleContainerBase.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 USTRUCT()
-struct @{TPL_MODU_API} F@{TPL_SOUR_CLASS} : public FSlateWidgetStyle
+struct @{TPL_MODULE_API} F@{TPL_CLASS_NAME} : public FSlateWidgetStyle
 {
 	GENERATED_USTRUCT_BODY()
 
-	F@{TPL_SOUR_CLASS}();
-	virtual ~F@{TPL_SOUR_CLASS}();
+	F@{TPL_CLASS_NAME}();
+	virtual ~F@{TPL_CLASS_NAME}();
 
 	// FSlateWidgetStyle
 	virtual void GetResources(TArray<const FSlateBrush*>& OutBrushes) const override;
 	static const FName TypeName;
 	virtual const FName GetTypeName() const override { return TypeName; };
-	static const F@{TPL_SOUR_CLASS}& GetDefault();
+	static const F@{TPL_CLASS_NAME}& GetDefault();
 };
 
 /**
@@ -30,7 +30,7 @@ class UMySlateWidgetStyle : public USlateWidgetStyleContainerBase
 public:
 	/** The actual data describing the widget appearance. */
 	UPROPERTY(Category=Appearance, EditAnywhere, meta=(ShowOnlyInnerProperties))
-	F@{TPL_SOUR_CLASS} WidgetStyle;
+	F@{TPL_CLASS_NAME} WidgetStyle;
 
 	virtual const struct FSlateWidgetStyle* const GetStyle() const override
 	{

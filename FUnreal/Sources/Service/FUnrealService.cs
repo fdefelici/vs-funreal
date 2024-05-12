@@ -556,9 +556,9 @@ namespace FUnreal
                 return false;
             }
 
-            string pluginNamePH = "@{TPL_PLUG_NAME}";
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string pluginNamePH = "@{TPL_PLUGIN_NAME}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
 
 
             notifier.Info(XDialogLib.Ctx_ConfiguringTemplate, XDialogLib.Info_TemplateCopyingFiles, _pluginsPath);
@@ -771,8 +771,8 @@ namespace FUnreal
                 fileName = $"{fileName}Module";
             }
 
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
             strategy.AddPlaceholder(moduleFilePH, fileName);
 
@@ -960,9 +960,9 @@ namespace FUnreal
             }
 
 
-            string moduleApiPH = "@{TPL_MODU_API}";
-            string incluPathPH = "@{TPL_SOUR_INCL}";
-            string classNamePH = "@{TPL_SOUR_CLASS}";
+            string moduleApiPH = "@{TPL_MODULE_API}";
+            string incluPathPH = "@{TPL_CLASS_RELPATH}";
+            string classNamePH = "@{TPL_CLASS_NAME}";
             string moduleApi = classType == FUnrealSourceType.PUBLIC ? module.ApiMacro : string.Empty;
 
             string incluPath = XFilesystem.PathToUnixStyle(sourceRelPath);
@@ -981,7 +981,7 @@ namespace FUnreal
             strategy.AddPlaceholder(classNamePH, className);
             if (classType != FUnrealSourceType.PUBLIC)
             {
-                //Get rid off the possible extra space due to TPL_MODU_API becoming Empty in case of Private or Custom classes
+                //Get rid off the possible extra space due to TPL_MODULE_API becoming Empty in case of Private or Custom classes
                 strategy.AddPlaceholder("class  ", "class "); //replace "class double space" with "class space"
             }
             strategy.HandleFileContent(headerPath);
@@ -1113,8 +1113,8 @@ namespace FUnreal
                 fileName = $"{fileName}Module";
             }
 
-            string moduleNamePH = "@{TPL_MODU_NAME}";
-            string moduleFilePH = "@{TPL_MODU_CLASS}";
+            string moduleNamePH = "@{TPL_MODULE_NAME}";
+            string moduleFilePH = "@{TPL_MODULE_CLASS}";
             strategy.AddPlaceholder(moduleNamePH, moduleName);
             strategy.AddPlaceholder(moduleFilePH, fileName);
 

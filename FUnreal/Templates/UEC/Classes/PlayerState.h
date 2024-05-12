@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 UCLASS()
-class @{TPL_MODU_API} A@{TPL_SOUR_CLASS} : public APlayerState
+class @{TPL_MODULE_API} A@{TPL_CLASS_NAME} : public APlayerState
 {
 	GENERATED_BODY()
 	

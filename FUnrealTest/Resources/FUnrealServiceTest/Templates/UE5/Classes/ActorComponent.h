@@ -2,17 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public UActorComponent
+class @{TPL_MODULE_API} U@{TPL_CLASS_NAME} : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	U@{TPL_SOUR_CLASS}();
+	U@{TPL_CLASS_NAME}();
 
 protected:
 	// Called when the game starts

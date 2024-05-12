@@ -1,22 +1,22 @@
-#include "@{TPL_SOUR_INCL}@{TPL_SOUR_CLASS}.h"
+#include "@{TPL_CLASS_RELPATH}@{TPL_CLASS_NAME}.h"
 
-F@{TPL_SOUR_CLASS}::F@{TPL_SOUR_CLASS}()
+F@{TPL_CLASS_NAME}::F@{TPL_CLASS_NAME}()
 {
 }
 
-F@{TPL_SOUR_CLASS}::~F@{TPL_SOUR_CLASS}()
+F@{TPL_CLASS_NAME}::~F@{TPL_CLASS_NAME}()
 {
 }
 
-const FName F@{TPL_SOUR_CLASS}::TypeName(TEXT("F@{TPL_SOUR_CLASS}"));
+const FName F@{TPL_CLASS_NAME}::TypeName(TEXT("F@{TPL_CLASS_NAME}"));
 
-const F@{TPL_SOUR_CLASS}& F@{TPL_SOUR_CLASS}::GetDefault()
+const F@{TPL_CLASS_NAME}& F@{TPL_CLASS_NAME}::GetDefault()
 {
-	static F@{TPL_SOUR_CLASS} Default;
+	static F@{TPL_CLASS_NAME} Default;
 	return Default;
 }
 
-void F@{TPL_SOUR_CLASS}::GetResources(TArray<const FSlateBrush*>& OutBrushes) const
+void F@{TPL_CLASS_NAME}::GetResources(TArray<const FSlateBrush*>& OutBrushes) const
 {
 	// Add any brush resources here so that Slate can correctly atlas and reference them
 }

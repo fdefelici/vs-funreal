@@ -174,76 +174,76 @@
     </Content>
     <Content Include="Sources\UI\ContextMenu\ContextMenu.vsct" />
     <Content Include="Sources\UI\ExtensionMenu\ExtensionMenu.vsct" />
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.Build.cs">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.cpp">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.h">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.sln">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.sln">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj.filters">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj.filters">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Templates\UEC\Classes\Actor.cpp">
@@ -354,253 +354,253 @@
     <Content Include="Templates\UEC\Classes\WorldSettings.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EdMode.cpp">
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EdModeToolkit.cpp">
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EdMode.h">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EdModeToolkit.h">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EdMode.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EdModeToolkit.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EdMode.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EdModeToolkit.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorMode.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorMode.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorModeCommands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorModeCommands.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorModeToolkit.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorModeToolkit.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}InteractiveTool.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}InteractiveTool.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}InteractiveTool.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}InteractiveTool.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}SimpleTool.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}SimpleTool.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}SimpleTool.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}SimpleTool.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorMode.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorMode.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorModeCommands.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorModeCommands.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorModeToolkit.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorModeToolkit.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.cpp">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.h">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.sln">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.sln">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj.filters">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj.filters">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}BPLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}BPLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}BPLibrary.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}BPLibrary.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include=".editorconfig" />
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.tps">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.tps">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.lib">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.lib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.tps">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.tps">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.lib">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.lib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>

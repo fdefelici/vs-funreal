@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class @{TPL_MODU_API} U@{TPL_SOUR_CLASS} : public UInterface
+class @{TPL_MODULE_API} U@{TPL_CLASS_NAME} : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class I@{TPL_SOUR_CLASS}
+class I@{TPL_CLASS_NAME}
 {
 	GENERATED_BODY()
 

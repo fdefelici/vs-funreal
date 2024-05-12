@@ -61,51 +61,51 @@
     "plugin_modules": [
 			{
 				"label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
-				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "Default" }
 			},
 			{
 				"label": "Blueprint Library", "desc": "Create a module that will contain Blueprint Function Library.",
-				"ue": ["4","5"], "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4","5"], "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "PreLoadingScreen" }
 			},
 			{
 				"label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorMode/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorMode/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
 				"label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself.",
-				"ue": ["4"], "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default" }
 			},
 			{
-				"ue": ["5"], "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself.",
 				"meta": { "type": "Editor", "phase": "Default" }
 			}
@@ -113,52 +113,52 @@
     "game_modules": [
 			{
 				"label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
-				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Blueprint Library", "desc": "Create a module that will contain Blueprint Function Library.",
-				"ue": ["4","5"], "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4","5"], "path": "UEC/Plugins/BlueprintLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Runtime", "phase": "PreLoadingScreen", "target": "Editor" }
 			},
 			{
 				"label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorMode/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Editor Mode", "desc": "Create a module that will have an editor mode. Includes a toolkit example to specify UI that will appear in 'Modes' selection (next to Foliage, Landscape, etc). It will also include very basic UI that demostrates editor interaction and undo/redo function usage.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorMode/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorMode/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorStandaloneWindow/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Editor Standalone Window", "desc": "Create a module that will add a in the Window Menu that summons an empty standalone tab window when clicked.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorStandaloneWindow/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event.",
-				"ue": ["4"], "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/EditorToolbarButton/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Editor Toolbar Button", "desc": "Create a module that will add a button to the toolbar in the Level Editor. Start by implementing something in the created 'OnButtonClick' event.",
-				"ue": ["5"], "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/EditorToolbarButton/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself.",
-				"ue": ["4"], "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["4"], "path": "UE4/Plugins/ThirdPartyLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			},
 			{
 				"label": "Third Party Library", "desc": "Create a module that uses an included third party library. This can be used as an example of how to include, load and use a third party library yourself.",
-				"ue": ["5"], "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUG_NAME}/Source",
+				"ue": ["5"], "path": "UE5/Plugins/ThirdPartyLibrary/@{TPL_PLUGIN_NAME}/Source",
 				"meta": { "type": "Editor", "phase": "Default", "target": "Editor" }
 			}
     ],

@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Camera/PlayerCameraManager.h"
-#include "@{TPL_SOUR_CLASS}.generated.h"
+#include "@{TPL_CLASS_NAME}.generated.h"
 
 UCLASS()
-class @{TPL_MODU_API} A@{TPL_SOUR_CLASS} : public APlayerCameraManager
+class @{TPL_MODULE_API} A@{TPL_CLASS_NAME} : public APlayerCameraManager
 {
 	GENERATED_BODY()
 	

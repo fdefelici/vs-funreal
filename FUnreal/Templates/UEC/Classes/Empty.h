@@ -2,9 +2,9 @@
 
 #include "CoreMinimal.h"
 
-class @{TPL_MODU_API} @{TPL_SOUR_CLASS}
+class @{TPL_MODULE_API} @{TPL_CLASS_NAME}
 {
 public:
-	@{TPL_SOUR_CLASS}();
-	~@{TPL_SOUR_CLASS}();
+	@{TPL_CLASS_NAME}();
+	~@{TPL_CLASS_NAME}();
 };
