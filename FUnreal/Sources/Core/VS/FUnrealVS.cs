@@ -115,6 +115,7 @@ namespace FUnreal
             await XThread.SwitchToUIThreadIfItIsNotAsync();
             
             var solution = await VS.Solutions.GetCurrentSolutionAsync();
+            if (solution == null) return false;
             string solutionPath = solution.FullPath;
             string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
             return XFilesystem.FileExists(uprojectPath);

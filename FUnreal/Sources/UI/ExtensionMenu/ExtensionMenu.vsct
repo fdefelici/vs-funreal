@@ -28,6 +28,8 @@
       <Button guid="ExtensionMenuGuid" id="ReloadTemplatesCmd" type="Button">
         <Icon guid="ImageCatalogGuid" id="UpdateScript" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Reload Templates</ButtonText>
         </Strings>
@@ -35,6 +37,8 @@
       <Button guid="ExtensionMenuGuid" id="RegenSolutionCmd" type="Button">
         <Icon guid="ImageCatalogGuid" id="Refresh" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Regenerate Solution</ButtonText>
         </Strings>
@@ -42,6 +46,8 @@
       <Button guid="ExtensionMenuGuid" id="OpenOptionsCmd" type="Button">
         <Icon guid="ImageCatalogGuid" id="Settings" />
         <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Options...</ButtonText>
         </Strings>
