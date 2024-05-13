@@ -49,13 +49,8 @@ namespace FUnreal
                     unrealVS.Output.Erro($"{XDialogLib.Title_FUnreal} failed to load!");
                     unrealVS.Output.ForceFocus();
                     unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} fails. Please check {XDialogLib.Title_FUnreal} Output window!");
-
-                    //TODO: Eventually add message saying to solve the issue and then restart VSStudio to reload FUnreal
-                    //      OR: Add Menu Command to Reload FUnreal
                     return;
                 }
-
-               
 
                 var projectLoadHandler = new ProjectReloadHandler(unrealService, unrealVS);    //object instance kept alive by unrealVS
                 var emptyFolderHandler = new DetectEmptyFolderHandler(unrealService, unrealVS);//object instance kept alive by unrealVS
