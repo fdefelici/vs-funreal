@@ -292,6 +292,7 @@ namespace FUnreal
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFilesCompleted);
             return true;
         }
 

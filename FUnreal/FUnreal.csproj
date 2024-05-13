@@ -110,7 +110,9 @@
     </Compile>
     <Compile Include="Sources\UI\ContextMenu\Features\Sources\DeleteSource\DeleteSourceController.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\Commands\OpenOptionsExtensionMenuCmd.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Commands\RegenSolutionMenuCmd.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\Controllers\OpenOptionsController.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Controllers\RegenSolutionController.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\Controllers\ReloadTemplatesController.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\Commands\ReloadExtensionMenuCmd.cs" />
     <Compile Include="Sources\UI\ExtensionMenu\ExtensionMenuManager.cs" />

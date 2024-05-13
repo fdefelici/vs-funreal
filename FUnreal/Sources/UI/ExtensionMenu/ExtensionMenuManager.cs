@@ -6,6 +6,7 @@
         {
             ReloadExtensionMenuCmd.Instance.Controller = new ReloadTemplatesController(unrealService, unrealVS);
             OpenOptionsExtensionMenuCmd.Instance.Controller = new OpenOptionsController(unrealService, unrealVS);
+            RegenSolutionMenuCmd.Instance.Controller = new RegenSolutionController(unrealService, unrealVS);
         }
     }
 }
