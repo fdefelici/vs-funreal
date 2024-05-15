@@ -1,5 +1,4 @@
-﻿using FUnreal.Sources.Core;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 
 namespace FUnreal

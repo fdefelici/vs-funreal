@@ -50,8 +50,17 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
-    <Compile Include="Sources\UI\Features\DetectEmptyFolderHandler.cs" />
-    <Compile Include="Sources\UI\Features\ProjectReloadHandler.cs" />
+    <Compile Include="Sources\Core\FUnrealGenericResult.cs" />
+    <Compile Include="Sources\Core\Templates\AFUnrealTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealClassTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealGameModuleTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealPluginModuleTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealPluginTemplate.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplateLoader.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplatesDescriptor.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplatesRules.cs" />
+    <Compile Include="Sources\Handlers\DetectEmptyFolderHandler.cs" />
+    <Compile Include="Sources\Handlers\ProjectReloadHandler.cs" />
     <Compile Include="Sources\Service\FUnrealServiceResults.cs" />
     <Compile Include="Sources\Core\Domain\FUnrealModule.cs" />
     <Compile Include="Sources\Core\Domain\IFUnrealModuleContainer.cs" />
@@ -60,34 +69,35 @@
     <Compile Include="Sources\Core\VS\FUnrealDTE.cs" />
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
     <Compile Include="Sources\Service\FUnrealServiceTasks.cs" />
-    <Compile Include="Sources\Core\FUnrealTemplates.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd22.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd21.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd13.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd12.cs" />
-    <Compile Include="Sources\UI\Common\Controls\MessageDialog.xaml.cs">
+    <Compile Include="Sources\Core\Templates\FUnrealTemplates.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd22.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd21.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd13.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd12.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\MessageDialog.xaml.cs">
       <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\UI\Common\IXCommand.cs" />
-    <Compile Include="Sources\UI\Features\ContextMenuManager.cs" />
-    <Compile Include="Sources\UI\Common\Commands\CtxMenuCmd11.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\XContextMenuActionCmd.cs" />
+    <Compile Include="Sources\UI\ContextMenu\ContextMenuManager.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd11.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleDialog.xaml.cs">
       <DependentUpon>AddGameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\GameModules\DeleteModule\DeleteGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\DeleteModule\DeleteGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml.cs">
       <DependentUpon>RenameGameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\RenameFolder\RenameFolderController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\RenameFolder\RenameFolderController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderDialog.xaml.cs">
       <DependentUpon>AddFolderDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\RenameSourceFile\RenameSourceFileController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml.cs">
       <DependentUpon>AddSourceFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealEngine.cs" />
@@ -95,486 +105,505 @@
     <Compile Include="Sources\Core\Domain\FUnrealPlugin.cs" />
     <Compile Include="Sources\Core\Files\FUnrealUPluginFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealUProjectFile.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
-    <Compile Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml.cs">
       <DependentUpon>AddSourceClassDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Sources\DeleteSource\DeleteSourceController.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Commands\OpenOptionsExtensionMenuCmd.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Commands\RegenSolutionMenuCmd.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Controllers\OpenOptionsController.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Controllers\RegenSolutionController.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Controllers\ReloadTemplatesController.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\Commands\ReloadExtensionMenuCmd.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\ExtensionMenuManager.cs" />
+    <Compile Include="Sources\UI\ExtensionMenu\ExtensionMenuVsctSymbols.cs" />
+    <Compile Include="Sources\UI\OptionsPage\Common\AXOptionsModel.cs" />
+    <Compile Include="Sources\UI\OptionsPage\FUnrealTemplateOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Sources\UI\OptionsPage\OptionPageManager.cs" />
+    <Compile Include="Sources\UI\OptionsPage\StringToPathConverter.cs" />
+    <Compile Include="Sources\Utils\ObjectValidator\XObjectValidator.cs" />
+    <Compile Include="Sources\Utils\ObjectValidator\XObjectValidatorAttributes.cs" />
     <Compile Include="Sources\Utils\XFilesystem\DeepCopy\IDeepCopyVisitor.cs" />
     <Compile Include="Sources\Utils\XDebug.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystemEnumerable.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystem_Path.cs" />
+    <Compile Include="Sources\Utils\XJsonUtils.cs" />
     <Compile Include="Sources\Utils\XString.cs" />
     <Compile Include="Sources\Utils\XThread.cs" />
     <Compile Include="Sources\Utils\XVersion.cs" />
-    <Compile Include="Sources\UI\Common\Controls\FProgressPanel.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\FProgressPanel.xaml.cs">
       <DependentUpon>FProgressPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Common\XDialogLib.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleController.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\XDialogLib.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleDialog.xaml.cs">
       <DependentUpon>AddModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\DeleteModule\DeleteModuleController.cs" />
     <Compile Include="Sources\Core\VS\FUnrealVS.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleController.cs" />
-    <Compile Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleDialog.xaml.cs">
       <DependentUpon>RenameModuleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginController.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml.cs">
       <DependentUpon>RenamePluginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginController.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginDialog.xaml.cs">
       <DependentUpon>AddPluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Core\FUnrealBuildTool.cs" />
     <Compile Include="Sources\Service\FUnrealService.cs" />
     <Compile Include="Sources\UI\Common\AXActionController.cs" />
-    <Compile Include="Sources\UI\Common\Controls\ConfirmDialog.xaml.cs">
+    <Compile Include="Sources\UI\ContextMenu\Common\Controls\ConfirmDialog.xaml.cs">
       <DependentUpon>ConfirmDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\UI\Common\ImageSourceFromIconExt.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Common\ImageSourceFromIconExt.cs" />
     <Compile Include="Sources\Utils\XFilesystem\DeepCopy\PlaceHolderReplaceVisitor.cs" />
-    <Compile Include="Sources\UI\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
+    <Compile Include="Sources\UI\ContextMenu\Features\Plugins\DeletePlugin\DeletePluginController.cs" />
     <Compile Include="Sources\Utils\XJson.cs" />
     <Compile Include="Sources\Utils\XProcess.cs" />
     <Compile Include="Sources\Utils\XFilesystem\XFilesystem_IO.cs" />
     <Compile Include="Sources\UI\Common\XActionCmd.cs" />
-    <Compile Include="Sources\UI\Common\Commands\VSCTSymbols.cs" />
+    <Compile Include="Sources\UI\ContextMenu\ContextMenuVsctSymbols.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FUnrealPackage.cs" />
     <Content Include="icon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Sources\UI\ContextMenu\ContextMenu.vsct" />
+    <Content Include="Sources\UI\ExtensionMenu\ExtensionMenu.vsct" />
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.Build.cs">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.cpp">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.h">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.sln">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.sln">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj.filters">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj.filters">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UEC\Classes\Actor.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UEC\Classes\Actor.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UEC\Classes\ActorComponent.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EdMode.cpp">
+    <Content Include="Templates\UEC\Classes\ActorComponent.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EdModeToolkit.cpp">
+    <Content Include="Templates\UEC\Classes\BlueprintFunctionLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UEC\Classes\BlueprintFunctionLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EdMode.h">
+    <Content Include="Templates\UEC\Classes\Character.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EdModeToolkit.h">
+    <Content Include="Templates\UEC\Classes\Character.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\Empty.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\Empty.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\GameModeBase.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\GameModeBase.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\GameStateBase.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\GameStateBase.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\HUD.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\HUD.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\Pawn.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\Pawn.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerCameraManager.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerCameraManager.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerController.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerController.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerState.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\PlayerState.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SceneComponent.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SceneComponent.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SlateWidget.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SlateWidget.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SlateWidgetStyle.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\SlateWidgetStyle.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\UnrealInterface.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\UnrealInterface.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\UObject.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\UObject.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\WorldSettings.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Classes\WorldSettings.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EdMode.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EdModeToolkit.cpp">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EdMode.h">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EdModeToolkit.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png" />
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.Build.cs">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png" />
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorMode.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorMode.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorModeCommands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorModeCommands.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}EditorModeToolkit.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}EditorModeToolkit.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}InteractiveTool.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}InteractiveTool.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}InteractiveTool.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}InteractiveTool.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}SimpleTool.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}SimpleTool.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\Tools\%40{TPL_MODU_NAME}SimpleTool.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\Tools\%40{TPL_MODULE_NAME}SimpleTool.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorMode.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorMode.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorModeCommands.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorModeCommands.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}EditorModeToolkit.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}EditorModeToolkit.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Commands.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Commands.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}Style.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}Style.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Commands.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Commands.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}Style.h">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}Style.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.cpp">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.h">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.sln">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.sln">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj.filters">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj.filters">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.dll">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Character.cpp">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Character.h">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\UObject.cpp">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_NAME}BPLibrary.cpp">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\UObject.h">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Empty.cpp">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_NAME}BPLibrary.h">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Empty.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\GameModeBase.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\GameModeBase.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\HUD.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\HUD.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\GameStateBase.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\GameStateBase.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\BlueprintFunctionLibrary.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\BlueprintFunctionLibrary.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\UnrealInterface.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\UnrealInterface.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SlateWidgetStyle.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SlateWidgetStyle.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerState.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerState.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SlateWidget.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SlateWidget.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\WorldSettings.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\WorldSettings.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerController.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerController.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerCameraManager.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\PlayerCameraManager.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SceneComponent.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\SceneComponent.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Pawn.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Pawn.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_NAME}BPLibrary.cpp">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_NAME}BPLibrary.h">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include=".editorconfig" />
-    <Content Include="Templates\UEC\Sources\Classes\Actor.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\Actor.h">
+    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\ActorComponent.cpp">
+    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Sources\Classes\ActorComponent.h">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorMode\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.tps">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.lib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
+    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
+    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.tps">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE5\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.lib">
+    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorStandaloneWindow\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorToolbarButton\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\ExampleLibrary.vcxproj">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UE4\Plugins\EditorMode\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\Mac\Release\libExampleLibrary.dylib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\%40{TPL_MODULE_NAME}Library.tps">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Templates\UEC\Plugins\BlueprintLibrary\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UEC\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\ExampleLibrary.vcxproj">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\Mac\Release\libExampleLibrary.dylib">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\%40{TPL_MODU_NAME}Library.tps">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUG_NAME}\Source\ThirdParty\%40{TPL_MODU_NAME}Library\x64\Release\ExampleLibrary.lib">
+    <Content Include="Templates\UE4\Plugins\ThirdPartyLibrary\%40{TPL_PLUGIN_NAME}\Source\ThirdParty\%40{TPL_MODULE_NAME}Library\x64\Release\ExampleLibrary.lib">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -614,57 +643,57 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Sources\UI\Common\Controls\MessageDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\MessageDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Common\Controls\FProgressPanel.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\FProgressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\UI\Features\GameModules\AddModule\AddGameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\GameModules\AddModule\AddGameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\GameModules\RenameModule\RenameGameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\PluginModules\AddModule\AddModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\PluginModules\AddModule\AddModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\PluginModules\RenameModule\RenameModuleDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\PluginModules\RenameModule\RenameModuleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Plugins\RenamePlugin\RenamePluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Plugins\AddPlugin\AddPluginDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Plugins\AddPlugin\AddPluginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\UI\Common\Controls\ConfirmDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Common\Controls\ConfirmDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddFolder\AddFolderDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddFolder\AddFolderDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddSourceFile\AddSourceFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\UI\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml">
+    <Page Include="Sources\UI\ContextMenu\Features\Sources\AddSourceClass\AddSourceClassDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\descriptor.xml">
+    <Content Include="Templates\descriptor.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>

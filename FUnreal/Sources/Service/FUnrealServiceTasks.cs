@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FUnreal.Sources.Core
+namespace FUnreal
 {
     public static class FUnrealServiceTasks
     {
@@ -292,6 +292,7 @@ namespace FUnreal.Sources.Core
                 notifier.Erro(XDialogLib.Ctx_RegenSolutionFiles, ubtResult.StdOut);
                 return false;
             }
+            notifier.Info(XDialogLib.Ctx_RegenSolutionFilesCompleted);
             return true;
         }
 

@@ -1,0 +1,9 @@
+#include "@{TPL_CLASS_RELPATH}@{TPL_CLASS_NAME}.h"
+
+@{TPL_CLASS_NAME}::@{TPL_CLASS_NAME}()
+{
+}
+
+@{TPL_CLASS_NAME}::~@{TPL_CLASS_NAME}()
+{
+}

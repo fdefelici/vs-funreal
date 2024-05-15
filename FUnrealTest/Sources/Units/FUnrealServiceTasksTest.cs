@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FUnreal;
-using FUnreal.Sources.Core;
 
 namespace FUnrealTest
 {
