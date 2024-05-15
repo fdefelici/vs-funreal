@@ -1,4 +1,9 @@
 # FUnreal Changelog
+## v0.2.0: May 15, 2024 
+### Features
+* Add Custom Template management. User can now configure their own templates for creating Plugins, Modules and Classes.
+* Add Toolbar command for launching Unreal Solution files regeneration on demand.
+
 ## v0.1.0: October 25, 2023 
 ### Improvements
 * Update UE version dection strategy to support UE v5.3
