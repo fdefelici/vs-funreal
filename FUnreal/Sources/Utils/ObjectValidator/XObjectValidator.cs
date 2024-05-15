@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUnreal
 {
     public static class XObjectValidator
     {
-        //'errorAsWarn' flag to prevent UnitTest from failing due to exception thrown by Error log
-        //Eventually externalize logging and return a collection of validation error 
-        public static bool Validate(object instance, bool errorAsWarn = false)
+        public static FUnrealGenericResult Validate(object instance)
         {
+            FUnrealGenericResult result = FUnrealGenericResult.Success();
+            
             var instanceType = instance.GetType();
             var fields = instanceType.GetFields();
             foreach (var field in fields)
@@ -25,35 +21,43 @@ namespace FUnreal
                     var value = field.GetValue(instance);
                     if (!attrValidator.Validate(value))
                     {
-                        string msg = $"Validator '{attrValidator.GetType().Name}' fails on '{instanceType.Name}.{field.Name}' with value '{value}'";
-                        if (errorAsWarn)
-                        {
-                            XDebug.Warn(msg);
-                        }
-                        else
-                        {
-                            XDebug.Erro(msg);
-                        }
-                        return false;
+                        //string msg = $"Validator '{attrValidator.GetType().Name}' fails on '{instanceType.Name}.{field.Name}' with value '{value}'";
+                        string msg = $"Validator '{attrValidator.Description()}' fails on '{instanceType.Name}.{field.Name}' with value '{value}'";
+                        result += FUnrealGenericResult.Failure(msg);
                     }
                 }
 
-                //Recursion on field that is Serializable  (Note: string and primitives are Serializable too and need to be skipped to avoid stackoverflow)
-                if (field.FieldType == typeof(string)) continue;
-                if (field.FieldType.IsPrimitive) continue;
-                object[] classAttr = field.GetType().GetCustomAttributes(true);
-                foreach (var attr in classAttr)
-                {
-                    if (attr is SerializableAttribute)
+                { 
+                    //Recursion on field avoiding string or primitive to avoid stackoverflow)
+                    if (field.FieldType == typeof(string)) continue;
+                    if (field.FieldType.IsPrimitive) continue;
+                
+                    var value = field.GetValue(instance);
+                    if (value == null) break;
+
+                    if (field.FieldType.IsArray)
                     {
-                        var value = field.GetValue(instance);
-                        if (value == null) break;
-                        if (!Validate(value, errorAsWarn)) return false;
-                        break;
+                        var valueAsArray = value as Array;
+                        result += ValidateArray(valueAsArray);
+                    } 
+                    else
+                    {
+                        result += Validate(value);
                     }
                 }
             }
-            return true;
+            return result;
+        }
+
+        private static FUnrealGenericResult ValidateArray(Array values)
+        {
+            FUnrealGenericResult result = FUnrealGenericResult.Success();
+
+            foreach (var value in values)
+            {
+                result += Validate(value);
+            }
+            return result;
         }
     }
 }

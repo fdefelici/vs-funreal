@@ -21,13 +21,20 @@ namespace FUnrealTest
         }
 
 
+        class ContainerList
+        {
+            public Internal[] list;
+        }
+
+
         [TestMethod]
         public void InternalSerializableClassFailure()
         {
             var container = new Container();
             container.intern = new Internal();
 
-            Assert.IsFalse(XObjectValidator.Validate(container, true));
+            var r = XObjectValidator.Validate(container);
+            Assert.IsTrue(r.IsFailure);
         }
 
         [TestMethod]
@@ -37,7 +44,8 @@ namespace FUnrealTest
             container.intern = new Internal();
             container.intern.name = "Hello";
 
-            Assert.IsTrue(XObjectValidator.Validate(container));
+            var r = XObjectValidator.Validate(container);
+            Assert.IsTrue(r.IsSuccess);
         }
 
         [TestMethod]
@@ -46,7 +54,31 @@ namespace FUnrealTest
             var container = new Container();
             container.intern = null;
 
-            Assert.IsTrue(XObjectValidator.Validate(container));
+            var r = XObjectValidator.Validate(container);
+            Assert.IsTrue(r.IsSuccess);
+        }
+
+        [TestMethod]
+        public void ContainerListValidation()
+        {
+            var container = new ContainerList();
+            container.list = new Internal[1];
+            container.list[0] = new Internal();
+
+            var r = XObjectValidator.Validate(container);
+            Assert.IsTrue(r.IsFailure);
+
+            container.list[0].name = "Hello";
+            r = XObjectValidator.Validate(container);
+            Assert.IsTrue(r.IsSuccess);
+        }
+
+        [TestMethod]
+
+        public void ConstrainedStringAttrDescription()
+        {
+            var attr = new XStringContrainedValueAttrValidator("value1", "value2");
+            Assert.AreEqual("One of [value1, value2]", attr.Description());
         }
     }
 }

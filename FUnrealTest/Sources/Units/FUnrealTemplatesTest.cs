@@ -18,7 +18,7 @@ namespace FUnrealTest
             rules.TemplatePrefix = "prefix";
 
             FUnrealTemplates templates;
-            FUnrealTemplatesLoadResult result;
+            FUnrealGenericResult result;
 
             rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
             result = FUnrealTemplates.TryLoad_V1_0(descPath, rules, out templates);

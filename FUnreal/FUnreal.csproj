@@ -50,6 +50,7 @@
     <Compile Include="Sources\Core\Files\FUnrealCSharpFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealTargetFile.cs" />
     <Compile Include="Sources\Core\Files\FUnrealBuildVersionFile.cs" />
+    <Compile Include="Sources\Core\FUnrealGenericResult.cs" />
     <Compile Include="Sources\Core\Templates\AFUnrealTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealClassTemplate.cs" />
     <Compile Include="Sources\Core\Templates\FUnrealGameModuleTemplate.cs" />
@@ -68,7 +69,7 @@
     <Compile Include="Sources\Core\VS\FUnrealDTE.cs" />
     <Compile Include="Sources\Core\FUnrealProjectFactory.cs" />
     <Compile Include="Sources\Service\FUnrealServiceTasks.cs" />
-    <Compile Include="Sources\Core\FUnrealTemplates.cs" />
+    <Compile Include="Sources\Core\Templates\FUnrealTemplates.cs" />
     <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd22.cs" />
     <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd21.cs" />
     <Compile Include="Sources\UI\ContextMenu\Common\Commands\CtxMenuCmd13.cs" />
