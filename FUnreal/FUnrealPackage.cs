@@ -48,7 +48,7 @@ namespace FUnreal
                 {
                     unrealVS.Output.Erro($"{XDialogLib.Title_FUnreal} failed to load!");
                     unrealVS.Output.ForceFocus();
-                    unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} fails. Please check {XDialogLib.Title_FUnreal} Output window!");
+                    unrealVS.StatusBar.ShowMessage($"{XDialogLib.Title_FUnreal} fails. Please check {XDialogLib.Title_FUnreal} Output window!");
                     return;
                 }
 
@@ -68,7 +68,7 @@ namespace FUnreal
                 OptionPageManager optPageMgr = new OptionPageManager(unrealService, unrealVS);
 
                 unrealVS.Output.Info($"{XDialogLib.Title_FUnreal} setup completed.");
-                unrealVS.ShowStatusBarMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
+                unrealVS.StatusBar.ShowMessage($"{XDialogLib.Title_FUnreal} is ready ;-)");
 
                 //Simulate Project Loaded event at startup to launch the discovery
                 await unrealVS.ForceLoadProjectEventAsync(); //eventually even FireAndForget

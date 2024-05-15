@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Community.VisualStudio.Toolkit;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FUnreal
 {
@@ -25,9 +27,13 @@ namespace FUnreal
         {
             _unrealVS.Output.ForceFocus();
             if (_IsRegenerationOnGoing) return;
-
+            
             _IsRegenerationOnGoing = true;
+            _unrealVS.StatusBar.ShowInfiniteProgress("FUnreal is regenerating solution ...");         
+
             _ = await _unrealService.RegenSolutionFilesAsync(_notifier);
+
+            _unrealVS.StatusBar.HideInfiniteProgress();
             _IsRegenerationOnGoing = false;
         }
     }

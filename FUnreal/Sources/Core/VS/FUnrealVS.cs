@@ -18,6 +18,8 @@ namespace FUnreal
 
         public IFUnrealLogger Output { get; protected set; }
 
+        public IFUnrealStatusBar StatusBar { get; protected set; }
+
         public abstract FUnrealTemplateOptionsPage GetOptions();
         public Action OnOptionsSaved;
 
@@ -33,6 +35,62 @@ namespace FUnreal
         void PlainText(string str);
     }
 
+    public interface IFUnrealStatusBar
+    {
+        void ShowInfiniteProgress(string message);
+
+        void HideInfiniteProgress();
+
+        void ShowMessage(string format, params string[] args);
+    }
+
+    public class FUnrealStatusBar : IFUnrealStatusBar
+    {
+        public bool IsShowProgress;
+
+        public FUnrealStatusBar() 
+        { 
+            IsShowProgress = false;
+        }
+
+        public void ShowInfiniteProgress(string message)
+        {
+            if (IsShowProgress) return;
+            IsShowProgress = true;
+
+            _ = Task.Run(async () =>
+            {
+                int maxStep = 20;
+                int step = 1;
+                while (IsShowProgress)
+                {
+                    //TODO: Usare operazione %
+                    if (step == maxStep)
+                    {
+                        step = 1;
+                    }
+    
+                    await VS.StatusBar.ShowProgressAsync(message, step, maxStep);
+                    await Task.Delay(250);
+                    step++;
+                }
+
+                await VS.StatusBar.ShowProgressAsync(message, maxStep, maxStep);
+            });
+        }
+
+        public void HideInfiniteProgress()
+        {
+            IsShowProgress = false;
+        }
+
+        public void ShowMessage(string format, params string[] args)
+        {
+            string message = XString.Format(format, args);
+            VS.StatusBar.ShowMessageAsync(message).FireAndForget();
+        }
+
+    }
 
     public class FUnrealLogger : IFUnrealLogger
     {
@@ -157,6 +215,8 @@ namespace FUnreal
 
             OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnreal);
             Output = new FUnrealLogger(pane);
+            StatusBar = new FUnrealStatusBar();
+
 
             _unrealDTE = await FUnrealDTE.CreateInstanceAsync();
             if (!_unrealDTE.IsValid)
@@ -357,12 +417,6 @@ namespace FUnreal
             string enginePath = XFilesystem.PathParent(extrasPath);
 
             return enginePath;
-        }
-
-        public void ShowStatusBarMessage(string format, params string[] args)
-        {
-            string message = XString.Format(format, args);
-            VS.StatusBar.ShowMessageAsync(message).FireAndForget();
         }
 
         public async Task<bool> ExistsFolderInSelectedFolderParentAsync(string name)
