@@ -16,7 +16,7 @@ On the filesystem side templates are expected to be organzed like this:
 > As a [live example](../FUnreal/Templates/) you can check how `FUnreal` built-in templates are defined.
 
 # Table of Contents
-* [Descriptor Schema](#decriptor-file-schema)
+* [Descriptor Schema](#descriptor-file-schema)
   * [Plugin Schema](#plugin-schema)
   * [Plugin Module Schema](#plugin-module-schema)
   * [Game Module Schema](#game-module-schema)
