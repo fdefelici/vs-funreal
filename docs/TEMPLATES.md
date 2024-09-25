@@ -35,11 +35,13 @@ Entrypoint for user defined templates is a descriptor file in JSON format with t
 
 ```json
 {
-    "version"        : " ",    // schema version
-    "plugins"        : [ ],    // template definition for plugins
-    "plugin_modules" : [ ],    // template definition for plugin modules
-    "game_modules"   : [ ],    // template definition for game modules
-    "classes"        : [ ],    // template definition for class files
+    "version"   : " ",          // schema version
+    "templates" : {
+        "plugins"        : [ ], // template definition for plugins
+        "plugin_modules" : [ ], // template definition for plugin modules
+        "game_modules"   : [ ], // template definition for game modules
+        "classes"        : [ ], // template definition for class files
+    }
 }
 ```
 
