@@ -2,7 +2,7 @@
 This page describes how you can configure and import properly custom templates for plugins, modules and classes into `FUnreal`.
 
 Basically to define a template, three steps are required:
-1. Write down the templates configuration in a descriptor file (see [Descriptor Schema](#decriptor-file-schema)).
+1. Write down the templates configuration in a descriptor file (see [Descriptor Schema](#descriptor-file-schema)).
 2. Produce the template folder and files taking advantage of some hooks (placeholders) that will be replaced with the right values when creating contents using FUnreal features (see [Template Hooks](#template-hooks)).
 3. Make `FUnreal` aware of the custom descriptor file or a possible templates update (see [Extension Setup](#extension-setup)).
 
