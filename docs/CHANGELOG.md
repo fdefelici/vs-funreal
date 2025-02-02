@@ -1,4 +1,8 @@
 # FUnreal Changelog
+## v0.2.1: Feb 2, 2025 
+### Bug Fix
+* Blank and BlueprintLibrary template misconfigured with wrong module name placeholder in IMPLEMENT_MODULE statement.
+
 ## v0.2.0: May 15, 2024 
 ### Features
 * Add Custom Template management. User can now configure their own templates for creating Plugins, Modules and Classes.
