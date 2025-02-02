@@ -39,14 +39,21 @@ namespace FUnrealTest
             string templatePath = null; 
             if (SetupInvalidTemplatePath) 
             { 
-                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor-invalid-path.xml");
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor-invalid-path.json");
             } else
             {
-                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.xml");
+                templatePath = TestUtils.PathCombine(tmpPath, "Templates/descriptor.json");
             }
 
-            FUnrealTemplates tpls = FUnrealTemplates.Load(templatePath);
+            var rules = new FUnrealTemplatesRules();
+            rules.LoadPlugins = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadPluginModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadGameModules = FUnrealTemplateLoadRule.MustLoad;
+            rules.LoadClasses = FUnrealTemplateLoadRule.MustLoad;
+            rules.TemplatePrefix = "tpl";
 
+            var result = FUnrealTemplates.TryLoad_V1_0(templatePath, rules, out FUnrealTemplates tpls);
+            
             service = new FUnrealService(eng, uprojectFile, tpls);
             service.UpdateProjectAsync(new FUnrealNotifier()).GetAwaiter().GetResult();
         }
@@ -63,7 +70,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjEmpty");
 
-            bool taskResult = service.AddPluginAsync("tpl_plugin_blank", "MyPlug", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginAsync("tpl_plugin_0", "MyPlug", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -101,7 +108,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjEmpty");
 
-            bool taskResult = service.AddPluginAsync("tpl_plugin_contentonly", "MyPlug", null, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginAsync("tpl_plugin_1", "MyPlug", null, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -141,7 +148,7 @@ namespace FUnrealTest
             SetUpTestCaseForProject("UPrjOnePlug");
 
             //Simulate file lock like it was Unreal Editor running!
-            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/UnrealEditor-Plugin01.dll");
+            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/SimulateLock-Plugin01.dll");
             TestUtils.FileLock(plugin01Dll);
 
             bool taskResult = service.DeletePluginAsync("Plugin01", new FUnrealNotifier()).GetAwaiter().GetResult();
@@ -159,7 +166,7 @@ namespace FUnrealTest
             SetUpTestCaseForProject("UPrjOnePlug");
 
             //Simulate file lock like it was Unreal Editor running!
-            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/MyLevel.umap");
+            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/SimulateLock-Plugin01.umap");
             TestUtils.FileLock(contentFile);
 
             bool taskResult = service.DeletePluginAsync("Plugin01", new FUnrealNotifier()).GetAwaiter().GetResult();
@@ -264,7 +271,7 @@ namespace FUnrealTest
             string upluginNewName = "Plugin01Renamed";
 
             //Simulate file lock like it was Unreal Editor running!
-            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/UnrealEditor-Plugin01.dll");
+            string plugin01Dll = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Binaries/SimulateLock-Plugin01.dll");
             TestUtils.FileLock(plugin01Dll);
 
             bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
@@ -285,7 +292,7 @@ namespace FUnrealTest
             string upluginNewName = "Plugin01Renamed";
 
             //Simulate file lock like it was Unreal Editor running!
-            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/MyLevel.umap");
+            string contentFile = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Content/SimulateLock-Plugin01.umap");
             TestUtils.FileLock(contentFile);
 
             bool taskResult = service.RenamePluginAsync(upluginName, upluginNewName, new FUnrealNotifier()).GetAwaiter().GetResult();
@@ -304,7 +311,7 @@ namespace FUnrealTest
         {
             SetUpTestCaseForProject("UPrjOnePlug");
 
-            bool taskResult = service.AddPluginModuleAsync("tpl_module_blank", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddPluginModuleAsync("tpl_pluginmodule_0", "Plugin01", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -498,7 +505,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
             
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -524,7 +531,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private/SubFolder");
             FUnrealSourceType selectedType = FUnrealSourceType.PUBLIC;
             
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -550,7 +557,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01/Private");
             FUnrealSourceType selectedType = FUnrealSourceType.PRIVATE;
           
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -576,7 +583,7 @@ namespace FUnrealTest
             string selectedSourcePath = TestUtils.PathCombine(uprojectPath, "Plugins/Plugin01/Source/Module01");
             FUnrealSourceType selectedType = FUnrealSourceType.CUSTOM;
 
-            bool taskResult = service.AddSourceClassAsync("tpl_class_actor", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddSourceClassAsync("tpl_class_0", selectedSourcePath, "MyActor", selectedType, new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);
@@ -632,7 +639,7 @@ namespace FUnrealTest
             SetUpTestCaseForProject("UPrjGame");
             string expectedPath = TestUtils.PathCombine(tmpPath, "Expected/UPrjGame");
 
-            bool taskResult = service.AddGameModuleAsync("tpl_module_blank", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
+            bool taskResult = service.AddGameModuleAsync("tpl_gamemodule_0", "MyMod", new FUnrealNotifier()).GetAwaiter().GetResult();
 
             Assert.IsTrue(taskResult);
             Assert.IsTrue(ubt.Called);

@@ -7,6 +7,7 @@
 Basically if you've got to the point where you write all your code in one file just because the hassle of adding new files to the project (here I am :raised_hand:), this extension is for you :wink:.
 
 ![FUnreal context menu example](./docs/images/intro.png)
+
 *Just a taste of FUnreal in action*
 
 The main concept is an handy context menu in the **Solution Explorer** view to reach - *just a right-click away* - a bunch of useful operations without the need to launch an *Unreal Engine Editor* instance (as for creating plugins or common classes) or alternately working on the filesystem side (adding, renaming or deleting files) and then launching *Unreal Build Tool*.
@@ -21,9 +22,9 @@ Futhermore `FUnreal` will try to maintain consistent your project, updating UE d
 
 and offers the following features:
 * Create/Rename/Delete `files` and `folders` (even empty folders will be visibles and manageables)
-* Create `C++ classes` choosing from *Unreal Common Classes*
-* Create/Rename/Delete `plugins` choosing from *Unreal Plugin Templates*
-* Create/Rename/Delete `modules` (for plugin modules and game modules) choosing from *Unreal Templates*
+* Create `C++ classes` choosing from *Unreal Common Classes* or *User Defined* templates
+* Create/Rename/Delete `plugins` choosing from *Unreal Plugin Templates* or *User Defined* templates
+* Create/Rename/Delete `modules` (for plugin modules and game modules) choosing from *Unreal Templates* or *User Defined* templates
 * `Keep in Sync` UE Project and VS Solution (invoking UBT automatically)
 * `Keep consistent` the code base, updating properly *.uproject, .uplugin, .Build.cs, .Target.cs*, module source file, and C++ include file directive, even cross modules, depenging on the operation executed (look at [this section](#details) for more details).
 
@@ -37,7 +38,12 @@ and offers the following features:
 ![FUnreal notification](./docs/images/notify.png)
 
 # Usage
-Once active, `FUnreal` context menu is available in the **Solution Explorer** view on the following items:
+Once active, `FUnreal` features are accessible via:
+- a `Context Menu` on solution explorer items
+- a `Toolbar Menu` to access configuration and run specific commands
+
+## Context Menu
+`FUnreal` context menu is available in the **Solution Explorer** view on the following items:
 * `Game Project` and `.uproject` file
 * `Plugin directory` and `.uplugin` file
 * `Module directory` and `.Build.cs` file (for both plugin modules and game modules)
@@ -49,7 +55,17 @@ After performing the selected operation, `FUnreal` will run **Unreal Build Tool*
 
 > Take a look at [video page samples](docs/VIDEOS.md) to see `FUnreal` in action!
 
-That's all! Enjoy :+1:
+## Toolbar Menu
+This `FUnreal` menu is located on the the main VS Toolbar under `Extensions` menu.
+
+![FUnreal Extensions Menu](./docs/images/extensions-menu.png)
+
+From there you can:
+- Force reloading templates (in case you change your custom template configuration on disk)
+- Regenerating VS Solution files on demand (basically a shortcut for running UBT from within VS IDE)
+- Access options page, where you can configure the extension (e.g for tuning template configuration)
+
+> More info about `FUnreal` options and custom templates configuration can be found at [this page](docs/TEMPLATES.md).
 
 # Details
 Read [here](./docs/DETAILS.md) for an insights on what `FUnreal` does for you under the hood.

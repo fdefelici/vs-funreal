@@ -53,7 +53,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Resources\FUnrealServiceTest\Templates\descriptor-invalid-path.xml">
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\SimulateLock-Plugin01.umap">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\FUnrealServiceTest\Templates\descriptor-invalid-path.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\SimulateLock-Plugin01.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\Actor.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\Actor.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\ActorComponent.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\ActorComponent.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealService_CreateTest\Engines\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe">
@@ -62,31 +80,31 @@
     <Content Include="Resources\FUnrealService_CreateTest\Engines\UE_5.1\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\descriptor.xml">
+    <None Include="Resources\FUnrealService_CreateTest\Templates\descriptor.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Classes\Actor.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Classes\Actor.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Classes\ActorComponent.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Classes\ActorComponent.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Sources\Actor.cpp">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Sources\Actor.h">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Sources\ActorComponent.cpp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Sources\ActorComponent.h">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjGame\Source\MyMod\MyMod.Build.cs">
@@ -203,9 +221,6 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjGame\Source\UPrjGame\UPrjGame.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\UnrealEditor-Plugin01.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlugMod\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -251,18 +266,15 @@
     <Content Include="Resources\FUnrealService_CreateTest\Projects\UE5Prj\UE5Prj.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Content\.gitkeep">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Content\.gitkeep">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\MyLevel.umap">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFolder\Plugins\Plugin01\Source\Module01\Private\Hello\Actor01.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -305,7 +317,7 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFolder\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
@@ -324,9 +336,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjRenameFolder\Plugins\Plugin01\Source\Module03\Module03.Build.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Binaries\UnrealEditor-Plugin01.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin01\Source\Module01\Module01.Build.cs">
@@ -350,7 +359,7 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Source\Module02\Module02.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\%40{TPL_MODU_NAME}.Build.cs">
+    <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\%40{TPL_MODULE_NAME}.Build.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
@@ -368,8 +377,10 @@
     <Compile Include="Sources\Units\FUnrealTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\MiscTest.cs" />
     <Compile Include="Sources\Units\FUnrealServiceTasksTest.cs" />
+    <Compile Include="Sources\Units\Utils\XObjectValidatorTest.cs" />
     <Compile Include="Sources\Units\XFilesystemEnumerableTest.cs" />
     <Compile Include="Sources\Units\XFilesystem_IO_Test.cs" />
+    <Compile Include="Sources\Units\Utils\XJsonUtils.cs" />
     <Compile Include="Sources\Units\XVersionTest.cs" />
     <Compile Include="Sources\Utils\FAssert.cs" />
     <Compile Include="Sources\Utils\FUnrealBuildToolMock.cs" />
@@ -450,13 +461,13 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\UPrjRenameFile.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\%40{TPL_PLUG_NAME}.uplugin">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Content\.gitkeep">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Content\.gitkeep">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFolder\Plugins\Plugin01\Plugin01.uplugin">
@@ -647,31 +658,19 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjRenameFile\Plugins\Plugin01\Source\Module03\Public\Module03NotAligned.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\descriptor.xml">
+    <None Include="Resources\FUnrealServiceTest\Templates\descriptor.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Private\%40{TPL_MODULE_CLASS}.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Private\%40{TPL_MODU_CLASS}.cpp">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\Source\%40{TPL_MODULE_NAME}\Public\%40{TPL_MODULE_CLASS}.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUG_NAME}\Source\%40{TPL_MODU_NAME}\Public\%40{TPL_MODU_CLASS}.h">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUG_NAME}\Resources\Icon128.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.cpp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\Actor.h">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.cpp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Sources\ActorComponent.h">
+    <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Plugins\ContentOnly\%40{TPL_PLUGIN_NAME}\Resources\Icon128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

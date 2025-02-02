@@ -5,20 +5,24 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using System.Windows.Forms;
 
 
 namespace FUnreal
 {
 
-    public interface IFUnrealVS
+    public abstract class IFUnrealVS
     {
-        string GetUnrealEnginePath();
-        string GetUProjectFilePath();
+        public abstract string GetUnrealEnginePath();
+        public abstract string GetUProjectFilePath();
+        public abstract string GetVSixDllPath ();
 
-        IFUnrealLogger Output { get; }
+        public IFUnrealLogger Output { get; protected set; }
 
-        string GetVSixDllPath ();
+        public IFUnrealStatusBar StatusBar { get; protected set; }
+
+        public abstract FUnrealTemplateOptionsPage GetOptions();
+        public Action OnOptionsSaved;
+
     }
 
     public interface IFUnrealLogger
@@ -31,6 +35,62 @@ namespace FUnreal
         void PlainText(string str);
     }
 
+    public interface IFUnrealStatusBar
+    {
+        void ShowInfiniteProgress(string message);
+
+        void HideInfiniteProgress();
+
+        void ShowMessage(string format, params string[] args);
+    }
+
+    public class FUnrealStatusBar : IFUnrealStatusBar
+    {
+        public bool IsShowProgress;
+
+        public FUnrealStatusBar() 
+        { 
+            IsShowProgress = false;
+        }
+
+        public void ShowInfiniteProgress(string message)
+        {
+            if (IsShowProgress) return;
+            IsShowProgress = true;
+
+            _ = Task.Run(async () =>
+            {
+                int maxStep = 20;
+                int step = 1;
+                while (IsShowProgress)
+                {
+                    //TODO: Usare operazione %
+                    if (step == maxStep)
+                    {
+                        step = 1;
+                    }
+    
+                    await VS.StatusBar.ShowProgressAsync(message, step, maxStep);
+                    await Task.Delay(250);
+                    step++;
+                }
+
+                await VS.StatusBar.ShowProgressAsync(message, maxStep, maxStep);
+            });
+        }
+
+        public void HideInfiniteProgress()
+        {
+            IsShowProgress = false;
+        }
+
+        public void ShowMessage(string format, params string[] args)
+        {
+            string message = XString.Format(format, args);
+            VS.StatusBar.ShowMessageAsync(message).FireAndForget();
+        }
+
+    }
 
     public class FUnrealLogger : IFUnrealLogger
     {
@@ -82,6 +142,18 @@ namespace FUnreal
 
     public class FUnrealVS : IFUnrealVS
     {
+        FUnrealTemplateOptionsPage _options = null;
+
+        public override FUnrealTemplateOptionsPage GetOptions()
+        {
+            return _options;
+        }
+
+        public void ShowOptionPage()
+        {
+            _package.ShowOptionPage(typeof(FUnrealTemplateOptionsPage_Provider.OptionPage));
+        }
+
         public static async Task<bool> IsUnrealSolutionAsync()
         {
             /*
@@ -101,14 +173,15 @@ namespace FUnreal
             await XThread.SwitchToUIThreadIfItIsNotAsync();
             
             var solution = await VS.Solutions.GetCurrentSolutionAsync();
+            if (solution == null) return false;
             string solutionPath = solution.FullPath;
             string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
             return XFilesystem.FileExists(uprojectPath);
         }
 
-        public static async Task<FUnrealVS> CreateAsync()
+        public static async Task<FUnrealVS> CreateAsync(FUnrealPackage package)
         {
-            var uvs = new FUnrealVS();
+            var uvs = new FUnrealVS(package);
             await uvs.InitializeAsync();
             return uvs;
         }
@@ -121,14 +194,18 @@ namespace FUnreal
         }
         
 
-        public IFUnrealLogger Output { get; private set; }
+        //public IFUnrealLogger Output { get; private set; }
 
         private FUnrealDTE _unrealDTE;
+        private FUnrealPackage _package;
 
         public string WhenProjectReload_MarkItemForSelection { get; set; }
         public List<string> WhenProjectReload_MarkItemsForCreation { get; set; }
 
-        private FUnrealVS() { }
+        private FUnrealVS(FUnrealPackage package) 
+        { 
+            _package = package;
+        }
 
         public async Task InitializeAsync()
         {
@@ -138,6 +215,8 @@ namespace FUnreal
 
             OutputWindowPane pane = await VS.Windows.CreateOutputWindowPaneAsync(XDialogLib.Title_FUnreal);
             Output = new FUnrealLogger(pane);
+            StatusBar = new FUnrealStatusBar();
+
 
             _unrealDTE = await FUnrealDTE.CreateInstanceAsync();
             if (!_unrealDTE.IsValid)
@@ -147,6 +226,10 @@ namespace FUnreal
 
             WhenProjectReload_MarkItemForSelection = null;
             WhenProjectReload_MarkItemsForCreation = null;
+
+
+            _options = FUnrealTemplateOptionsPage.Instance;
+            _options.AddChangedHandler(() => OnOptionsSaved?.Invoke());
         }
 
         public async Task ForceLoadProjectEventAsync()
@@ -227,7 +310,7 @@ namespace FUnreal
             return VS.Solutions.GetCurrentSolution().FullPath;
         }
 
-        public string GetUProjectFilePath()
+        public override string GetUProjectFilePath()
         {
             string solAbsPath = GetSolutionFilePath();
             string uprjFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
@@ -325,7 +408,7 @@ namespace FUnreal
 
     
 
-        public string GetUnrealEnginePath()
+        public override string GetUnrealEnginePath()
         {
             string natvisFilePath = _unrealDTE.UENatvisPath;
 
@@ -334,12 +417,6 @@ namespace FUnreal
             string enginePath = XFilesystem.PathParent(extrasPath);
 
             return enginePath;
-        }
-
-        public void ShowStatusBarMessage(string format, params string[] args)
-        {
-            string message = XString.Format(format, args);
-            VS.StatusBar.ShowMessageAsync(message).FireAndForget();
         }
 
         public async Task<bool> ExistsFolderInSelectedFolderParentAsync(string name)
@@ -371,10 +448,11 @@ namespace FUnreal
             return await _unrealDTE.RemoveFoldersFromSelectionAsync();  
         }
 
-        public string GetVSixDllPath()
+        public override string GetVSixDllPath()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
+
     }
 
     /* 

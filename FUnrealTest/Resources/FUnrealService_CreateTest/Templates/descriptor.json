@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "templates": {
+    "plugins": [
+      { "label": "Blank", "desc": "Create a blank plugin with a minimal amount of code.",
+        "ue": ["4","5"], "path": "UEC/Plugins/Blank",
+        "meta": { "has_module": true }
+      },
+      { "label": "Content Only", "desc": "Create a blank plugin that can only contain content.",
+        "ue": ["4","5"], "path": "UEC/Plugins/ContentOnly",
+        "meta": { "has_module": false }
+      }
+    ],
+    "plugin_modules": [
+			{ "label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
+				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUGIN_NAME}/Source",
+				"meta": { "type": "Runtime", "phase": "Default" }
+			}
+    ],
+    "game_modules": [
+			{ "label": "Blank", "desc": "Create a blank module with a minimal amount of code.",
+				"ue": ["4","5"], "path": "UEC/Plugins/Blank/@{TPL_PLUGIN_NAME}/Source",
+				"meta": { "type": "Runtime", "phase": "Default", "target": "Editor" }
+			}
+    ],
+    "classes": [
+			{ "label": "Actor", "desc": "An Actor is an object that can be placed or spawned in the world.",
+				"ue": ["4","5"], "path": "UEC/Classes",
+				"meta": {  "header": "Actor.h",  "source": "Actor.cpp" }
+			},
+			{ "label": "Actor Component", "desc": "An ActorComponent is a reusable component that can be added to any actor.",
+				"ue": ["4","5"], "path": "UEC/Classes",
+				"meta": {  "header": "ActorComponent.h",  "source": "ActorComponent.cpp" }
+			}
+    ]
+  }
+}
