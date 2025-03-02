@@ -15,7 +15,7 @@ Futhermore `FUnreal` will try to maintain consistent your project, updating UE d
 
 # Features
 `FUnreal` currently supports:
-* UE: 4.x and 5.x Game C++ Projects
+* UE: 4.x and 5.x Game C++ Projects (Native and Foreign)
 * IDE: Visual Studio 2022 (aka v17.x)
 * OS: Windows
 
