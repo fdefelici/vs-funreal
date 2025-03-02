@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using Community.VisualStudio.Toolkit;
 
 namespace FUnreal
 {
@@ -64,26 +65,63 @@ namespace FUnreal
                 return null;
             }
 
-            string ubtBin = string.Empty;
-            //NOTE: Eventually I could get rid off version check and find UBT executable by a filesystem scan instead.
-            if (version.Major == 4)
+            IFUnrealBuildTool buildTool = null;
+            var projectType = unrealVS.GetUEProjectType();
+            unrealVS.Output.Info("UE Project Type: {0}", projectType.ToString());
+
+            if (projectType == FUnrealUEProjectType.Foreign)
             {
-                //Example UE4: C:\Program Files\Epic Games\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe
-                ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool.exe");
-            }
-            else if (version.Major >= 5) //5+
+                //Look for UBT binary depending on UE version
+                string ubtBin = string.Empty;
+                //NOTE: Eventually I could get rid off version check and find UBT executable by a filesystem scan instead.
+                if (version.Major == 4)
+                {
+                    //Example UE4: C:\Program Files\Epic Games\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe
+                    ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool.exe");
+                }
+                else if (version.Major >= 5) //5+
+                {
+                    //Example UE5: C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe
+                    ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+                }
+
+                if (!XFilesystem.FileExists(ubtBin))
+                {
+                    unrealVS.Output.Erro("Cannot detect UBT at path {0}", ubtBin);
+                    //return null;
+                }
+                else
+                {
+                    buildTool = new FUnrealBuildTool(ubtBin);
+                }
+            } 
+            else if (projectType == FUnrealUEProjectType.Native)
             {
-                //Example UE5: C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe
-                ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+                //Look for GenerateProjectFiles
+                string engineRootPath = XFilesystem.PathParent(enginePath);
+                string generateBin = XFilesystem.PathCombine(engineRootPath, "GenerateProjectFiles.bat");
+                if (!XFilesystem.FileExists(generateBin))
+                {
+                    unrealVS.Output.Erro("Cannot detect GenerateProjectFiles at path {0}", generateBin);
+                } 
+                else 
+                {
+                    buildTool = new FUnrealGenerateTool(generateBin);
+                }
+            } 
+            else
+            {
+                unrealVS.Output.Erro("Unknown UE Project Type");
             }
 
-            if (!XFilesystem.FileExists(ubtBin))
-            {
-                unrealVS.Output.Erro("Cannot detect UBT at path {0}", ubtBin);
+            
+            if (buildTool == null) 
+            { 
                 return null;
             }
 
-            FUnrealEngine engine = new FUnrealEngine(version, enginePath, new FUnrealBuildTool(ubtBin));
+
+            FUnrealEngine engine = new FUnrealEngine(version, enginePath, buildTool);
 
             unrealVS.Output.Info("UE Version: {0}", engine.Version.AsString());
             unrealVS.Output.Info("UE Path: {0}", engine.EnginePath);

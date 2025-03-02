@@ -42,17 +42,20 @@ namespace FUnrealTest
             private string _uprojectFilePath;
             private string _engineRootPath;
             private string _vsixDllPath;
+            private FUnrealUEProjectType _projectType;
             private FUnrealTemplateOptionsPage _options;
 
             public FUnrealVsMock(
                 string uprojectFilePath,
                 string engineRootPath,
                 string vsixDllPath,
+                FUnrealUEProjectType projectType,
                 FUnrealTemplateOptionsPage options)
             {
                 _uprojectFilePath = uprojectFilePath;
                 _engineRootPath = engineRootPath;
                 _vsixDllPath = vsixDllPath;
+                _projectType = projectType;
                 _options = options;
                 Output = new LoggerMock();
             }
@@ -62,6 +65,11 @@ namespace FUnrealTest
             public override FUnrealTemplateOptionsPage GetOptions()
             {
                 return _options;
+            }
+
+            public override FUnrealUEProjectType GetUEProjectType()
+            {
+                return _projectType;
             }
 
             public override string GetUnrealEnginePath()
@@ -92,7 +100,7 @@ namespace FUnrealTest
             var options = new FUnrealTemplateOptionsPage();
             options.TemplatesMode = TemplateMode.BuiltIn;
 
-            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, options));
+            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, FUnrealUEProjectType.Foreign, options));
 
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);
@@ -119,7 +127,7 @@ namespace FUnrealTest
             var options = new FUnrealTemplateOptionsPage();
             options.TemplatesMode = TemplateMode.BuiltIn;
 
-            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, options));
+            var service = FUnrealService.Create(new FUnrealVsMock(uprojectFilePath, engineRootPath, vsixDllPath, FUnrealUEProjectType.Foreign, options));
 
             var engine = service.Engine;
             Assert.AreEqual(expVersion, engine.Version);

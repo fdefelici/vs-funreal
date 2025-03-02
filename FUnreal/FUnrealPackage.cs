@@ -37,7 +37,6 @@ namespace FUnreal
             //As a workaround, stop loading the code if it is not an Unreal Project.
             //NOTE: This workaround works only if VS IDE is launched from scratch. 
             //      Don't work if from a VS IDE solution, it is opened another solution using File -> Open -> Project/Solution (VSpackage is not reloaded)
-
             if (await FUnrealVS.IsUnrealSolutionAsync())
             {
                 FUnrealVS unrealVS = await FUnrealVS.CreateAsync(this);
