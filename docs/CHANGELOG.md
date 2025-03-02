@@ -1,4 +1,9 @@
 # FUnreal Changelog
+
+## v0.3.0: March 02, 2024 
+### Features
+* Implement Native project management
+
 ## v0.2.1: Feb 2, 2025 
 ### Bug Fix
 * Blank and BlueprintLibrary template misconfigured with wrong module name placeholder in IMPLEMENT_MODULE statement.

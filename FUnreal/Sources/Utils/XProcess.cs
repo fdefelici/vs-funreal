@@ -47,6 +47,8 @@ namespace FUnreal
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
+            XDebug.Info("Executing: " + binaryPath + " " + argsString);
+
             int code;
             string stdout;
             try { 
@@ -73,6 +75,8 @@ namespace FUnreal
             result.StdOut = stdout;
             result.ExitCode = process.ExitCode;
             result.IsSuccess = code == 0;
+
+            XDebug.Info($"Result: {binaryPath} [Success: {result.IsSuccess}][Code: {result.ExitCode}]");
 
             return result;
         }

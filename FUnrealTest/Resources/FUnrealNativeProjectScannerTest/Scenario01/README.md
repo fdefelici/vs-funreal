@@ -1,0 +1,1 @@
+﻿Scenario where no .uprojectdirs exist

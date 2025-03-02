@@ -101,7 +101,20 @@ namespace FUnreal
             {
                 return null;
             }
+        }
 
+        /// <remarks>Protected againts Long Path</remarks>
+        public static IEnumerable<string> FileReadLines(string file)
+        {
+            try
+            {
+                string lp = ToLongPath(file);
+                return File.ReadLines(lp);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <remarks>Protected againts Long Path</remarks>
@@ -228,6 +241,13 @@ namespace FUnreal
         }
 
         /// <remarks>Protected againts Long Path</remarks>
+        public static bool FileExists(string path, bool recurse, string searchPattern)
+        {
+            var filePaths = FindFilesEnum(path, recurse, searchPattern);
+            return filePaths.Any();
+        }
+
+        /// <remarks>Protected againts Long Path</remarks>
         public static bool FileExists(string path, bool recurse, string searchPattern, Func<string, bool> predicate)
         {
             var filePaths = FindFilesEnum(path, recurse, searchPattern);
@@ -307,6 +327,14 @@ namespace FUnreal
             if (!DirExists(fullPath)) return new List<string>();
             string lp = ToLongPath(fullPath);
             return XFilesystemEnumerable.AdaptToNormal(Directory.EnumerateDirectories(lp, "*", searchMode));
+        }
+
+        public static async Task<IEnumerable<string>> FindDirsEnumAsync(string dirPath, bool recurse = false)
+        {
+            return await Task.Run(() =>
+            {
+                return FindDirsEnum(dirPath, recurse);
+            });
         }
 
         /// <remarks>Protected againts Long Path</remarks>

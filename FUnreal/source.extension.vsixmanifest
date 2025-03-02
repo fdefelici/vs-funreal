@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="FUnreal.743850cc-b00b-4f5d-9117-4f84df24f8ab" Version="0.2.1" Language="en-US" Publisher="Federico De Felici" />
+        <Identity Id="FUnreal.743850cc-b00b-4f5d-9117-4f84df24f8ab" Version="0.3.0" Language="en-US" Publisher="Federico De Felici" />
         <DisplayName>FUnreal</DisplayName>
         <Description xml:space="preserve">Visual Studio extension for smoothing the workflow of Unreal Engine C++ developers</Description>
         <MoreInfo>https://github.com/fdefelici/vs-funreal</MoreInfo>
