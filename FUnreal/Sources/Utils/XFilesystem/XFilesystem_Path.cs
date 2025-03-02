@@ -46,7 +46,11 @@ namespace FUnreal
             {
                 string part = parts[i];
                 //combined = Path.Combine(combined, part);  No used anymore because try to combine 'C:' with 'some' result in 'C:some' instead of 'C:\some'
+                if (part == ".") continue;
+                part = part.Replace("./", string.Empty);
+                part = part.Replace(".\\", string.Empty);
                 if (string.IsNullOrEmpty(part)) continue;
+
                 combined = $"{combined}{PathSeparatorChar}{part}";
             }
 

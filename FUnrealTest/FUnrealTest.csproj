@@ -53,9 +53,51 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario05\MyConfig.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario05\Default.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario05\Games\MyProject01\MyProject01.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario05\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario04\Default.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario04\MyProject02\MyProject02.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario04\MyProject01\MyProject01.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario04\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario03\Default.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario03\MyProject\MyProject.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario03\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario02\Default.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario01\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjOnePlug\Plugins\Plugin01\Content\SimulateLock-Plugin01.umap">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\FUnrealNativeProjectScannerTest\Scenario02\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\FUnrealServiceTest\Templates\descriptor-invalid-path.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -74,12 +116,24 @@
     <Content Include="Resources\FUnrealServiceTest\Templates\UE5\Classes\ActorComponent.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Engines\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe">
+    <Content Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Engines\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Engines\UE_5.1\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe">
+    <Content Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Engines\UE_5.1\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\FUnrealService_CreateTest\Scenario_Native\UE_5.1\Default.uprojectdirs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FUnrealService_CreateTest\Scenario_Native\UE_5.1\Engine\Build\Build.version">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\FUnrealService_CreateTest\Scenario_Native\UE_5.1\UE5Prj\UE5Prj.uproject">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\FUnrealService_CreateTest\Scenario_Native\UE_5.1\GenerateProjectFiles.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\FUnrealService_CreateTest\Templates\descriptor.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -263,7 +317,7 @@
     <Content Include="Resources\FUnrealServiceTest\Expected\UPrjTwoPlug_DeletePlugin01\UPrjTwoPlug.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FUnrealService_CreateTest\Projects\UE5Prj\UE5Prj.uproject">
+    <Content Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Projects\UE5Prj\UE5Prj.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FUnrealService_CreateTest\Templates\UE5\Plugins\Blank\%40{TPL_PLUGIN_NAME}\%40{TPL_PLUGIN_NAME}.uplugin">
@@ -365,6 +419,8 @@
     <Compile Include="Sources\Integrations\FUnrealProjectFactory_IntegrationTest.cs" />
     <Compile Include="Sources\Integrations\VSIXTemplatesTest.cs" />
     <Compile Include="Sources\Integrations\ProductionTemplatesTest.cs" />
+    <Compile Include="Sources\Units\FUnrealNativeProjectScannerTest.cs" />
+    <Compile Include="Sources\Units\FUnrealUProjectDirsFileTest.cs" />
     <Compile Include="Sources\Units\FUnrealBuildToolTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectTest.cs" />
     <Compile Include="Sources\Units\FUnrealProjectFactoryTest.cs" />
@@ -392,13 +448,13 @@
     <Content Include="Resources\FUnrealServiceTest\Projects\UPrjTwoPlug\Plugins\Plugin02\Plugin02.uplugin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\FUnrealService_CreateTest\Engines\UE_4.27\Engine\Build\Build.version">
+    <None Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Engines\UE_4.27\Engine\Build\Build.version">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\FUnrealService_CreateTest\Engines\UE_5.1\Engine\Build\Build.version">
+    <None Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Engines\UE_5.1\Engine\Build\Build.version">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Resources\FUnrealService_CreateTest\Projects\UE4Prj\UE4Prj.uproject">
+    <Content Include="Resources\FUnrealService_CreateTest\Scenario_Foreign\Projects\UE4Prj\UE4Prj.uproject">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -674,7 +730,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

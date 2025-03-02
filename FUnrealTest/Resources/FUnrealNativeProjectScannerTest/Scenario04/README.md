@@ -1,0 +1,1 @@
+﻿Scenario where 1 .uprojectdirs exist, but 2 .uproject file exist

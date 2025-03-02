@@ -147,6 +147,10 @@ namespace FUnrealTest
             Assert.AreEqual(@"Hello", XFilesystem.PathCombine("Hello", "", ""));
 
             Assert.AreEqual(@"Hello", XFilesystem.PathCombine("", "Hello", ""));
+
+            Assert.AreEqual(@"C:\some", XFilesystem.PathCombine("C:\\some", "."));
+            Assert.AreEqual(@"C:\some", XFilesystem.PathCombine("C:\\some", "./"));
+            Assert.AreEqual(@"C:\some\other", XFilesystem.PathCombine("C:\\some", "./other"));
         }
 
         [TestMethod]

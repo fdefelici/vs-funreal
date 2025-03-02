@@ -1,0 +1,10 @@
+﻿; These folders will be searched 1 level deep in order to find projects
+; UnrealBuildTool will store the following information:
+; - Project name
+; - Location of project
+; - Whether it has code or not
+; - TargetNames contains at the project location
+;
+./
+Engine/Source/
+Engine/Programs/

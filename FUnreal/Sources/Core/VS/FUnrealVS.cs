@@ -16,6 +16,8 @@ namespace FUnreal
         public abstract string GetUProjectFilePath();
         public abstract string GetVSixDllPath ();
 
+        public abstract FUnrealUEProjectType GetUEProjectType();
+
         public IFUnrealLogger Output { get; protected set; }
 
         public IFUnrealStatusBar StatusBar { get; protected set; }
@@ -140,6 +142,13 @@ namespace FUnreal
         }
     }
 
+    public enum FUnrealUEProjectType
+    {
+        Unknown,
+        Foreign,
+        Native
+    }
+
     public class FUnrealVS : IFUnrealVS
     {
         FUnrealTemplateOptionsPage _options = null;
@@ -156,6 +165,13 @@ namespace FUnreal
 
         public static async Task<bool> IsUnrealSolutionAsync()
         {
+            if (await IsUnrealForeignProjectSolutionAsync()) return true;
+            if (await IsUnrealNativeProjectSolutionAsync()) return true;
+            return false;
+        }
+
+        private static async Task<bool> IsUnrealForeignProjectSolutionAsync()
+        {
             /*
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -171,12 +187,24 @@ namespace FUnreal
             */
 
             await XThread.SwitchToUIThreadIfItIsNotAsync();
-            
+
             var solution = await VS.Solutions.GetCurrentSolutionAsync();
             if (solution == null) return false;
             string solutionPath = solution.FullPath;
             string uprojectPath = XFilesystem.ChangeFilePathExtension(solutionPath, "uproject");
             return XFilesystem.FileExists(uprojectPath);
+        }
+
+        private static async Task<bool> IsUnrealNativeProjectSolutionAsync()
+        {
+            await XThread.SwitchToUIThreadIfItIsNotAsync();
+
+            var solution = await VS.Solutions.GetCurrentSolutionAsync();
+            if (solution == null) return false;
+            string solutionPath = solution.FullPath;
+
+            string parentPath = XFilesystem.PathParent(solutionPath);
+            return XFilesystem.FileExists(parentPath, false, "*.uprojectdirs");
         }
 
         public static async Task<FUnrealVS> CreateAsync(FUnrealPackage package)
@@ -196,8 +224,10 @@ namespace FUnreal
 
         //public IFUnrealLogger Output { get; private set; }
 
-        private FUnrealDTE _unrealDTE;
         private FUnrealPackage _package;
+        private FUnrealDTE _unrealDTE;
+        private string _uprojectFilePath;
+        private FUnrealUEProjectType _ueProjectType;
 
         public string WhenProjectReload_MarkItemForSelection { get; set; }
         public List<string> WhenProjectReload_MarkItemsForCreation { get; set; }
@@ -205,6 +235,9 @@ namespace FUnreal
         private FUnrealVS(FUnrealPackage package) 
         { 
             _package = package;
+            _unrealDTE = null;
+            _uprojectFilePath = null;
+            _ueProjectType = FUnrealUEProjectType.Unknown;
         }
 
         public async Task InitializeAsync()
@@ -230,6 +263,44 @@ namespace FUnreal
 
             _options = FUnrealTemplateOptionsPage.Instance;
             _options.AddChangedHandler(() => OnOptionsSaved?.Invoke());
+
+            // Foreign Project setup
+            if (await IsUnrealForeignProjectSolutionAsync())
+            {
+                XDebug.Info("Foreign Project type detected!");
+                _ueProjectType = FUnrealUEProjectType.Foreign;
+
+                string solAbsPath = GetSolutionFilePath();
+                _uprojectFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
+            } 
+            else //Native Project setup
+            {
+                XDebug.Info("Native Project type detected!");
+                _ueProjectType = FUnrealUEProjectType.Native;
+
+                //PROTECT AGAINT MULTIPLE UPROJECT
+                string solAbsPath = GetSolutionFilePath();
+                string rootPath = XFilesystem.PathParent(solAbsPath);
+                
+                var scanner = new FUnrealNativeProjectScanner(rootPath);
+
+                var uprojectPaths = await scanner.RetrieveUProjectFilePathsAsync();
+
+                int count = uprojectPaths.Count();
+                if (count == 0) 
+                {
+                    XDebug.Erro("Cannot locate any .uproject from uprojectdirs configuration!");
+                } 
+                else if (count > 1) 
+                {
+                    XDebug.Erro("Found {0} .uproject files from uprojectdirs", count.ToString());
+                    XDebug.Erro("Currenlty only 1 .uproject can be managed!");
+                } 
+                else
+                {
+                    _uprojectFilePath = uprojectPaths[0];
+                }
+            }
         }
 
         public async Task ForceLoadProjectEventAsync()
@@ -312,9 +383,7 @@ namespace FUnreal
 
         public override string GetUProjectFilePath()
         {
-            string solAbsPath = GetSolutionFilePath();
-            string uprjFilePath = XFilesystem.ChangeFilePathExtension(solAbsPath, "uproject");
-            return uprjFilePath;
+            return _uprojectFilePath;
         }
 
         public string GetUProjectPath()
@@ -327,7 +396,7 @@ namespace FUnreal
         public async Task<FUnrealVSItem> GetSelectedItemAsync()
         {
             SolutionItem moduleItem = await VS.Solutions.GetActiveItemAsync();
-            return new FUnrealVSItem(moduleItem);
+            return new FUnrealVSItem(moduleItem, GetUProjectPath());
         }
 
         public async Task<bool> IsSingleSelectionAsync()
@@ -343,7 +412,7 @@ namespace FUnreal
             List<FUnrealVSItem> result = new List<FUnrealVSItem>(); 
             foreach (var item in items)
             {
-                result.Add(new FUnrealVSItem(item));
+                result.Add(new FUnrealVSItem(item, GetUProjectPath()));
             }
             return result;
         }
@@ -453,6 +522,10 @@ namespace FUnreal
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
 
+        public override FUnrealUEProjectType GetUEProjectType()
+        {
+            return _ueProjectType;
+        }
     }
 
     /* 
@@ -489,11 +562,35 @@ namespace FUnreal
     public struct FUnrealVSItem
     {
         private SolutionItem _item;
-        public FUnrealVSItem(SolutionItem item)
+        private string _projectAbsPath;
+
+        public FUnrealVSItem(SolutionItem item, string projectAbsPath)
         {
             _item = item;
+            _projectAbsPath = projectAbsPath;
+            FullPath = null;
+            
+            FullPath = ComputeFullPath();
         }
 
+        private string ComputeFullPath()
+        {
+            if (IsFile)
+            {
+                return _item.FullPath;
+            }
+            else if (IsVirtualFolder)
+            {
+                string relPathInIDE = _item.Name;  //For folder MyUeProject/Source/ ...
+                return XFilesystem.PathCombine(_projectAbsPath, relPathInIDE);
+            }
+            else
+            {
+                return _item.FullPath;
+            }
+        }
+
+        /*
         public string FullPath { 
             get 
             { 
@@ -511,6 +608,10 @@ namespace FUnreal
                 else return _item.FullPath; 
             } 
         }
+        */
+
+        public string FullPath { get; private set; }
+
         public bool IsVirtualFolder { get { return _item.Type == SolutionItemType.VirtualFolder; } }
         public bool IsFile { get { return _item.Type == SolutionItemType.PhysicalFile; } }
         public bool IsProject { get { return _item.Type == SolutionItemType.Project; } }
