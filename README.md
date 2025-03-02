@@ -16,7 +16,7 @@ Futhermore `FUnreal` will try to maintain consistent your project, updating UE d
 
 # Features
 `FUnreal` currently supports:
-* UE: 4.x and 5.x Game C++ Projects
+* UE: 4.x and 5.x Game C++ Projects (Native and Foreign)
 * IDE: Visual Studio 2022 (aka v17.x)
 * OS: Windows
 
@@ -36,6 +36,14 @@ and offers the following features:
 * A dedicated Output window named **FUnreal**
 
 ![FUnreal notification](./docs/images/notify.png)
+
+`FUnreal` can manage both `Native` or `Foreign` projects:
+- Native projects are the ones under the UE Root Directory and located using `.uprojectdirs` files.
+- Foreign projects are the ones outside the UE Root Directory and located using the related `.uproject` file
+
+> For more information about Unreal Project Types refer to the [official documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-game-code-in-unreal-engine).
+
+> NOTE: About `Native` project, currently `FUnreal` allow to manage just 1 project at time in the same VS Solution.
 
 # Usage
 Once active, `FUnreal` features are accessible via:
