@@ -1,5 +1,9 @@
 # FUnreal Changelog
 
+## v0.3.1: Jul 12, 2025 
+### Bug Fix
+* use template configuration for SlateWidgetStyle UCLASS
+
 ## v0.3.0: March 02, 2024 
 ### Features
 * Implement Native project management
