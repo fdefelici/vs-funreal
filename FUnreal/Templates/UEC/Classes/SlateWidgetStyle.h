@@ -23,7 +23,7 @@ struct @{TPL_MODULE_API} F@{TPL_CLASS_NAME} : public FSlateWidgetStyle
 /**
  */
 UCLASS(hidecategories=Object, MinimalAPI)
-class UMySlateWidgetStyle : public USlateWidgetStyleContainerBase
+class U@{TPL_CLASS_NAME} : public USlateWidgetStyleContainerBase
 {
 	GENERATED_BODY()
 
