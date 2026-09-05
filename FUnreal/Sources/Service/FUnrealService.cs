@@ -81,8 +81,11 @@ namespace FUnreal
                 }
                 else if (version.Major >= 5) //5+
                 {
-                    //Example UE5: C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.exe
-                    ubtBin = XFilesystem.PathCombine(enginePath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+                    //Use Build.bat instead of invoking UnrealBuildTool.exe directly: it resolves the engine's bundled
+                    //DotNet runtime (via GetDotnetPath.bat) before running UBT, so it keeps working regardless of
+                    //whether a matching DotNet version is installed system-wide.
+                    //Example UE5: C:\Program Files\Epic Games\UE_5.0\Engine\Build\BatchFiles\Build.bat
+                    ubtBin = XFilesystem.PathCombine(enginePath, "Build/BatchFiles/Build.bat");
                 }
 
                 if (!XFilesystem.FileExists(ubtBin))

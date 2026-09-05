@@ -1,6 +1,7 @@
 ﻿using FUnreal;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace FUnrealTest
 {
@@ -50,7 +51,6 @@ namespace FUnrealTest
             FUnrealBuildTool ubt = new FUnrealBuildTool("UNEXISTENT.exe");
 
             XProcessResult result = ubt.GenerateVSProjectFilesAsync("file.uproject").GetAwaiter().GetResult();
-
             Assert.IsTrue(result.IsError);
         }
 

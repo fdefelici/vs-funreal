@@ -112,7 +112,7 @@ namespace FUnrealTest
             string vsixDllPath = TestUtils.PathCombine(rootPath, "faked-funreal.dll");
 
             var expVersion = new XVersion(5, 1, 0);
-            var expUbtPath = TestUtils.PathCombine(engineRootPath, "Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe");
+            var expUbtPath = TestUtils.PathCombine(engineRootPath, "Build/BatchFiles/Build.bat");
             var options = new FUnrealTemplateOptionsPage();
             options.TemplatesMode = TemplateMode.BuiltIn;
 
