@@ -1,5 +1,9 @@
 # FUnreal Changelog
 
+## v0.3.2: Sep 06, 2026
+### Improvements
+* use Build.bat instead of UnrealBuildTool.exe binary for UE5+
+
 ## v0.3.1: Jul 12, 2025 
 ### Bug Fix
 * use template configuration for SlateWidgetStyle UCLASS
